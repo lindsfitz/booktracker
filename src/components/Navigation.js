@@ -13,6 +13,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { Link } from "react-router-dom";
 
 
 export default function Navigation({ user }) {
@@ -30,8 +31,8 @@ export default function Navigation({ user }) {
         <React.Fragment>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', justifyContent: 'center'}}>
                 <Typography sx={{ minWidth: 100 }}>BookTracker</Typography>
-                <Button variant="text">Home</Button>
-                <Button variant="text">Add A Shelf</Button>
+                <Button variant="text"><Link to='/'>Home</Link></Button>
+                <Button variant="text"><Link to='/shelves'>Add A Shelf</Link></Button>
                 <Button variant="text">Browse</Button>
 
                 {/* Avatar circle -- first name of the username while logged in */}
@@ -103,7 +104,10 @@ export default function Navigation({ user }) {
                     <ListItemIcon>
                         <MenuBookIcon fontSize='small' />
                     </ListItemIcon>
+                    <Link to='/books'>
                     My Books
+                        
+                        </Link>
                 </MenuItem>
                 <Divider />
                 <MenuItem>

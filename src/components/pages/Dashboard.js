@@ -7,6 +7,7 @@ import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import ImageListItem from '@mui/material/ImageListItem';
+import Button from '@mui/material/Button';
 // import ListItemAvatar from '@mui/material/ListItemAvatar';
 // import Avatar from '@mui/material/Avatar';
 // import Typography from '@mui/material/Typography';
@@ -18,6 +19,7 @@ import ImageListItem from '@mui/material/ImageListItem';
 // import CardMedia from '@mui/material/CardMedia';
 // import Container from '@mui/material/Container';
 import API from '../../utils/API';
+import AddShelf from './AddShelf'
 
 
 const tempData = [
@@ -134,7 +136,7 @@ const tempData = [
 ]
 
 
-export default function Dashboard({ user }) {
+export default function Dashboard({ user, shelfDialog, handleCloseShelfDialog, handleShelfDialog }) {
 
     // use effect to perform api call on page load , change the shelves piece of state post use effect and use the state variable to render the dependent components?
 
@@ -148,7 +150,7 @@ export default function Dashboard({ user }) {
             {/* ***** ONCE DATA IS BEING PULLED VIA API SUCCESSFULLY - MAP OVER SHELF RESULTS. CREATE LIST ITEM COMPONENT FOR EACH SHELF IN RESULTS DATA & LIST ITEM TEXT FOR THE TITLE OF EACH SHELF */}
             {/* *** ONE IMAGE LIST ITEM IS CREATED FOR EACH BOOK INSIDE OF THE SHELF. JUST SET THE SRC TO THE IMAGE LINK FROM THE RESULTS */}
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                {tempData.map((shelf) => (
+                {tempData.slice(0, 3).map((shelf) => (
                     <React.Fragment>
                         <ListItem sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                             <ListItemText
@@ -292,6 +294,12 @@ export default function Dashboard({ user }) {
 
 
 
+            {/* <Button variant="outlined" onClick={handleShelfDialog}>
+                Add A Shelf
+            </Button>
+
+
+            {shelfDialog && <AddShelf shelfDialog={shelfDialog} handleCloseShelfDialog={handleCloseShelfDialog} />} */}
 
 
         </React.Fragment>
