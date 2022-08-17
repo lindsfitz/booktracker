@@ -1,0 +1,2 @@
+//  once logged in -- this is the homepage. Lets you view existing shelves/add new shelves and you can click one to view details about the shelf 
+// add book one time from this page and then can add it to as many shelves as you want 
