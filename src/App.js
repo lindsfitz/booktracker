@@ -30,7 +30,7 @@ function App() {
               <Route path="new" element={<NewBookForm />} /> */}
           </Route>
           <Route path="/shelves" element={<AllShelves />} />
-          <Route path="/shelf" element={<OneShelf />} />
+          <Route path="/shelf/:id" element={<OneShelf />} />
           {/* </Route> */}
           {/* </Route> */}
         </Routes>

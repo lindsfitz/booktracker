@@ -138,11 +138,27 @@ const tempData = [
 
 export default function Dashboard({ user, shelfDialog, handleCloseShelfDialog, handleShelfDialog }) {
 
-    // use effect to perform api call on page load , change the shelves piece of state post use effect and use the state variable to render the dependent components?
+    const [userShelves, setUserShelves] = useState([])
 
     const renderShelves = async () => {
-        const userShelves = await API.getShelves(user.id)
+        const shelves = await API.getShelves(1)
+
+        setUserShelves(shelves.data)
     }
+
+    // use effect to perform api call on page load , change the shelves piece of state post use effect and use the state variable to render the dependent components?
+
+    useEffect(()=>{
+        renderShelves()
+    },[])
+
+
+    useEffect(()=>{
+        console.log(userShelves)
+        
+    },[userShelves])
+
+   
 
     return (
         <React.Fragment>
@@ -150,7 +166,7 @@ export default function Dashboard({ user, shelfDialog, handleCloseShelfDialog, h
             {/* ***** ONCE DATA IS BEING PULLED VIA API SUCCESSFULLY - MAP OVER SHELF RESULTS. CREATE LIST ITEM COMPONENT FOR EACH SHELF IN RESULTS DATA & LIST ITEM TEXT FOR THE TITLE OF EACH SHELF */}
             {/* *** ONE IMAGE LIST ITEM IS CREATED FOR EACH BOOK INSIDE OF THE SHELF. JUST SET THE SRC TO THE IMAGE LINK FROM THE RESULTS */}
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                {tempData.slice(0, 3).map((shelf) => (
+                {userShelves.slice(0, 3).map((shelf) => (
                     <React.Fragment>
                         <ListItem sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                             <ListItemText

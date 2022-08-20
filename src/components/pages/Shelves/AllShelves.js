@@ -7,6 +7,7 @@ import ImageListItem from '@mui/material/ImageListItem';
 import Button from '@mui/material/Button';
 import { Link } from "react-router-dom";
 import AddShelf from '../AddShelf'
+import API from '../../../utils/API'
 
 
 const tempData = [
@@ -137,6 +138,28 @@ export default function AllShelves({ user }) {
 
 
 
+    const [userShelves, setUserShelves] = useState([])
+
+    const renderShelves = async () => {
+        const shelves = await API.getShelves(1)
+
+        setUserShelves(shelves.data)
+    }
+
+    // use effect to perform api call on page load , change the shelves piece of state post use effect and use the state variable to render the dependent components?
+
+    useEffect(()=>{
+        renderShelves()
+    },[])
+
+
+    useEffect(()=>{
+        console.log(userShelves)
+        
+    },[userShelves])
+
+
+
     return (
 
 
@@ -149,10 +172,10 @@ export default function AllShelves({ user }) {
                 Add A Shelf
             </Button>
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                {tempData.map((shelf) => (
+                {userShelves.map((shelf) => (
                     <React.Fragment>
                         <ListItem sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                            <Link to='/shelf'><ListItemText
+                            <Link to={`/shelf/${shelf.id}`}><ListItemText
                                 primary={`${shelf.name}`}
                                 sx={{ maxWidth: '10%' }}
                             /></Link>

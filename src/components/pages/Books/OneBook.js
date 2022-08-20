@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
+import API from '../../../utils/API'
 
 
 const tempData = {
