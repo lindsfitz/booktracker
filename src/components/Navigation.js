@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, NavLink } from "react-router-dom";
 import AppContext from '../AppContext';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -27,6 +27,16 @@ const Navigation = () => {
     const context = useContext(AppContext);
     let navigate = useNavigate();
 
+    let activeStyle = {
+        textDecoration: "underline",
+        cursor: 'default',
+        pointeEvents: 'none'
+    };
+
+    let inactiveStyle = {
+        textDecoration: 'none'
+    }
+
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -50,7 +60,6 @@ const Navigation = () => {
         context.setToken('');
         context.setUserData(null);
         navigate('/login')
-
     }
 
     return (
@@ -106,17 +115,17 @@ const Navigation = () => {
                             }}
                         >
 
-                            <MenuItem onClick={handleCloseNavMenu}>
+                            <MenuItem>
                                 <Typography textAlign="center">
                                     <Link to='/'>Home</Link>
                                 </Typography>
                             </MenuItem>
                             <MenuItem onClick={handleCloseNavMenu}>
                                 <Typography textAlign="center">
-                                    <Link to='/shelves'>Add A Shelf</Link>
+                                    <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
                                 </Typography>
                             </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
+                            <MenuItem>
                                 <Typography textAlign="center">
                                     <Link to='/shelves'>Browse</Link>
                                 </Typography>
@@ -143,10 +152,22 @@ const Navigation = () => {
                     >
                         BOOKTRACKER
                     </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        <Button variant="text"><Link to='/'>Home</Link></Button>
-                        <Button variant="text"><Link to='/shelves'>Add A Shelf</Link></Button>
-                        <Button variant="text"><Link to='/shelves'>Browse</Link></Button>
+                    <Box sx={{ color: 'white', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                        <Button variant="text">
+                            <NavLink to='/' style={({ isActive }) =>
+                                isActive ? activeStyle : inactiveStyle
+                            }>Home</NavLink>
+                        </Button>
+                        <Button variant="text">
+                            <NavLink to='/shelves' style={({ isActive }) =>
+                                isActive ? activeStyle : inactiveStyle
+                            }>Bookcase</NavLink>
+                        </Button>
+                        <Button variant="text">
+                            <NavLink to='/books' style={({ isActive }) =>
+                                isActive ? activeStyle : inactiveStyle
+                            }>Browse</NavLink>
+                        </Button>
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
@@ -182,6 +203,12 @@ const Navigation = () => {
                                     <PersonAdd fontSize="small" />
                                 </ListItemIcon>
                                 Friends
+                            </MenuItem>
+                            <MenuItem onClick={context.toggleShelfDialog}>
+                                <ListItemIcon>
+                                    <MenuBookIcon fontSize='small' />
+                                </ListItemIcon>
+                                New Shelf
                             </MenuItem>
                             <MenuItem>
                                 <ListItemIcon>

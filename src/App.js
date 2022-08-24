@@ -6,28 +6,35 @@ import {
 } from "react-router-dom";
 import AppContext from "./AppContext";
 import Navigation from "./components/Navigation";
-import Dashboard from "./components/pages/Dashboard";
-import AllBooks from "./components/pages/Books/AllBooks";
-import OneShelf from "./components/pages/Shelves/OneShelf";
-import AllShelves from "./components/pages/Shelves/AllShelves";
-import Login from './components/pages/Login';
+import Dashboard from "./pages/Dashboard";
+import AllBooks from "./pages/Books/AllBooks";
+import Shelf from "./pages/Shelf";
+import Bookcase from "./pages/Bookcase";
+import Login from './pages/Login';
 
 function App() {
 
   const [userData, setUserData] = useState(null)
   const [token, setToken] = useState(null)
+  // usestate for adding shelf dialog
+  const [shelfDialog, setshelfDialog] = useState(false);
+  const toggleShelfDialog = () => {
+    setshelfDialog(!shelfDialog)
+  }
 
+  // state variables being added to context
   const userSettings = {
     userData: userData,
     setUserData: setUserData,
     token:token,
-    setToken:setToken
+    setToken:setToken,
+    shelfDialog: shelfDialog,
+    toggleShelfDialog: toggleShelfDialog
   }
 
 
   return (
     <div className="App">
-      {/* <Dashboard /> */}
       <AppContext.Provider value={userSettings}>
         <BrowserRouter>
           {token && <Navigation />}
@@ -40,8 +47,8 @@ function App() {
               {/* <Route path=":bookId" element={<OneBook />} />
               <Route path="new" element={<NewBookForm />} /> */}
             </Route>
-            <Route path="/shelves" element={<AllShelves />} />
-            <Route path="/shelf/:id" element={<OneShelf />} />
+            <Route path="/shelves" element={<Bookcase />} />
+            <Route path="/shelf/:id" element={<Shelf />} />
             {/* </Route> */}
             {/* </Route> */}
           </Routes>

@@ -9,8 +9,7 @@ const API = {
         return axios.get(`${URL_PREFIX}/user/verify`,{headers:{
         "Authorization": `Bearer ${tkn}`
       }})
-    },
-    
+    },    
     login:(userData)=> {
         return axios.post(`${URL_PREFIX}/user/login`,userData)
     },

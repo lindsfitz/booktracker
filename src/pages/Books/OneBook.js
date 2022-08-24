@@ -1,30 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
+import AppContext from '../../AppContext';
+import API from '../../utils/API'
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
-import API from '../../../utils/API'
-
-
-const tempData = {
-    title: "House of Earth and Blood",
-    author: "Sarah J. Maas",
-    cover_img: "https://covers.openlibrary.org/b/olid/OL27924119M-M.jpg",
-    pages: 816,
-    edition_key: "OL35866018M"
-}
-
-const tempReviews = [
-    {
-        read: true,
-        date_started: "2022-03-22",
-        date_finished: "2022-03-23",
-        rating: 5,
-        review: "One of my favorite books of all time srsly",
-        format: "Kindle",
-        series: "Crescent City #1",
-        UserId: 1,
-        BookId: 5,
-    }
-]
+import tempData from '../../utils/tempData';
 
 // single book page - top section of the page has lots of details about the book (maybe one template for super detailed results from open library, one template for user added books w a bit less detail included)
 // bottom section includes any user reviews
@@ -32,7 +11,8 @@ const tempReviews = [
 // Maybe this bottom section is conditionally rendered? Aka if no review, render add review button; if review, render review; if button is clicked (or edit btn) render the review form? Not sure exactly what would be best here 
 // toggle for Read vs unread books goes here and the rating also goes here 
 
-export default function OneBook({ user }) {
+export default function OneBook() {
+    const context = useContext(AppContext);
 
 
     return (
