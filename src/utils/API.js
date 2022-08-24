@@ -5,6 +5,11 @@ const URL_PREFIX = "http://localhost:3005/api"
 const API = {
 
     // USER ROUTES 
+    verify: (tkn)=>{
+        return axios.get(`${URL_PREFIX}/user/verify`,{headers:{
+        "Authorization": `Bearer ${tkn}`
+      }})
+    },
     
     login:(userData)=> {
         return axios.post(`${URL_PREFIX}/user/login`,userData)

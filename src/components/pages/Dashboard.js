@@ -2,12 +2,13 @@
 // add book one time from this page and then can add it to as many shelves as you want 
 
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from "react-router-dom";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import ImageListItem from '@mui/material/ImageListItem';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 // import ListItemAvatar from '@mui/material/ListItemAvatar';
 // import Avatar from '@mui/material/Avatar';
 // import Typography from '@mui/material/Typography';
@@ -19,6 +20,7 @@ import Button from '@mui/material/Button';
 // import CardMedia from '@mui/material/CardMedia';
 // import Container from '@mui/material/Container';
 import API from '../../utils/API';
+import AppContext from '../../AppContext';
 import AddShelf from './AddShelf'
 
 
@@ -136,29 +138,52 @@ const tempData = [
 ]
 
 
-export default function Dashboard({ user, shelfDialog, handleCloseShelfDialog, handleShelfDialog }) {
+export default function Dashboard(props) {
+
+    const context = useContext(AppContext);
+    let navigate = useNavigate();
+
+    console.log(context.userData)
+
 
     const [userShelves, setUserShelves] = useState([])
 
     const renderShelves = async () => {
-        const shelves = await API.getShelves(1)
+        const shelves = await API.getShelves(context.userData.id)
 
         setUserShelves(shelves.data)
     }
 
-    // use effect to perform api call on page load , change the shelves piece of state post use effect and use the state variable to render the dependent components?
+    // on page load, check for token (aka logged in user) and render shelves if logged in. If no token (not logged in) or token can't be verified (user doesn't exist) then redirect to the login page
+    useEffect(() => {
+        const myToken = localStorage.getItem("token");
+        if (myToken) {
+            API.verify(myToken).then(async res => {
+                context.setToken(myToken)
+                context.setUserData({
+                    username: res.data.username,
+                    id: res.data.id
+                })
 
-    useEffect(()=>{
-        renderShelves()
-    },[])
+                renderShelves()
+            }).catch(err => {
+                console.log(err)
+                localStorage.removeItem("token");
+                navigate('/login')
+            })
+        }
+        if (!myToken) { 
+            navigate('/login') 
+        }
+    }, [])
 
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log(userShelves)
-        
-    },[userShelves])
 
-   
+    }, [userShelves])
+
+
 
     return (
         <React.Fragment>

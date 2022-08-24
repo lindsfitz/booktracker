@@ -1,129 +1,215 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from "react-router-dom";
+import AppContext from '../AppContext';
+import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
+import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import AdbIcon from '@mui/icons-material/Adb';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { Link } from "react-router-dom";
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Divider from '@mui/material/Divider';
 
 
-export default function Navigation({ user }) {
+const Navigation = () => {
+    const context = useContext(AppContext);
+    let navigate = useNavigate();
 
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
+    const [anchorElNav, setAnchorElNav] = useState(null);
+    const [anchorElUser, setAnchorElUser] = useState(null);
+
+    const handleOpenNavMenu = (event) => {
+        setAnchorElNav(event.currentTarget);
     };
-    const handleClose = () => {
-        setAnchorEl(null);
+    const handleOpenUserMenu = (event) => {
+        setAnchorElUser(event.currentTarget);
     };
+
+    const handleCloseNavMenu = () => {
+        setAnchorElNav(null);
+    };
+
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
+
+    const logout = () => {
+        localStorage.removeItem("token");
+        context.setToken('');
+        context.setUserData(null);
+        navigate('/login')
+
+    }
 
     return (
-        <React.Fragment>
-            <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', justifyContent: 'center'}}>
-                <Typography sx={{ minWidth: 100 }}>BookTracker</Typography>
-                <Button variant="text"><Link to='/'>Home</Link></Button>
-                <Button variant="text"><Link to='/shelves'>Add A Shelf</Link></Button>
-                <Button variant="text">Browse</Button>
+        <AppBar position="static">
+            <Container maxWidth="xl">
+                <Toolbar disableGutters>
+                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        component="a"
+                        href="/"
+                        sx={{
+                            mr: 2,
+                            display: { xs: 'none', md: 'flex' },
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        BOOKTRACKER
+                    </Typography>
 
-                {/* Avatar circle -- first name of the username while logged in */}
-                <IconButton
-                    onClick={handleClick}
-                    size="small"
-                    sx={{ ml: 2 }}
-                    aria-controls={open ? 'account-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                >
-                    <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
-                </IconButton>
-                {/* This avatar uses an image - so if the user has uploaded a profile photo we can make that their avatar */}
-                {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" /> */}
+                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                        <IconButton
+                            size="large"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleOpenNavMenu}
+                            color="inherit"
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorElNav}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                            }}
+                            open={Boolean(anchorElNav)}
+                            onClose={handleCloseNavMenu}
+                            sx={{
+                                display: { xs: 'block', md: 'none' },
+                            }}
+                        >
 
+                            <MenuItem onClick={handleCloseNavMenu}>
+                                <Typography textAlign="center">
+                                    <Link to='/'>Home</Link>
+                                </Typography>
+                            </MenuItem>
+                            <MenuItem onClick={handleCloseNavMenu}>
+                                <Typography textAlign="center">
+                                    <Link to='/shelves'>Add A Shelf</Link>
+                                </Typography>
+                            </MenuItem>
+                            <MenuItem onClick={handleCloseNavMenu}>
+                                <Typography textAlign="center">
+                                    <Link to='/shelves'>Browse</Link>
+                                </Typography>
+                            </MenuItem>
 
+                        </Menu>
+                    </Box>
+                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                    <Typography
+                        variant="h5"
+                        noWrap
+                        component="a"
+                        href=""
+                        sx={{
+                            mr: 2,
+                            display: { xs: 'flex', md: 'none' },
+                            flexGrow: 1,
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        BOOKTRACKER
+                    </Typography>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                        <Button variant="text"><Link to='/'>Home</Link></Button>
+                        <Button variant="text"><Link to='/shelves'>Add A Shelf</Link></Button>
+                        <Button variant="text"><Link to='/shelves'>Browse</Link></Button>
+                    </Box>
 
+                    <Box sx={{ flexGrow: 0 }}>
+                        <Tooltip title="Open settings">
+                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                <Avatar>{context.userData.username.charAt(0)}</Avatar>
+                            </IconButton>
+                        </Tooltip>
+                        <Menu
+                            sx={{ mt: '45px' }}
+                            id="menu-appbar"
+                            anchorEl={anchorElUser}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorElUser)}
+                            onClose={handleCloseUserMenu}
+                        >
+                            <MenuItem>
+                                <ListItemIcon>
+                                    <PersonIcon fontSize="small" />
+                                </ListItemIcon>
+                                Profile
+                            </MenuItem>
+                            <MenuItem>
+                                <ListItemIcon>
+                                    <PersonAdd fontSize="small" />
+                                </ListItemIcon>
+                                Friends
+                            </MenuItem>
+                            <MenuItem>
+                                <ListItemIcon>
+                                    <MenuBookIcon fontSize='small' />
+                                </ListItemIcon>
+                                <Link to='/books'>
+                                    My Books
 
-            </Box>
-            <Menu
-                anchorEl={anchorEl}
-                id="account-menu"
-                open={open}
-                onClose={handleClose}
-                onClick={handleClose}
-                PaperProps={{
-                    elevation: 0,
-                    sx: {
-                        overflow: 'visible',
-                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                        mt: 1.5,
-                        '& .MuiAvatar-root': {
-                            width: 32,
-                            height: 32,
-                            ml: -0.5,
-                            mr: 1,
-                        },
-                        '&:before': {
-                            content: '""',
-                            display: 'block',
-                            position: 'absolute',
-                            top: 0,
-                            right: 14,
-                            width: 10,
-                            height: 10,
-                            bgcolor: 'background.paper',
-                            transform: 'translateY(-50%) rotate(45deg)',
-                            zIndex: 0,
-                        },
-                    },
-                }}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            >
-                <MenuItem>
-                    <ListItemIcon>
-                        <PersonIcon fontSize="small" />
-                    </ListItemIcon>
-                    Profile
-                </MenuItem>
-                <MenuItem>
-                    <ListItemIcon>
-                        <PersonAdd fontSize="small" />
-                    </ListItemIcon>
-                    Friends
-                </MenuItem>
-                <MenuItem>
-                    <ListItemIcon>
-                        <MenuBookIcon fontSize='small' />
-                    </ListItemIcon>
-                    <Link to='/books'>
-                    My Books
-                        
-                        </Link>
-                </MenuItem>
-                <Divider />
-                <MenuItem>
-                    <ListItemIcon>
-                        <Settings fontSize="small" />
-                    </ListItemIcon>
-                    Settings
-                </MenuItem>
-                <MenuItem>
-                    <ListItemIcon>
-                        <Logout fontSize="small" />
-                    </ListItemIcon>
-                    Logout
-                </MenuItem>
-            </Menu>
-        </React.Fragment>
-
-    )
-}
+                                </Link>
+                            </MenuItem>
+                            <Divider />
+                            <MenuItem>
+                                <ListItemIcon>
+                                    <Settings fontSize="small" />
+                                </ListItemIcon>
+                                Settings
+                            </MenuItem>
+                            <MenuItem onClick={logout}>
+                                <ListItemIcon>
+                                    <Logout fontSize="small" />
+                                </ListItemIcon>
+                                Logout
+                            </MenuItem>
+                        </Menu>
+                    </Box>
+                </Toolbar>
+            </Container>
+        </AppBar>
+    );
+};
+export default Navigation;
