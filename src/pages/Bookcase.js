@@ -15,12 +15,12 @@ import AddShelf from './AddShelf'
 export default function Bookcase() {
     const context = useContext(AppContext);
 
-    const [userShelves, setUserShelves] = useState([])
+    // const [userShelves, setUserShelves] = useState([])
 
     const renderShelves = async () => {
         const shelves = await API.getShelves(1)
 
-        setUserShelves(shelves.data)
+        context.setUserShelves(shelves.data)
     }
 
     // use effect to perform api call on page load , change the shelves piece of state post use effect and use the state variable to render the dependent components?
@@ -30,10 +30,10 @@ export default function Bookcase() {
     },[])
 
 
-    useEffect(()=>{
-        console.log(userShelves)
+    // useEffect(()=>{
+    //     console.log(userShelves)
         
-    },[userShelves])
+    // },[userShelves])
 
 
 
@@ -49,7 +49,7 @@ export default function Bookcase() {
                 Add A Shelf
             </Button>
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                {userShelves.map((shelf) => (
+                {context.userShelves.map((shelf) => (
                     <React.Fragment>
                         <ListItem sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                             <Link to={`/shelf/${shelf.id}`}><ListItemText

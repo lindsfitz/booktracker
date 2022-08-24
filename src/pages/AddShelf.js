@@ -67,10 +67,12 @@ export default function AddShelf() {
             UserId: context.userData.id
         }
 
-        API.newShelf(newShelf).then(res => {
+        API.newShelf(newShelf).then(async res => {
             console.log(res)
+            const shelves = await API.getShelves(context.userData.id)
+            context.setUserShelves(shelves.data)
             context.toggleShelfDialog();
-            
+
         })
 
     }

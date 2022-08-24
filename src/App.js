@@ -16,6 +16,8 @@ function App() {
 
   const [userData, setUserData] = useState(null)
   const [token, setToken] = useState(null)
+  const [userShelves, setUserShelves] = useState([])
+  
   // usestate for adding shelf dialog
   const [shelfDialog, setshelfDialog] = useState(false);
   const toggleShelfDialog = () => {
@@ -28,6 +30,8 @@ function App() {
     setUserData: setUserData,
     token:token,
     setToken:setToken,
+    userShelves:userShelves,
+    setUserShelves: setUserShelves,
     shelfDialog: shelfDialog,
     toggleShelfDialog: toggleShelfDialog
   }

@@ -16,6 +16,12 @@ const API = {
     signup:(userData)=> {
         return axios.post(`${URL_PREFIX}/user/signup`,userData)
     },
+    updateUser:(userData)=> {
+        return axios.put(`${URL_PREFIX}/user/update`,userData)
+    },
+    deleteUser:(id)=>{
+        return axios.delete(`${URL_PREFIX}/user/delete/${id}`)
+    },
 
     // SHELF ROUTES
 
@@ -27,6 +33,12 @@ const API = {
     },
     newShelf:(shelfData)=> {
         return axios.post(`${URL_PREFIX}/shelf/new`,shelfData)
+    },
+    editShelf:(shelfData,id)=>{
+        return axios.put(`${URL_PREFIX}/shelf/update/${id}`,shelfData)
+    },
+    deleteShelf:(id) => {
+        return axios.delete(`${URL_PREFIX}/shelf/delete/${id}`)
     },
 
 
@@ -46,6 +58,12 @@ const API = {
     },
     newReview:(reviewData) => {
         return axios.post(`${URL_PREFIX}/review/new`,reviewData)
+    },
+    editReview:(reviewData,id)=>{
+        return axios.put(`${URL_PREFIX}/review/update/${id}`,reviewData)
+    },
+    deleteReview:(id)=> {
+        return axios.delete(`${URL_PREFIX}/review/delete/${id}`)
     }
 
 
