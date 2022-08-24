@@ -143,14 +143,11 @@ export default function Dashboard(props) {
     const context = useContext(AppContext);
     let navigate = useNavigate();
 
-    console.log(context.userData)
-
-
     const [userShelves, setUserShelves] = useState([])
+
 
     const renderShelves = async () => {
         const shelves = await API.getShelves(context.userData.id)
-
         setUserShelves(shelves.data)
     }
 
@@ -164,7 +161,6 @@ export default function Dashboard(props) {
                     username: res.data.username,
                     id: res.data.id
                 })
-
                 renderShelves()
             }).catch(err => {
                 console.log(err)
