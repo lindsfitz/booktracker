@@ -23,7 +23,7 @@ export default function AllBooks() {
                 {tempData.books.map((book) => (
 
                     <React.Fragment>
-                        <ListItem alignItems="flex-start">
+                        <ListItem alignItems="flex-start" key={book.title}>
 
                             <ImageListItem key={book.title}>
                                 <img

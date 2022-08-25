@@ -3,6 +3,8 @@ import AppContext from '../../AppContext';
 import API from '../../utils/API'
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import tempData from '../../utils/tempData';
 
 // single book page - top section of the page has lots of details about the book (maybe one template for super detailed results from open library, one template for user added books w a bit less detail included)

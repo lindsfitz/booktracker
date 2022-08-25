@@ -5,19 +5,21 @@ import {
   Route,
 } from "react-router-dom";
 import AppContext from "./AppContext";
+import Login from './pages/Login';
 import Navigation from "./components/Navigation";
 import Dashboard from "./pages/Dashboard";
-import AllBooks from "./pages/Books/AllBooks";
-import Shelf from "./pages/Shelf";
 import Bookcase from "./pages/Bookcase";
-import Login from './pages/Login';
+import Shelf from "./pages/Shelf";
+import Search from './pages/Search';
+import AllBooks from "./pages/Books/AllBooks";
+import OneBook from './pages/Books/OneBook';
 
 function App() {
 
   const [userData, setUserData] = useState(null)
   const [token, setToken] = useState(null)
   const [userShelves, setUserShelves] = useState([])
-  
+
   // usestate for adding shelf dialog
   const [shelfDialog, setshelfDialog] = useState(false);
   const toggleShelfDialog = () => {
@@ -28,9 +30,9 @@ function App() {
   const userSettings = {
     userData: userData,
     setUserData: setUserData,
-    token:token,
-    setToken:setToken,
-    userShelves:userShelves,
+    token: token,
+    setToken: setToken,
+    userShelves: userShelves,
     setUserShelves: setUserShelves,
     shelfDialog: shelfDialog,
     toggleShelfDialog: toggleShelfDialog
@@ -45,16 +47,12 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
-            {/* <Route path='home' element={<Dashboard />} /> */}
-            {/* <Route path="search" element={<Search />} /> */}
-            <Route path="/books" element={<AllBooks />}>
-              {/* <Route path=":bookId" element={<OneBook />} />
-              <Route path="new" element={<NewBookForm />} /> */}
-            </Route>
+            <Route path="/search" element={<Search />} />
+            <Route path="/books" element={<AllBooks />} />
+              <Route path="/book/:id" element={<OneBook />} />
+              {/* <Route path="new" element={<NewBookForm />} /> */}
             <Route path="/shelves" element={<Bookcase />} />
             <Route path="/shelf/:id" element={<Shelf />} />
-            {/* </Route> */}
-            {/* </Route> */}
           </Routes>
         </BrowserRouter>
       </AppContext.Provider>

@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const URL_PREFIX = "http://localhost:3005/api"
 
+
 const API = {
 
     // USER ROUTES 
@@ -64,10 +65,14 @@ const API = {
     },
     deleteReview:(id)=> {
         return axios.delete(`${URL_PREFIX}/review/delete/${id}`)
-    }
+    },
 
 
     // OPEN LIBRARY API 
+
+    getByTitle:(title)=>{
+        return axios.get(`http://openlibrary.org/search.json?title=${title}&limit=5&language=eng`)
+    }
 
 }
 

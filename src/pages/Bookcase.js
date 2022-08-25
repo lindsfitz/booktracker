@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Link } from "react-router-dom";
+import AddShelf from './AddShelf'
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import List from '@mui/material/List';
@@ -7,35 +9,37 @@ import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import ImageListItem from '@mui/material/ImageListItem';
 import Button from '@mui/material/Button';
-import { Link } from "react-router-dom";
-import AddShelf from './AddShelf'
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 
 
 export default function Bookcase() {
     const context = useContext(AppContext);
 
-    // const [userShelves, setUserShelves] = useState([])
+    const [open, setOpen] = useState(false);
 
-    const renderShelves = async () => {
-        const shelves = await API.getShelves(1)
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
 
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleDelete = async (e) => {
+        console.log(e.target.id)
+        const remove = await API.deleteShelf(e.target.id)
+        console.log(remove)
+        const shelves = await API.getShelves(context.userData.id)
         context.setUserShelves(shelves.data)
+        setOpen(false)
     }
 
     // use effect to perform api call on page load , change the shelves piece of state post use effect and use the state variable to render the dependent components?
-
-    useEffect(()=>{
-        renderShelves()
-    },[])
-
-
-    // useEffect(()=>{
-    //     console.log(userShelves)
-        
-    // },[userShelves])
-
-
 
     return (
 
@@ -51,7 +55,7 @@ export default function Bookcase() {
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 {context.userShelves.map((shelf) => (
                     <React.Fragment>
-                        <ListItem sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                        <ListItem key={shelf.name} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                             <Link to={`/shelf/${shelf.id}`}><ListItemText
                                 primary={`${shelf.name}`}
                                 sx={{ maxWidth: '10%' }}
@@ -70,9 +74,31 @@ export default function Bookcase() {
                                     </ImageListItem>
 
                                 ))}
+                                <Button id={shelf.id}>Edit</Button>
+                                <Button id={shelf.id} onClick={handleClickOpen}>Delete</Button>
                             </div>
                         </ListItem>
                         <Divider variant="inset" component="li" />
+                        <Dialog
+                            open={open}
+                            onClose={handleClose}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">
+                                {"Are you positive you want to delete this Shelf from your Bookcase?"}
+                            </DialogTitle>
+                            <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                    This action cannot be undone! 
+                                    Any book on this Shelf, and its associated reviews, will still be included on your All Books page. 
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose}>Cancel</Button>
+                                <Button id={shelf.id} onClick={handleDelete}>Delete</Button>
+                            </DialogActions>
+                        </Dialog>
                     </React.Fragment>
                 ))}
             </List>

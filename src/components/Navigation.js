@@ -117,17 +117,23 @@ const Navigation = () => {
 
                             <MenuItem>
                                 <Typography textAlign="center">
-                                    <Link to='/'>Home</Link>
+                                    <NavLink to='/' style={({ isActive }) =>
+                                        isActive ? activeStyle : inactiveStyle
+                                    }>Home</NavLink>
                                 </Typography>
                             </MenuItem>
                             <MenuItem onClick={handleCloseNavMenu}>
                                 <Typography textAlign="center">
-                                    <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
+                                <NavLink to='/shelves' style={({ isActive }) =>
+                                isActive ? activeStyle : inactiveStyle
+                            }>Bookcase</NavLink>
                                 </Typography>
                             </MenuItem>
                             <MenuItem>
                                 <Typography textAlign="center">
-                                    <Link to='/shelves'>Browse</Link>
+                                <NavLink to='/search' style={({ isActive }) =>
+                                isActive ? activeStyle : inactiveStyle
+                            }>Browse</NavLink>
                                 </Typography>
                             </MenuItem>
 
@@ -164,7 +170,7 @@ const Navigation = () => {
                             }>Bookcase</NavLink>
                         </Button>
                         <Button variant="text">
-                            <NavLink to='/books' style={({ isActive }) =>
+                            <NavLink to='/search' style={({ isActive }) =>
                                 isActive ? activeStyle : inactiveStyle
                             }>Browse</NavLink>
                         </Button>
