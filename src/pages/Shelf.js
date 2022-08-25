@@ -98,6 +98,8 @@ export default function Shelf() {
                                     }
                                 />
 
+                                <Button onClick={()=> {navigate(`/book/${book.id}`)}}>View More</Button>
+
 
                             </ListItem>
                             <Divider variant="inset" component="li" />
