@@ -51,6 +51,9 @@ const API = {
     newBook:(bookData) => {
         return axios.post(`${URL_PREFIX}/book/new`,bookData)
     },
+    addtoShelf:(shelfId,bookId) => {
+        return axios.post(`${URL_PREFIX}/book/addto/${shelfId}`,bookId)
+    },
 
     // REVIEW ROUTES
 

@@ -71,9 +71,22 @@ export default function ResultBook() {
         console.info(`Select a shelf to add to!`);
     };
 
-    const handleMenuItemClick = (e) => {
+    const handleMenuItemClick = async (e) => {
         console.info(`You clicked ${e.target.id}`)
         setOpen(false);
+        const newBook = {
+            title: bookData.book.title,
+            author: bookData.details.author_name[0],
+            cover_img:`https://covers.openlibrary.org/b/olid/${bookData.details.cover_edition_key}-M.jpg`,
+            pages: bookData.details.number_of_pages_median,
+            edition_key: bookData.book.key
+        }
+        const postBook = await API.newBook(newBook)
+        console.log(postBook)
+        const shelfAdd = await API.addtoShelf(e.target.id,{id: postBook.data.id})
+        console.log(shelfAdd)
+        console.log('wait did that actually work')
+
     };
 
     const handleToggle = () => {
