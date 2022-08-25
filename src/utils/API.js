@@ -70,8 +70,17 @@ const API = {
 
     // OPEN LIBRARY API 
 
-    getByTitle:(title)=>{
-        return axios.get(`http://openlibrary.org/search.json?title=${title}&limit=5&language=eng`)
+    searchByTitle:(title)=>{
+        return axios.get(`http://openlibrary.org/search.json?title=${title}&limit=10&language=eng`)
+    },
+    searchByAuthor:(author)=>{
+        return axios.get(`https://openlibrary.org/search/authors.json?q=${author}`)
+    },
+    searchBySubject:(subject)=>{
+        return axios.get(`http://openlibrary.org/subjects/${subject}.json?details=true`)
+    },
+    getBook:(key) => {
+        return axios.get(`https://openlibrary.org/works/${key}.json`)
     }
 
 }

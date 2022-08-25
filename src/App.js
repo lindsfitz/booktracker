@@ -12,7 +12,8 @@ import Bookcase from "./pages/Bookcase";
 import Shelf from "./pages/Shelf";
 import Search from './pages/Search';
 import AllBooks from "./pages/Books/AllBooks";
-import OneBook from './pages/Books/OneBook';
+import UserBook from './pages/Books/UserBook';
+import ResultBook from './pages/Books/ResultBook';
 
 function App() {
 
@@ -48,9 +49,10 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/search" element={<Search />} />
+            <Route path="works/:id" element={<ResultBook />} />
             <Route path="/books" element={<AllBooks />} />
-              <Route path="/book/:id" element={<OneBook />} />
-              {/* <Route path="new" element={<NewBookForm />} /> */}
+            <Route path="/book/:id" element={<UserBook />} />
+            {/* <Route path="new" element={<NewBookForm />} /> */}
             <Route path="/shelves" element={<Bookcase />} />
             <Route path="/shelf/:id" element={<Shelf />} />
           </Routes>

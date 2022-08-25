@@ -12,7 +12,6 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import tempData from '../../utils/tempData';
 
 // single book page - top section of the page has lots of details about the book (maybe one template for super detailed results from open library, one template for user added books w a bit less detail included)
 // bottom section includes any user reviews
@@ -20,7 +19,7 @@ import tempData from '../../utils/tempData';
 // Maybe this bottom section is conditionally rendered? Aka if no review, render add review button; if review, render review; if button is clicked (or edit btn) render the review form? Not sure exactly what would be best here 
 // toggle for Read vs unread books goes here and the rating also goes here 
 
-export default function OneBook() {
+export default function UserBook() {
     const context = useContext(AppContext);
     const params = useParams();
 

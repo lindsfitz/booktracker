@@ -124,16 +124,16 @@ const Navigation = () => {
                             </MenuItem>
                             <MenuItem onClick={handleCloseNavMenu}>
                                 <Typography textAlign="center">
-                                <NavLink to='/shelves' style={({ isActive }) =>
-                                isActive ? activeStyle : inactiveStyle
-                            }>Bookcase</NavLink>
+                                    <NavLink to='/shelves' style={({ isActive }) =>
+                                        isActive ? activeStyle : inactiveStyle
+                                    }>Bookcase</NavLink>
                                 </Typography>
                             </MenuItem>
                             <MenuItem>
                                 <Typography textAlign="center">
-                                <NavLink to='/search' style={({ isActive }) =>
-                                isActive ? activeStyle : inactiveStyle
-                            }>Browse</NavLink>
+                                    <NavLink to='/search' style={({ isActive }) =>
+                                        isActive ? activeStyle : inactiveStyle
+                                    }>Browse</NavLink>
                                 </Typography>
                             </MenuItem>
 
