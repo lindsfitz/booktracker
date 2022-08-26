@@ -60,10 +60,12 @@ export default function AddShelf() {
         e.preventDefault();
         console.log('submitted')
         const data = new FormData(e.currentTarget)
+        let now = new Date()
 
         const newShelf = {
             name: data.get('name'),
             description: data.get('description'),
+            last_update: now,
             UserId: context.userData.id
         }
 

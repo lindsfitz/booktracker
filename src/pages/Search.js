@@ -37,12 +37,18 @@ export default function Search() {
     }
 
     const search = async () => {
-        const books = await API.searchByTitle(searchTerm)
-        console.log(books)
+        API.searchByTitle(searchTerm).then(books => {
+            setSearchResults(books.data.docs)
+            console.log(books)
+        }).catch(err => {
+            console.log(err)
+        })
+        // const books = await API.searchByTitle(searchTerm)
+        // console.log(books)
         // console.log(context.userShelves)
         setShelves([...context.userShelves])
         console.log(shelves)
-        setSearchResults(books.data.docs)
+        // setSearchResults(books.data.docs)
     }
 
     //   useEffect(()=>{
@@ -107,14 +113,18 @@ export default function Search() {
                                     <MenuItem value={20}>TBR</MenuItem>
                                     <MenuItem value={30}>DNF</MenuItem> */}
                                     </Select>
-                                    <Button onClick={()=> {navigate(`${book.key}`)}}>VIEW DETAILS</Button>
+                                    <Button onClick={() => { navigate(`${book.key}`) }}>VIEW DETAILS</Button>
                                 </FormControl>
 
                             }
                         >
                             <img src={`https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-M.jpg`} />
-                            <ListItemText primary={book.title} secondary={book.author_name[0]} />
-                        </ListItem>))}
+                            {
+                                book.author_name[0] &&
+                                <ListItemText primary={book.title} secondary={book.author_name[0]} />
+                            }
+                            </ListItem>
+                        ))}
                 </List>
 
             </Container>}

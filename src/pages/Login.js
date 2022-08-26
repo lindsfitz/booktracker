@@ -69,6 +69,7 @@ export default function Login() {
         const newUser = {
             email: data.get('signupEmail'),
             password: data.get('signupPassword'),
+            first_name: data.get('signupName'),
             username: data.get('username')
         };
         API.signup(newUser).then(res => {
@@ -77,7 +78,8 @@ export default function Login() {
                 localStorage.setItem("token", res.data.token)
                 context.setUserData({
                     id: res.data.user.id,
-                    username: res.data.user.username
+                    username: res.data.user.username,
+                    name: res.data.user.first_name
                 })
                 context.setToken(res.data.token)
                 navigate('/');
@@ -168,17 +170,6 @@ export default function Login() {
                         </Typography>
                         <Box component="form" noValidate onSubmit={handleSignup} sx={{ mt: 3 }}>
                             <Grid container spacing={2}>
-                                {/* <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        autoComplete="given-name"
-                                        name="signupFirst"
-                                        required
-                                        fullWidth
-                                        id="signupFirst"
-                                        label="First Name"
-                                        autoFocus
-                                    />
-                                </Grid> */}
                                 <Grid item xs={12}>
                                     <TextField
                                         required
@@ -189,9 +180,19 @@ export default function Login() {
                                         autoComplete="email"
                                     />
                                 </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        autoComplete="given-name"
+                                        name="signupName"
+                                        required
+                                        fullWidth
+                                        id="signupFirst"
+                                        label="First Name"
+                                        autoFocus
+                                    />
+                                </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        required
                                         fullWidth
                                         id="username"
                                         label="Username"

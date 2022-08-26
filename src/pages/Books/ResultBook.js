@@ -62,10 +62,11 @@ export default function ResultBook() {
     const [open, setOpen] = useState(false);
     const anchorRef = React.useRef(null);
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const [options, setOptions] = useState({
+    const [options, setOptions] = useState([{
         name: 'Add A Shelf First!',
         id: 0
-    })
+    }])
+    const [description, setDescription] = useState('')
 
     const handleClick = (e) => {
         console.info(`Select a shelf to add to!`);
@@ -77,8 +78,11 @@ export default function ResultBook() {
         const newBook = {
             title: bookData.book.title,
             author: bookData.details.author_name[0],
+            author_key: bookData.details.author_key[0],
+            description:description,
             cover_img:`https://covers.openlibrary.org/b/olid/${bookData.details.cover_edition_key}-M.jpg`,
             pages: bookData.details.number_of_pages_median,
+            published:bookData.details.first_publish_year,
             edition_key: bookData.book.key
         }
         const postBook = await API.newBook(newBook)
@@ -114,6 +118,11 @@ export default function ResultBook() {
             book: book.data,
             details: details.data.docs[0]
         })
+        if (book.data.description.value){
+            setDescription(book.data.description.value)
+        } else {
+            setDescription(book.data.description)
+        }
     }
 
     const shelfInfo = () => {
@@ -218,7 +227,7 @@ export default function ResultBook() {
                                     </Box>
                                     <Box>
                                         <Typography variant='body1'>
-                                            {bookData.book.description}
+                                            {description}
                                         </Typography>
                                     </Box>
                                 </Box>
