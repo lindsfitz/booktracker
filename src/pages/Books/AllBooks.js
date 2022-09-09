@@ -15,24 +15,41 @@ import tempData from '../../utils/tempData';
 
 export default function AllBooks() {
     const context = useContext(AppContext);
+
+    const [allBooks, setAllBooks] = useState(null)
+
+    const getBooks = async () => {
+        const books = await API.allUserBooks(context.userData.id)
+        setAllBooks(books.data)
+    }
+
+    useEffect(() => {
+        getBooks()
+        console.log(allBooks)
+    }, [])
+
+
     return (
         <React.Fragment>
 
-            <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+            {allBooks && <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
 
-                {tempData.books.map((book) => (
+                {allBooks.map((book) => (
 
                     <React.Fragment>
-                        <ListItem alignItems="flex-start" key={book.title}>
+                        <ListItem alignItems="flex-start" key={`${book.title}`}>
+                            <List>
 
-                            <ImageListItem key={book.title}>
-                                <img
-                                    src={`${book.cover_img}`}
-                                    srcSet={`${book.cover_img}`}
-                                    alt={`${book.title}`}
-                                    loading="lazy"
-                                />
-                            </ImageListItem>
+                                <ImageListItem key={book.title}>
+                                    <img
+                                        src={`${book.cover_img}`}
+                                        srcSet={`${book.cover_img}`}
+                                        alt={`${book.title}`}
+                                        loading="lazy"
+                                    />
+                                </ImageListItem>
+                            </List>
+
 
                             <ListItemText
                                 primary={book.title}
@@ -59,7 +76,7 @@ export default function AllBooks() {
 
 
 
-            </List>
+            </List>}
 
 
 

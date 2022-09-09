@@ -11,7 +11,7 @@ import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import ImageListItem from '@mui/material/ImageListItem';
-import {Typography, Box} from '@mui/material';
+import {Typography, Box, Rating} from '@mui/material';
 
 
 
@@ -83,28 +83,28 @@ export default function Dashboard(props) {
                     <Typography variant='h6'>All-Time</Typography>
                     <Typography variant='subtitle1'>Total Books Read: {userStats.totalBooks}</Typography>
                     <Typography variant='subtitle1'>Total Pages Read: {userStats.totalPages}</Typography>
-                    <Typography variant='subtitle1'>Average Rating: {userStats.avgRating}</Typography>
+                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={userStats.avgRating} precision={0.5} readOnly /></Typography>
                 </Box>
                 {/* This Year's Stats */}
                 <Box sx={{width:'30%', margin:'10px', padding:'5px'}}>
                     <Typography variant='h6'>So Far in {thisYear}</Typography>
                     <Typography variant='subtitle1'>Total Books Read: {userStats.yearlyBooks}</Typography>
                     <Typography variant='subtitle1'>Total Pages Read: {userStats.yearlyPages}</Typography>
-                    <Typography variant='subtitle1'>Average Rating: {userStats.yearlyRating}</Typography>
+                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={userStats.yearlyRating} precision={0.5} readOnly /></Typography>
                 </Box>
                 {/* This MONTH's Stats */}
                 <Box sx={{width:'30%', margin:'10px', padding:'5px'}}>
                     <Typography variant='h6'>So Far in {thisMonth}</Typography>
                     <Typography variant='subtitle1'>Total Books Read: {userStats.monthlyBooks}</Typography>
                     <Typography variant='subtitle1'>Total Pages Read: {userStats.monthlyPages}</Typography>
-                    <Typography variant='subtitle1'>Average Rating: {userStats.monthlyRating}</Typography>
+                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={userStats.monthlyRating} precision={0.5} readOnly /></Typography>
                 </Box>
             </div>
             <div id='shelves'>
                 <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                     {context.userShelves.slice(0, 3).map((shelf) => (
                         <React.Fragment>
-                            <ListItem sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                            <ListItem key={`${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                                 <ListItemText
                                     primary={`${shelf.name}`}
                                     sx={{ maxWidth: '10%' }}

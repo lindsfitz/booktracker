@@ -109,6 +109,23 @@ const API = {
     },
     getBook:(key) => {
         return axios.get(`https://openlibrary.org/works/${key}.json`)
+    },
+
+
+    // GOOGLE BOOKS API 
+
+    gbByTitle:(title)=>{
+        return axios.get(`https://www.googleapis.com/books/v1/volumes?q="${title}"+intitle&orderBy=relevance&printType=books&projection=lite&maxResults=20`)
+    },
+
+    gbByAuthor:(author)=> {
+        return axios.get(`https://www.googleapis.com/books/v1/volumes?q="${author}"+inauthor&orderBy=relevance&printType=books&projection=lite`)
+    },
+    gbBySubject:(subject)=>{
+        return axios.get(`https://www.googleapis.com/books/v1/volumes?q="${subject}"+subject&orderBy=relevance&printType=books&projection=lite`)
+    },
+    gbOneBook:(id)=>{
+        return axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`)
     }
 
 }

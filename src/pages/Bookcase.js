@@ -55,7 +55,7 @@ export default function Bookcase() {
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 {context.userShelves.map((shelf) => (
                     <React.Fragment>
-                        <ListItem key={shelf.name} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                        <ListItem key={`${shelf.name}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                             <Link to={`/shelf/${shelf.id}`}><ListItemText
                                 primary={`${shelf.name}`}
                                 sx={{ maxWidth: '10%' }}

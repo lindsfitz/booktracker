@@ -71,7 +71,7 @@ export default function Shelf() {
                     {shelf.Books.map((book) => (
 
                         <React.Fragment>
-                            <ListItem key={book.title} alignItems="flex-start">
+                            <ListItem key={`${book.title}`} alignItems="flex-start">
 
                                 <ImageListItem key={book.title}>
                                     <img

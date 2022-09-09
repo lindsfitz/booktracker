@@ -70,7 +70,7 @@ export default function UserBook() {
                     </CardContent>
                 </Card>
                 {reviewData.map((review) => (
-                    <Paper elevation={3}>
+                    <Paper key={`${review.id}`} elevation={3}>
                         <Box>
                             <Typography variant="body2" color="text.secondary">
                                 {review.date_started}

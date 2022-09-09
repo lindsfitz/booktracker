@@ -39,9 +39,12 @@ export default function Search() {
     const search = async () => {
         API.searchByTitle(searchTerm).then(books => {
             setSearchResults(books.data.docs)
-            console.log(books)
+            // console.log(books)
         }).catch(err => {
             console.log(err)
+        })
+        API.gbByTitle(searchTerm).then(books => {
+            console.log(books)
         })
         // const books = await API.searchByTitle(searchTerm)
         // console.log(books)
@@ -88,7 +91,7 @@ export default function Search() {
             {searchResults && <Container>
                 <List>
                     {searchResults.map((book) => (
-                        <ListItem key={book.cover_edition_key} id={book.cover_edition_key}
+                        <ListItem key={`${book.cover_edition_key}`} id={book.cover_edition_key}
                             secondaryAction={
                                 <FormControl edge="end" variant="standard" sx={{ m: 1, minWidth: 120 }}>
                                     <InputLabel id="demo-simple-select-standard-label">Add to List</InputLabel>
@@ -102,10 +105,10 @@ export default function Search() {
                                         <MenuItem value="">
                                             <em>None</em>
                                         </MenuItem>
-                                        {shelves.map((shelf) => {
+                                        {shelves.map((shelf) => (
                                             <MenuItem key={shelf.id} value={shelf.id}>{shelf.name}
                                             </MenuItem>
-                                        })}
+                                        ))}
                                         {/* <MenuItem value="">
                                         <em>None</em>
                                     </MenuItem>
@@ -118,13 +121,13 @@ export default function Search() {
 
                             }
                         >
-                            <img src={`https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-M.jpg`} />
+                            <img src={`https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-M.jpg`} alt={`${book.title}-cover`} />
                             {
                                 book.author_name[0] &&
                                 <ListItemText primary={book.title} secondary={book.author_name[0]} />
                             }
-                            </ListItem>
-                        ))}
+                        </ListItem>
+                    ))}
                 </List>
 
             </Container>}
