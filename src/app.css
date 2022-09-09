@@ -1,0 +1,52 @@
+:root {
+    --sage:#9da283;
+    --other-sage:#939876;
+    --muted-blue:#637086;
+    --dark-blue:#3d4b64;
+    /* --tan:#f7eac2; */
+    /* --tan:#f7e7cf; */
+    /* --tan:#f7f1e2; */
+    --blush:#c7a298;
+    --beige:#e5c7ad;
+    --tan:#fff7ed;
+    --khaki:#a58363;
+    --emerald: #2c3832;
+    --olive:#525031;
+    --med-brown: #7a6659;
+    --deep-brown: #443932;
+}
+
+body {
+    background-color: var(--tan);
+}
+
+.App, #root {
+    width:100%;
+    height: 100%;
+}
+
+#nav {
+    background-color: var(--sage);
+}
+
+/* DASHBOARD ID STYLING */
+
+#stats {
+    border: 1px solid var(--emerald);
+    border-radius: 10px;
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width:75%;
+    margin:10px auto 10px auto;
+    padding:10px;
+    text-align: center;
+}
+
+#shelves {
+    border: 1px solid var(--olive);
+    border-radius: 10px;
+    margin:5px;
+    padding:10px;
+}

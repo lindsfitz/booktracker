@@ -14,6 +14,7 @@ import Search from './pages/Search';
 import AllBooks from "./pages/Books/AllBooks";
 import UserBook from './pages/Books/UserBook';
 import ResultBook from './pages/Books/ResultBook';
+import './app.css'
 
 function App() {
 

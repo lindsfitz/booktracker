@@ -54,6 +54,15 @@ const API = {
     addtoShelf:(shelfId,bookId) => {
         return axios.post(`${URL_PREFIX}/book/addto/${shelfId}`,bookId)
     },
+    removefromShelf:(shelfId,bookId) => {
+        return axios.delete(`${URL_PREFIX}/book/remove/${shelfId}/${bookId}`)
+    },
+    allUserBooks:(id)=>{
+        return axios.get(`${URL_PREFIX}/book/user/${id}`)
+    },
+    allReadBooks:(id)=>{
+        return axios.get(`${URL_PREFIX}/book/read/${id}`)
+    },
 
     // REVIEW ROUTES
 
@@ -68,6 +77,22 @@ const API = {
     },
     deleteReview:(id)=> {
         return axios.delete(`${URL_PREFIX}/review/delete/${id}`)
+    },
+
+
+    // STATS ROUTES 
+
+    allReadStats:(id)=> {
+        return axios.get(`${URL_PREFIX}/stats/read/${id}`)
+    },
+    allShelfStats:(id)=> {
+        return axios.get(`${URL_PREFIX}/stats/shelves/${id}`)
+    },
+    yearlyStats:(id)=> {
+        return axios.get(`${URL_PREFIX}/stats/year/${id}`)
+    },
+    monthlyStats:(id)=> {
+        return axios.get(`${URL_PREFIX}/stats/month/${id}`)
     },
 
 

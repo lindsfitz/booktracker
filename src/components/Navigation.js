@@ -30,11 +30,13 @@ const Navigation = () => {
     let activeStyle = {
         textDecoration: "underline",
         cursor: 'default',
-        pointeEvents: 'none'
+        pointeEvents: 'none',
+        color:'#637086'
     };
 
     let inactiveStyle = {
-        textDecoration: 'none'
+        textDecoration: 'none',
+        color:'#637086'
     }
 
     const [anchorElNav, setAnchorElNav] = useState(null);
@@ -63,7 +65,7 @@ const Navigation = () => {
     }
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" id='nav'>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -113,6 +115,7 @@ const Navigation = () => {
                             sx={{
                                 display: { xs: 'block', md: 'none' },
                             }}
+                            
                         >
 
                             <MenuItem>
