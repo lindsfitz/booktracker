@@ -25,7 +25,7 @@ export default function AllBooks() {
 
     useEffect(() => {
         getBooks()
-        console.log(allBooks)
+        // console.log(allBooks)
     }, [])
 
 

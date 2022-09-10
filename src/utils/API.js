@@ -88,11 +88,11 @@ const API = {
     allShelfStats:(id)=> {
         return axios.get(`${URL_PREFIX}/stats/shelves/${id}`)
     },
-    yearlyStats:(id)=> {
-        return axios.get(`${URL_PREFIX}/stats/year/${id}`)
+    yearlyStats:(year,id)=> {
+        return axios.get(`${URL_PREFIX}/stats/year/${year}/${id}`)
     },
-    monthlyStats:(id)=> {
-        return axios.get(`${URL_PREFIX}/stats/month/${id}`)
+    monthlyStats:(month,id)=> {
+        return axios.get(`${URL_PREFIX}/stats/month/${month}/${id}`)
     },
 
 
