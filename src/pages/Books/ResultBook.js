@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AppContext from '../../AppContext';
 import API from '../../utils/API';
 import { Container, Paper, Box, Typography, Stack, Chip, Divider, Button, ButtonGroup, ClickAwayListener, Grow, Popper, MenuItem, MenuList, Grid } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import AddReview from './AddReview';
 
 // const options = ['Add to List'];
 
@@ -13,11 +14,12 @@ export default function ResultBook() {
     const params = useParams();
 
     const [bookData, setBookData] = useState(null)
+    const [reviewDiv, setReviewDiv] = useState(false)
 
     // functions/state variables for split btn to add book to list 
     ////////////////////////////////////////////////////////////////////////
     const [open, setOpen] = useState(false);
-    const anchorRef = React.useRef(null);
+    const anchorRef = useRef(null);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [options, setOptions] = useState([{
         name: 'Add A Shelf First!',
@@ -25,26 +27,41 @@ export default function ResultBook() {
     }])
     const [description, setDescription] = useState('')
 
-    const handleClick = (e) => {
-        console.info(`Select a shelf to add to!`);
-    };
-
-    const handleMenuItemClick = async (e) => {
-        console.info(`You clicked ${e.target.id}`)
-        setOpen(false);
+    const bookCheck = async () => {
         const newBook = {
             title: bookData.book.title,
             author: bookData.details.author_name[0],
             author_key: bookData.details.author_key[0],
-            description:description,
-            cover_img:`https://covers.openlibrary.org/b/olid/${bookData.details.cover_edition_key}-M.jpg`,
+            description: description,
+            cover_img: `https://covers.openlibrary.org/b/olid/${bookData.details.cover_edition_key}-M.jpg`,
             pages: bookData.details.number_of_pages_median,
-            published:bookData.details.first_publish_year,
+            published: bookData.details.first_publish_year,
             edition_key: bookData.book.key
         }
         const postBook = await API.newBook(newBook)
-        console.log(postBook)
-        const shelfAdd = await API.addtoShelf(e.target.id,{id: postBook.data.id})
+
+        return postBook
+    }
+
+    const openShelfMenu = (e) => {
+        console.info(`Select a shelf to add to!`);
+    };
+
+    const handleShelfAdd = async (e) => {
+        console.info(`You clicked ${e.target.id}`)
+        setOpen(false);
+        // const newBook = {
+        //     title: bookData.book.title,
+        //     author: bookData.details.author_name[0],
+        //     author_key: bookData.details.author_key[0],
+        //     description: description,
+        //     cover_img: `https://covers.openlibrary.org/b/olid/${bookData.details.cover_edition_key}-M.jpg`,
+        //     pages: bookData.details.number_of_pages_median,
+        //     published: bookData.details.first_publish_year,
+        //     edition_key: bookData.book.key
+        // }
+        const postBook = await bookCheck()
+        const shelfAdd = await API.addtoShelf(e.target.id, { id: postBook.data.id })
         console.log(shelfAdd)
         console.log('wait did that actually work')
 
@@ -54,13 +71,34 @@ export default function ResultBook() {
         setOpen((prevOpen) => !prevOpen);
     };
 
-    const handleClose = (event) => {
+    const closeShelfMenu = (event) => {
         if (anchorRef.current && anchorRef.current.contains(event.target)) {
             return;
         }
 
         setOpen(false);
     };
+
+    const addCurrentlyReading = (e) => {
+        // post request to add this book to the currently reading table 
+    }
+
+    const markRead = async () => {
+        const book = await bookCheck()
+        // post request to add review but just setting read to true
+        const reviewData = {
+            read:true,
+            UserId:context.userData.id,
+            BookId:book.data.id
+        }
+       const reviewPost = await API.newReview(reviewData)
+       console.log(reviewPost)
+    }
+
+    const showReviewForm = () => {
+        // post request to add review but adding a full big boy review aka clicking this shows the add review div
+        setReviewDiv(!reviewDiv)
+    }
 
 
     // ///////////////////////////////////////////////
@@ -75,7 +113,7 @@ export default function ResultBook() {
             book: book.data,
             details: details.data.docs[0]
         })
-        if (book.data.description.value){
+        if (book.data.description.value) {
             setDescription(book.data.description.value)
         } else {
             setDescription(book.data.description)
@@ -98,8 +136,8 @@ export default function ResultBook() {
 
     return (
         <React.Fragment>
-            <Container sx={{mt:20}}>
-            {bookData &&
+            <Container sx={{ mt: 20 }}>
+                {bookData &&
                     <Paper elevation={3}>
                         <Grid container spacing={2}>
                             <Grid item xs={4}>
@@ -111,9 +149,11 @@ export default function ResultBook() {
                                         orientation="vertical"
                                         aria-label="vertical outlined button group"
                                     >
-                                        <Button>Add A Review</Button>
+                                        <Button>Currently Reading</Button>
+                                        <Button onClick={markRead}>Mark As Read</Button>
+                                        <Button onClick={showReviewForm}>Add New Review</Button>
                                         <ButtonGroup variant='contained' ref={anchorRef} aria-label="split button">
-                                            <Button onClick={handleClick}>Add to Shelf</Button>
+                                            <Button onClick={openShelfMenu}>Add to Shelf</Button>
                                             <Button
                                                 size="small"
                                                 aria-controls={open ? 'split-button-menu' : undefined}
@@ -144,7 +184,7 @@ export default function ResultBook() {
                                                     }}
                                                 >
                                                     <Paper>
-                                                        <ClickAwayListener onClickAway={handleClose}>
+                                                        <ClickAwayListener onClickAway={closeShelfMenu}>
                                                             <MenuList id="split-button-menu" autoFocusItem>
                                                                 {options.map((option, index) => (
                                                                     <MenuItem
@@ -152,7 +192,7 @@ export default function ResultBook() {
                                                                         id={option.id}
                                                                         // disabled={index === 2}
                                                                         // selected={index === selectedIndex}
-                                                                        onClick={(event) => handleMenuItemClick(event)}
+                                                                        onClick={(event) => handleShelfAdd(event)}
                                                                     >
                                                                         {option.name}
                                                                     </MenuItem>
@@ -167,7 +207,7 @@ export default function ResultBook() {
                                 </Box>
                             </Grid>
                             <Grid item xs={8}>
-                                <Box style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
+                                <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                     <Box>
                                         <Typography variant='h3' gutterBottom>
                                             {bookData.book.title}
@@ -191,8 +231,14 @@ export default function ResultBook() {
                             </Grid>
                         </Grid>
                     </Paper>
-            }
-                </Container>
+                }
+
+                {reviewDiv && <div>
+                    <AddReview />
+                    <Button onClick={showReviewForm}>Cancel</Button>
+                </div>
+                }
+            </Container>
 
         </React.Fragment>
     )

@@ -95,7 +95,7 @@ const API = {
         return axios.get(`${URL_PREFIX}/stats/month/${month}/${id}`)
     },
     allStats:(id,year,month) => {
-        return axios.get(`${URL_PREFIX}/stats/allstats/${id}/${year}/${month}`)
+        return axios.get(`${URL_PREFIX}/stats/${id}/${year}/${month}`)
     },
 
 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AppContext from '../../AppContext';
 import API from '../../utils/API'
-import { Card, Button, FormControlLabel, Rating, Stack, Switch, CardContent, CardMedia, Typography, Box, Paper, Divider } from '@mui/material';
+import { Card, Button, Rating, CardContent, CardMedia, Typography, Box, Paper, Divider } from '@mui/material';
 import AddReview from './AddReview';
 
 
@@ -20,14 +20,19 @@ export default function UserBook() {
     const [reviewData, setReviewData] = useState([])
     const [reviewForm, setReviewForm] = useState(false)
 
+
     const bookInfo = async () => {
         const book = await API.getOneBook(params.id);
         // console.log(book)
         setBookData(book.data)
         console.log(bookData)
+    }
+    
+    const reviewInfo = async () => {
         const review = await API.getOneReview(context.userData.id, params.id)
         // console.log(review)
         setReviewData(review.data)
+
     }
 
     const toggleReviewForm = () => {
@@ -36,6 +41,7 @@ export default function UserBook() {
 
     useEffect(() => {
         bookInfo()
+        reviewInfo()
     }, [])
 
 
@@ -72,7 +78,7 @@ export default function UserBook() {
                     <Button onClick={toggleReviewForm}>Add A New Review</Button>
                 </div>}
                 {reviewForm && <div>
-                    <AddReview />
+                    <AddReview reviewInfo={reviewInfo} toggleReviewForm={toggleReviewForm}/>
                     <Button onClick={toggleReviewForm}>Cancel</Button>
                 </div>
                 }

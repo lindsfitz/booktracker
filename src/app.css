@@ -31,9 +31,26 @@ body {
 
 /* DASHBOARD ID STYLING */
 
+#dash {
+    display:flex;
+    flex-direction: row-reverse;
+}
+
+#right-column {
+    width:40%;
+    margin:10px auto 10px auto;
+    padding:10px;
+    display:flex;
+    flex-direction:column;
+}
+#left-column {
+    width: 60%;
+    border-right: 1px solid var(--muted-blue)
+}
+
 #stats {
-    border: 1px solid var(--emerald);
-    border-radius: 10px;
+    /* border: 1px solid var(--emerald); */
+    border-bottom:1px solid var(--muted-blue);
     display:flex;
     flex-direction: row;
     justify-content: center;
@@ -45,8 +62,9 @@ body {
 }
 
 #shelves {
-    border: 1px solid var(--olive);
-    border-radius: 10px;
+    /* border: 1px solid var(--olive); */
+    /* border-bottom: 1px solid var(--muted-blue); */
+    /* border-radius: 10px;  */
     margin:5px;
     padding:10px;
 }
