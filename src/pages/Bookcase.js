@@ -3,17 +3,7 @@ import { Link } from "react-router-dom";
 import AddShelf from './AddShelf'
 import API from '../utils/API';
 import AppContext from '../AppContext';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
-import ImageListItem from '@mui/material/ImageListItem';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import { List, ListItem, Divider, ListItemText, ImageListItem, Button, Dialog, DialogActions, DialogContent,DialogContentText, DialogTitle } from '@mui/material/';
 
 
 

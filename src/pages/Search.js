@@ -3,17 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Container from '@mui/material/Container'
+import { Box, TextField, InputLabel, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container } from '@mui/material';
 
 export default function Search() {
     const context = useContext(AppContext);

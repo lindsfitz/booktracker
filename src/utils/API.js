@@ -94,6 +94,9 @@ const API = {
     monthlyStats:(month,id)=> {
         return axios.get(`${URL_PREFIX}/stats/month/${month}/${id}`)
     },
+    allStats:(id,year,month) => {
+        return axios.get(`${URL_PREFIX}/stats/allstats/${id}/${year}/${month}`)
+    },
 
 
     // OPEN LIBRARY API 

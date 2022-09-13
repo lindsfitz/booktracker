@@ -2,16 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../../AppContext';
 import API from '../../utils/API'
 import { Book } from '@mui/icons-material';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
-import ImageListItem from '@mui/material/ImageListItem';
-import Typography from '@mui/material/Typography';
-import tempData from '../../utils/tempData';
-
-
-
+import { List, ListItem, Divider, ListItemText, ImageListItem, Typography } from '@mui/material';
 
 export default function AllBooks() {
     const context = useContext(AppContext);

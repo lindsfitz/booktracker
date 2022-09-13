@@ -2,16 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import AppContext from '../../AppContext';
 import API from '../../utils/API'
-import Card from '@mui/material/Card';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Rating from '@mui/material/Rating';
-import Stack from '@mui/material/Stack';
-import Switch from '@mui/material/Switch';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
+import { Card, Button, FormControlLabel, Rating, Stack, Switch, CardContent, CardMedia, Typography, Box, Paper, Divider } from '@mui/material';
+import AddReview from './AddReview';
+
 
 // single book page - top section of the page has lots of details about the book (maybe one template for super detailed results from open library, one template for user added books w a bit less detail included)
 // bottom section includes any user reviews
@@ -25,6 +18,7 @@ export default function UserBook() {
 
     const [bookData, setBookData] = useState(null)
     const [reviewData, setReviewData] = useState([])
+    const [reviewForm, setReviewForm] = useState(false)
 
     const bookInfo = async () => {
         const book = await API.getOneBook(params.id);
@@ -34,6 +28,10 @@ export default function UserBook() {
         const review = await API.getOneReview(context.userData.id, params.id)
         // console.log(review)
         setReviewData(review.data)
+    }
+
+    const toggleReviewForm = () => {
+        setReviewForm(!reviewForm)
     }
 
     useEffect(() => {
@@ -69,6 +67,16 @@ export default function UserBook() {
                         </Typography>
                     </CardContent>
                 </Card>
+                <Divider />
+                {!reviewForm && <div>
+                    <Button onClick={toggleReviewForm}>Add A New Review</Button>
+                </div>}
+                {reviewForm && <div>
+                    <AddReview />
+                    <Button onClick={toggleReviewForm}>Cancel</Button>
+                </div>
+                }
+                <Divider />
                 {reviewData.map((review) => (
                     <Paper key={`${review.id}`} elevation={3}>
                         <Box>
@@ -93,14 +101,6 @@ export default function UserBook() {
                 ))}
 
             </div>}
-            <FormControlLabel disabled control={<Switch />} label="Unread" />
-            <Stack spacing={1}>
-                <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
-                <Rating name="half-rating-read" defaultValue={2.5} precision={0.5} readOnly />
-            </Stack>
-
-
-
 
         </React.Fragment>
     )
