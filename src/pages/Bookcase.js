@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { Link } from "react-router-dom";
-import AddShelf from './AddShelf'
+import AddShelf from './components/AddShelf'
 import API from '../utils/API';
 import AppContext from '../AppContext';
-import EditShelf from '../components/EditShelf';
+import EditShelf from './components/EditShelf';
 import { List, ListItem, Divider, ListItemText, ImageListItem, Button, Dialog, DialogActions, DialogContent,DialogContentText, DialogTitle } from '@mui/material/';
 
 

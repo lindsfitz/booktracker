@@ -5,7 +5,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
-import AddShelf from './AddShelf'
+import AddShelf from './components/AddShelf'
 import PropTypes from 'prop-types';
 import { List, ListItem, Typography, Box, Rating, Tabs, Tab, Card, CardMedia, CardContent, Divider, ListItemText, Button, Stack } from '@mui/material';
 

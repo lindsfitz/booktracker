@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import API from '../utils/API';
-import AppContext from '../AppContext';
+import API from '../../utils/API';
+import AppContext from '../../AppContext';
 import PropTypes from 'prop-types';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams } from "react-router-dom";
-import AppContext from '../../AppContext';
-import API from '../../utils/API';
+import AppContext from '../AppContext';
+import API from '../utils/API';
 import { Container, Paper, Box, Typography, Stack, Chip, Divider, Button, ButtonGroup, ClickAwayListener, Grow, Popper, MenuItem, MenuList, Grid } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import AddReview from './AddReview';
+import AddReview from './components/AddReview';
 
 // const options = ['Add to List'];
 

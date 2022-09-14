@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import AppContext from '../../AppContext';
-import API from '../../utils/API'
+import AppContext from '../AppContext';
+import API from '../utils/API'
 import { Book } from '@mui/icons-material';
 import { List, ListItem, Divider, ListItemText, ImageListItem, Typography } from '@mui/material';
 

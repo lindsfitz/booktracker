@@ -6,15 +6,15 @@ import {
 } from "react-router-dom";
 import AppContext from "./AppContext";
 import Login from './pages/Login';
-import Navigation from "./components/Navigation";
+import Navigation from "./pages/components/Navigation";
 import Dashboard from "./pages/Dashboard";
 import Bookcase from "./pages/Bookcase";
 import Shelf from "./pages/Shelf";
 import Search from './pages/Search';
-import AllBooks from "./pages/Books/AllBooks";
-import UserBook from './pages/Books/UserBook';
-import ResultBook from './pages/Books/ResultBook';
-import AddReview from './pages/Books/AddReview';
+import AllBooks from "./pages/AllBooks";
+import UserBook from './pages/UserBook';
+import ResultBook from './pages/ResultBook';
+// import AddReview from './pages/AddReview';
 import './app.css'
 
 function App() {
@@ -57,7 +57,6 @@ function App() {
             {/* <Route path="new" element={<NewBookForm />} /> */}
             <Route path="/shelves" element={<Bookcase />} />
             <Route path="/shelf/:id" element={<Shelf />} />
-            <Route path="/review" element={<AddReview />} />
           </Routes>
         </BrowserRouter>
       </AppContext.Provider>

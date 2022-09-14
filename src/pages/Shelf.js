@@ -8,7 +8,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
-import EditShelf from '../components/EditShelf';
+import EditShelf from './components/EditShelf';
 import { List, ListItem, Divider, ListItemText, ImageListItem, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 

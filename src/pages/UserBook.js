@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from "react-router-dom";
-import AppContext from '../../AppContext';
-import API from '../../utils/API'
+import AppContext from '../AppContext';
+import API from '../utils/API'
 import { Card, Button, Rating, CardContent, CardMedia, Typography, Box, Container, Paper, Divider, Switch, Stack, Chip, Link, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import AddReview from './AddReview';
-import EditReview from '../../components/EditReview';
+import AddReview from './components/AddReview';
+import EditReview from './components/EditReview';
 
 
 // single book page - top section of the page has lots of details about the book (maybe one template for super detailed results from open library, one template for user added books w a bit less detail included)
