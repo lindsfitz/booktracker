@@ -8,6 +8,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
+import EditShelf from '../components/EditShelf';
 import { List, ListItem, Divider, ListItemText, ImageListItem, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 
@@ -18,6 +19,7 @@ export default function Shelf() {
 
     const [open, setOpen] = React.useState(false);
     const [shelf, setShelf] = useState(null)
+    const [editDialog, setEditDialog] = useState(false)
 
 
     const handleClickOpen = () => {
@@ -43,7 +45,7 @@ export default function Shelf() {
         }).catch(err => {
             console.log(err)
         })
-    }, [])
+    }, [context.userShelves])
 
 
     return (
@@ -52,7 +54,7 @@ export default function Shelf() {
                 <h1>{shelf.name}</h1>
                 <h4>{shelf.description}</h4>
                 <Button>Add Books</Button>
-                <Button>Edit</Button>
+                <Button onClick={()=> setEditDialog(true)}>Edit</Button>
                 <Button onClick={handleClickOpen}>Delete</Button>
 
                 <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
@@ -118,6 +120,9 @@ export default function Shelf() {
                     <Button onClick={handleDelete}>Delete</Button>
                 </DialogActions>
             </Dialog>
+
+
+            {editDialog && <EditShelf shelf={shelf} setEditShelf={setEditDialog} editShelf={editDialog}/>}
 
         </React.Fragment>
     )

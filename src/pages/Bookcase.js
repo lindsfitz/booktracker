@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import AddShelf from './AddShelf'
 import API from '../utils/API';
 import AppContext from '../AppContext';
+import EditShelf from '../components/EditShelf';
 import { List, ListItem, Divider, ListItemText, ImageListItem, Button, Dialog, DialogActions, DialogContent,DialogContentText, DialogTitle } from '@mui/material/';
 
 
@@ -11,6 +12,8 @@ export default function Bookcase() {
     const context = useContext(AppContext);
 
     const [open, setOpen] = useState(false);
+    const [editShelf, setEditShelf] = useState(false)
+    const [shelf, setShelf] = useState(null)
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -19,6 +22,15 @@ export default function Bookcase() {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const handleShelfEdit = (shelf) => {
+        setEditShelf(true)
+        setShelf({
+            id: shelf.id,
+            name: shelf.name,
+            description: shelf.description
+        })
+    }
 
     const handleDelete = async (e) => {
         console.log(e.target.id)
@@ -64,7 +76,7 @@ export default function Bookcase() {
                                     </ImageListItem>
 
                                 ))}
-                                <Button id={shelf.id}>Edit</Button>
+                                <Button id={shelf.id} onClick={()=>handleShelfEdit(shelf)}>Edit</Button>
                                 <Button id={shelf.id} onClick={handleClickOpen}>Delete</Button>
                             </div>
                         </ListItem>
@@ -94,6 +106,8 @@ export default function Bookcase() {
             </List>
 
             {context.shelfDialog && <AddShelf />}
+
+            {editShelf && <EditShelf shelf={shelf} setEditShelf={setEditShelf} editShelf={editShelf} />}
 
 
 

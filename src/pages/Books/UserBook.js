@@ -109,6 +109,7 @@ export default function UserBook() {
                 <Divider />
                 {!reviewForm && <div>
                     <Button onClick={toggleReviewForm}>Add A New Review</Button>
+                    <Button>Add to Shelf</Button>
                 </div>}
                 {reviewForm && <div>
                     <AddReview reviewInfo={reviewInfo} toggleReviewForm={toggleReviewForm} />
