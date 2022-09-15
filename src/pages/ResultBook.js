@@ -5,6 +5,7 @@ import API from '../utils/API';
 import { Container, Paper, Box, Typography, Stack, Chip, Divider, Button, ButtonGroup, ClickAwayListener, Grow, Popper, MenuItem, MenuList, Grid } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AddReview from './components/AddReview';
+import { data } from 'uikit';
 
 // const options = ['Add to List'];
 
@@ -27,6 +28,23 @@ export default function ResultBook() {
     }])
     const [description, setDescription] = useState('')
 
+    const openShelfMenu = (e) => {
+        console.info(`Select a shelf to add to!`);
+    };
+
+    const handleToggle = () => {
+        setOpen((prevOpen) => !prevOpen);
+    };
+
+    const closeShelfMenu = (event) => {
+        if (anchorRef.current && anchorRef.current.contains(event.target)) {
+            return;
+        }
+        setOpen(false);
+    };
+
+
+    // takes book info from API response & sends to db - returns found book or creates new one and returns db book info
     const bookCheck = async () => {
         const newBook = {
             title: bookData.book.title,
@@ -42,52 +60,46 @@ export default function ResultBook() {
 
         return postBook
     }
-
-    const openShelfMenu = (e) => {
-        console.info(`Select a shelf to add to!`);
-    };
-
+    
+    // adds book to selected shelf
+    // after adding shelf -- need to update context.userShelves so other pages update as well 
     const handleShelfAdd = async (e) => {
         console.info(`You clicked ${e.target.id}`)
         setOpen(false);
-        // const newBook = {
-        //     title: bookData.book.title,
-        //     author: bookData.details.author_name[0],
-        //     author_key: bookData.details.author_key[0],
-        //     description: description,
-        //     cover_img: `https://covers.openlibrary.org/b/olid/${bookData.details.cover_edition_key}-M.jpg`,
-        //     pages: bookData.details.number_of_pages_median,
-        //     published: bookData.details.first_publish_year,
-        //     edition_key: bookData.book.key
-        // }
         const postBook = await bookCheck()
         const shelfAdd = await API.addtoShelf(e.target.id, { id: postBook.data.id })
-        console.log(shelfAdd)
-        console.log('wait did that actually work')
-
-    };
-
-    const handleToggle = () => {
-        setOpen((prevOpen) => !prevOpen);
-    };
-
-    const closeShelfMenu = (event) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) {
-            return;
+        if (shelfAdd.data.message){
+            console.log('wow added to shelf')
+            // add conditional span here to tell user book was added to shelf 
+            // then call shelf pull api and update user shelves 
         }
-
-        setOpen(false);
+        if (shelfAdd.data.name === "SequelizeUniqueConstraintError") {
+            console.log('that book is already on that shelf my guy')
+            // add conditional span here to tell user that this book is already on that shelf 
+        }    
     };
 
-    const addCurrentlyReading = (e) => {
-        // post request to add this book to the currently reading table 
+
+    // adds book to 'currently reading' junction table w mix in method
+    const markCurrentlyReading = async () => {
+        const findBook = await bookCheck();
+        const currentRead = await API.addCurrentRead({
+            userId: context.userData.id,
+            bookId: findBook.data.id
+        })
+        console.log(currentRead)
+        console.log('added to currently reading I think')
     }
 
+
+
+    // posts new review w just 'read' set to true and other fields as null 
     const markRead = async () => {
         const book = await bookCheck()
         // post request to add review but just setting read to true
         const reviewData = {
             read:true,
+            last_update: new Date(),
             UserId:context.userData.id,
             BookId:book.data.id
         }
@@ -95,6 +107,8 @@ export default function ResultBook() {
        console.log(reviewPost)
     }
 
+
+    // shows review form so that user can add a full review for the book rather than just setting read to true
     const showReviewForm = () => {
         // post request to add review but adding a full big boy review aka clicking this shows the add review div
         setReviewDiv(!reviewDiv)
@@ -149,7 +163,7 @@ export default function ResultBook() {
                                         orientation="vertical"
                                         aria-label="vertical outlined button group"
                                     >
-                                        <Button>Currently Reading</Button>
+                                        <Button onClick={markCurrentlyReading}>Currently Reading</Button>
                                         <Button onClick={markRead}>Mark As Read</Button>
                                         <Button onClick={showReviewForm}>Add New Review</Button>
                                         <ButtonGroup variant='contained' ref={anchorRef} aria-label="split button">

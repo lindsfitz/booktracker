@@ -14,8 +14,10 @@ import Search from './pages/Search';
 import AllBooks from "./pages/AllBooks";
 import UserBook from './pages/UserBook';
 import ResultBook from './pages/ResultBook';
+import ReadingActivity from './pages/ReadingActivity';
 // import AddReview from './pages/AddReview';
 import './app.css'
+import Booklist from './pages/Booklist';
 
 function App() {
 
@@ -54,9 +56,11 @@ function App() {
             <Route path="works/:id" element={<ResultBook />} />
             <Route path="/books" element={<AllBooks />} />
             <Route path="/book/:id" element={<UserBook />} />
+            <Route path="/books/:list" element={<Booklist />} />
             {/* <Route path="new" element={<NewBookForm />} /> */}
             <Route path="/shelves" element={<Bookcase />} />
             <Route path="/shelf/:id" element={<Shelf />} />
+            <Route path="/activity" element={<ReadingActivity />} />
           </Routes>
         </BrowserRouter>
       </AppContext.Provider>

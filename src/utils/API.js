@@ -57,12 +57,28 @@ const API = {
     removefromShelf:(shelfId,bookId) => {
         return axios.delete(`${URL_PREFIX}/book/remove/${shelfId}/${bookId}`)
     },
+    // allUserBooks:(id)=>{
+    //     return axios.get(`${URL_PREFIX}/book/user/${id}`)
+    // },
     allUserBooks:(id)=>{
-        return axios.get(`${URL_PREFIX}/book/user/${id}`)
+        return axios.get(`${URL_PREFIX}/book/allbooks/${id}`)
     },
     allReadBooks:(id)=>{
         return axios.get(`${URL_PREFIX}/book/read/${id}`)
     },
+    currentlyReading:(id)=> {
+        return axios.get(`${URL_PREFIX}/currentlyreading/${id}`)
+    },
+    addCurrentRead:(readData)=> {
+        return axios.post(`${URL_PREFIX}/currentlyreading`, readData)
+    },
+    finishedReading:(review)=> {
+        return axios.post(`${URL_PREFIX}/currentlyreading/finishedreading`, review)
+    },
+    removeCurrentlyReading:(userId,bookId)=>{
+        return axios.delete(`${URL_PREFIX}/currentlyreading/${userId}/${bookId}`)
+    },
+
 
     // REVIEW ROUTES
 
@@ -104,11 +120,17 @@ const API = {
     searchByTitle:(title)=>{
         return axios.get(`http://openlibrary.org/search.json?title=${title}&limit=10&language=eng`)
     },
+    // searchByAuthor:(author)=>{
+    //     return axios.get(`https://openlibrary.org/search/authors.json?q=${author}`)
+    // },
     searchByAuthor:(author)=>{
-        return axios.get(`https://openlibrary.org/search/authors.json?q=${author}`)
+        return axios.get(`https://openlibrary.org/search.json?author=${author}&limit=10`)
     },
     searchBySubject:(subject)=>{
         return axios.get(`http://openlibrary.org/subjects/${subject}.json?details=true`)
+    },
+    getAuthor:(key) => {
+        return axios.get(`https://openlibrary.org/authors/${key}/works.json`)
     },
     getBook:(key) => {
         return axios.get(`https://openlibrary.org/works/${key}.json`)
@@ -129,6 +151,9 @@ const API = {
     },
     gbOneBook:(id)=>{
         return axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`)
+    },
+    gbByISBN:(isbn) => {
+        return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${isbn}+isbn`)
     }
 
 }

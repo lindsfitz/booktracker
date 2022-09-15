@@ -47,6 +47,7 @@ export default function AddReview({reviewInfo, toggleReviewForm}) {
                 date_finished: finishDate.format('YYYY/MM/DD'),
                 year_finished: finishDate.year(),
                 month_finished: finishDate.month(),
+                last_update: new Date(),
                 rating: data.get('rating'),
                 review: data.get('review'),
                 format: data.get('format'),
@@ -58,6 +59,7 @@ export default function AddReview({reviewInfo, toggleReviewForm}) {
         if (!readSwitch) {
             newReview = {
                 read: readSwitch,
+                last_update: new Date(),
                 review: data.get('review'),
                 UserId: context.userData.id,
                 BookId: params.id

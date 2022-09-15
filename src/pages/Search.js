@@ -3,16 +3,17 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
-import { Box, TextField, InputLabel, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container } from '@mui/material';
+import { Box, TextField, InputLabel, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography } from '@mui/material';
 
 export default function Search() {
     const context = useContext(AppContext);
     let navigate = useNavigate();
-    const [searchBy, setSearchBy] = useState('');
+    const [searchBy, setSearchBy] = useState('title');
     const [searchTerm, setSearchTerm] = useState('')
     const [searchResults, setSearchResults] = useState([])
     const [shelves, setShelves] = useState(null)
     const [shelfAdd, setShelfAdd] = useState('')
+    const [noResults, setNoResults] = useState(false)
 
     const handleInputChange = (e) => {
         setSearchTerm(e.target.value)
@@ -22,45 +23,63 @@ export default function Search() {
         setSearchBy(event.target.value);
     };
 
-    const changeShelfAdd = (event) => {
-        setShelfAdd(event.target.value)
+    const addToShelf = (shelf,book) => {
+        console.log(shelf,book)
     }
 
-    const search = async () => {
+    const searchByTitle = async () => {
         API.searchByTitle(searchTerm).then(books => {
+            if(!books.data.docs.length){
+                setNoResults(true)
+            }
             setSearchResults(books.data.docs)
-            // console.log(books)
         }).catch(err => {
             console.log(err)
         })
-        API.gbByTitle(searchTerm).then(books => {
-            console.log(books)
-        })
-        // const books = await API.searchByTitle(searchTerm)
-        // console.log(books)
-        // console.log(context.userShelves)
-        setShelves([...context.userShelves])
-        console.log(shelves)
-        // setSearchResults(books.data.docs)
+        // setShelves([...context.userShelves])
     }
 
-    //   useEffect(()=>{
-    //     search()
-    //   },[])
+    const searchByAuthor = async () => {
+        const authorResults = await API.searchByAuthor(searchTerm)
+        if(!authorResults.data.docs.length){
+            setNoResults(true)
+        }
+        setSearchResults(authorResults.data.docs)
+        console.log(authorResults)
+    }
+
+    const search = async () => {
+        setSearchResults(null)
+        setShelves([...context.userShelves])
+        if(searchBy === 'title') {
+            searchByTitle()
+        }
+
+        if(searchBy === 'author') {
+            searchByAuthor()
+        }
+
+        // // API.gbByTitle(searchTerm).then(books => {
+        // //     console.log(books)
+        // // })
+  
+    }
 
 
     return (
-        <Container>
+        <Container sx={{width:'100%', display:'flex', flexDirection:'column'}}>
             <Box
                 component="form"
                 sx={{
-                    '& > :not(style)': { m: 1, width: '25ch' },
+                    display:'flex',
+                    maxWidth:3/5,
+                    m:5
                 }}
                 noValidate
                 autoComplete="off"
             >
                 <Box sx={{ minWidth: 120 }}>
-                    <FormControl fullWidth>
+                    <FormControl>
                         <InputLabel id="demo-simple-select-label">Search By</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
@@ -74,53 +93,66 @@ export default function Search() {
                         </Select>
                     </FormControl>
                 </Box>
-                <TextField onChange={handleInputChange} id="standard-basic" label="Search..." variant="standard" />
+                <TextField onChange={handleInputChange} sx={{width:2/3}} id="standard-basic" label="Search..." variant="standard" />
                 <Button onClick={search}>Search</Button>
             </Box>
 
-            {searchResults && <Container>
+            {
+                noResults && <Container sx={{m:'20px auto 20px auto', textAlign:'center'}}>
+                        <Typography variant='subtitle2'>No Results Found</Typography>
+                    </Container>
+            }
+
+            {searchResults ? <Container>
                 <List>
                     {searchResults.map((book) => (
                         <ListItem key={`${book.cover_edition_key}`} id={book.cover_edition_key}
-                            secondaryAction={
-                                <FormControl edge="end" variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                                    <InputLabel id="demo-simple-select-standard-label">Add to List</InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-standard-label"
-                                        id="demo-simple-select-standard"
-                                        value={shelfAdd}
-                                        onChange={changeShelfAdd}
-                                        label="Add to List"
-                                    >
-                                        <MenuItem value="">
-                                            <em>None</em>
-                                        </MenuItem>
-                                        {shelves.map((shelf) => (
-                                            <MenuItem key={shelf.id} value={shelf.id}>{shelf.name}
-                                            </MenuItem>
-                                        ))}
-                                        {/* <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    <MenuItem value={'Faves'}>Favorites</MenuItem>
-                                    <MenuItem value={20}>TBR</MenuItem>
-                                    <MenuItem value={30}>DNF</MenuItem> */}
-                                    </Select>
-                                    <Button onClick={() => { navigate(`${book.key}`) }}>VIEW DETAILS</Button>
-                                </FormControl>
-
-                            }
                         >
                             <img src={`https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-M.jpg`} alt={`${book.title}-cover`} />
                             {
                                 book.author_name[0] &&
                                 <ListItemText primary={book.title} secondary={book.author_name[0]} />
                             }
+                           <FormControl edge="end" variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                    <InputLabel id="demo-simple-select-standard-label">Add to Shelf</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-standard-label"
+                                        id="demo-simple-select-standard"
+                                        value={shelfAdd}
+                                        // onClick={changeShelfAdd}
+                                        label="Add to List"
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+                                        {shelves.map((shelf) => (
+                                            <MenuItem onClick={()=>addToShelf(shelf.id,book.key)} key={shelf.id} value={shelf.id}>{shelf.name}
+                                            </MenuItem>
+                                        ))}
+
+                                    </Select>
+                                    <Button onClick={() => { navigate(`${book.key}`) }}>VIEW DETAILS</Button>
+                                </FormControl>
                         </ListItem>
                     ))}
                 </List>
 
-            </Container>}
+            </Container> :
+
+                (
+                    <Stack spacing={1} sx={{mr:'auto', ml:'auto', mt:10}}>
+                        {/* For variant="text", adjust the height via font-size */}
+                        {/* For other variants, adjust the size with `width` and `height` */}
+                        <Skeleton variant="rectangular" width='90%' height={100} />
+                        <Skeleton width='90%' />
+                        <Skeleton variant="rectangular" width='90%' height={100} />
+                        <Skeleton width='90%' />
+                        <Skeleton variant="rectangular" width='90%' height={100} />
+                        <Skeleton width='90%' />
+                    </Stack>
+                )
+
+            }
 
         </Container>
     );

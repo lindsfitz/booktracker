@@ -53,6 +53,7 @@ export default function UserBook() {
 
     const deleteReview = async (id) => {
         API.deleteReview(id)
+        reviewInfo()
     }
 
     useEffect(() => {

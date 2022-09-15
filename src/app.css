@@ -31,10 +31,10 @@ body {
 
 /* DASHBOARD ID STYLING */
 
-#dash {
+/* #dash {
     display:flex;
     flex-direction: row-reverse;
-}
+} */
 
 #right-column {
     width:40%;
@@ -43,7 +43,7 @@ body {
     display:flex;
     flex-direction:column;
 }
-#left-column {
+#left-column, #mobile-shelves {
     width: 60%;
     border-right: 1px solid var(--muted-blue)
 }
@@ -61,10 +61,16 @@ body {
     text-align: center;
 }
 
+
+
 #shelves {
     /* border: 1px solid var(--olive); */
     /* border-bottom: 1px solid var(--muted-blue); */
     /* border-radius: 10px;  */
     margin:5px;
     padding:10px;
+}
+
+.book-card {
+    background: transparent;
 }

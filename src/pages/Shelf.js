@@ -38,13 +38,23 @@ export default function Shelf() {
 
     }
 
+    const removeBook = async (bookId) => {
+        const removed = await API.removefromShelf(params.id,bookId)
+        console.log(removed)
+        shelfData();
+    }
 
-    useEffect(() => {
+    const shelfData = () => {
         API.getOneShelf(params.id).then(res => {
             setShelf(res.data)
         }).catch(err => {
             console.log(err)
         })
+    }
+
+
+    useEffect(() => {
+        shelfData()
     }, [context.userShelves])
 
 
@@ -64,14 +74,15 @@ export default function Shelf() {
                         <React.Fragment>
                             <ListItem key={`${book.title}`} alignItems="flex-start">
 
-                                <ImageListItem key={book.title}>
+                                {/* <ImageListItem key={book.title}> */}
                                     <img
                                         src={`${book.cover_img}`}
                                         srcSet={`${book.cover_img}`}
                                         alt={`${book.title}`}
                                         loading="lazy"
+                                        onClick={() => { navigate(`/book/${book.id}`) }}
                                     />
-                                </ImageListItem>
+                                {/* </ImageListItem> */}
 
                                 <ListItemText
                                     primary={book.title}
@@ -90,6 +101,7 @@ export default function Shelf() {
                                 />
 
                                 <Button onClick={()=> {navigate(`/book/${book.id}`)}}>View More</Button>
+                                <Button onClick={()=>removeBook(book.id)}>Remove From Shelf</Button>
 
 
                             </ListItem>
