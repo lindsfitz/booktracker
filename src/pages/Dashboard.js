@@ -64,9 +64,7 @@ export default function Dashboard(props) {
 
     const renderCurrentReads = async () => {
         const reads = await API.currentlyReading(context.userData.id)
-        console.log(reads)
         setCurrentReads(reads.data)
-        console.log(currentReads)
     }
 
 

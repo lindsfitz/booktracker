@@ -23,23 +23,54 @@ export default function UserBook() {
     const [reviewData, setReviewData] = useState(false)
     const [reviewForm, setReviewForm] = useState(false)
     const [editReview, setEditReview] = useState(false);
-    const [editId, setEditId] = useState(null)
+    const [editId, setEditId] = useState(null);
+    const [markedRead, setMarkedRead] = useState(false);
+    const [markedReading, setMarkedReading] = useState(false)
 
 
     const bookInfo = async () => {
-        const book = await API.getOneBook(params.id);
+        const book = await API.getBookandShelves(params.id, context.userData.id);
+        // const book = await API.getOneBook(params.id);
         // console.log(book)
         setBookData(book.data)
-        console.log(bookData)
+        if (book.data.Users.length) {
+            setMarkedReading(true)
+        }
     }
 
     const reviewInfo = async () => {
         const review = await API.getOneReview(context.userData.id, params.id)
-        console.log(review)
         if (review.data.length) {
             setReviewData(review.data)
         }
 
+        for (let i = 0; i < review.data.length; i++) {
+            if (review.data[i].read === true) {
+                setMarkedRead(true)
+            }
+        }
+    }
+
+    const addToRead = () => {
+        API.newReview({
+            last_update: new Date()
+        })
+    }
+
+    const addToCurrentlyReading = async () => {
+        await API.addCurrentRead({
+            userId: context.userData.id,
+            bookId: bookData.id
+        })
+        // console.log(added)
+    }
+
+    const moveToRead = async () => {
+        await API.finishedReading({
+            UserId:context.userData.id,
+            BookId:bookData.id,
+            last_update: new Date()
+        })
     }
 
     const toggleReviewForm = () => {
@@ -56,6 +87,10 @@ export default function UserBook() {
         reviewInfo()
     }
 
+    const removeFromShelf = (shelfid) => {
+        API.removefromShelf(shelfid, bookData.id)
+    }
+
     useEffect(() => {
         bookInfo()
         reviewInfo()
@@ -65,6 +100,7 @@ export default function UserBook() {
     return (
         <React.Fragment>
             {bookData && <div>
+                {/* ----BOOK DETAILS @ TOP---- */}
                 <Container sx={{ display: "flex", m: 3, p: 2 }}>
                     <Card sx={{ maxWidth: 345 }} >
                         <CardContent>
@@ -74,12 +110,6 @@ export default function UserBook() {
                                 image={`${bookData.cover_img}`}
                                 alt={`${bookData.title}`}
                             />
-                            {/* <img
-                        src={`${bookData.cover_img}`}
-                        srcSet={`${bookData.cover_img}`}
-                        alt={`${bookData.title}`}
-                        loading="lazy"
-                    /> */}
                         </CardContent>
                     </Card>
                     <Box sx={{ maxWidth: "60%", p: 4 }}>
@@ -106,23 +136,61 @@ export default function UserBook() {
                 </Container>
 
 
+                {/* ----CONDITIONALS FOR READ/READING & SHELVES---- */}
+                {bookData.Shelves &&
+                    <Stack direction="row" spacing={2}>
+                        {markedRead &&
+                            <Stack spacing={0}>
+                                <Typography variant='caption'>Marked As:</Typography>
+                                <Chip label='Read' />
+                            </Stack>
+                        }
+                        {markedReading &&
+                            <Stack spacing={0}>
+                                <Typography variant='caption'>Marked As:</Typography>
+                                <Chip label='Currently Reading' />
+                            </Stack>
+                        }
+                        <Stack spacing={0}>
+                            <Typography variant='caption'>On Shelves:</Typography>
+                            <Stack direction='row'>
+                                {bookData.Shelves.map((shelf) => (
+                                    <Chip label={shelf.name} variant="outlined" onDelete={() => removeFromShelf(shelf.id)} />
+                                ))}
+                            </Stack>
+                        </Stack>
+                    </Stack>}
+
+
 
                 <Divider />
-                {!reviewForm && <div>
-                    <Button onClick={toggleReviewForm}>Add A New Review</Button>
-                    <Button>Add to Shelf</Button>
-                </div>}
-                {reviewForm && <div>
+
+                {/* ---- ADD NEW REVIEW FORM COMPONENT ---- */}
+                {reviewForm ? (<div>
                     <AddReview reviewInfo={reviewInfo} toggleReviewForm={toggleReviewForm} />
                     <Button onClick={toggleReviewForm}>Cancel</Button>
-                </div>
+                </div>) : (<div>
+                    <Button>Add to Shelf</Button>
+                    {!markedRead && !markedReading &&
+                        <React.Fragment>
+                            <Button onClick={addToCurrentlyReading}>Add To Currently Reading</Button>
+                            <Button onClick={addToRead}>Mark As Read</Button>
+                        </React.Fragment>
+                    }
+                    {!markedRead && markedReading &&
+                        <React.Fragment>
+                            <Button onClick={moveToRead}>Mark As Read</Button>
+                        </React.Fragment>
+                    }
+                    <Button onClick={toggleReviewForm}>Add A Review</Button>
+                </div>)
                 }
                 <Divider />
 
+
+                {/* ---- REVIEWS SECTION ---- */}
                 <Container>
-
                     {!reviewData && !reviewForm && <div style={{ margin: '30px auto 0 auto', textAlign: 'center' }}>
-
                         <Typography variant='subtitle2'>
                             It looks like you haven't reviewed this book yet.
                         </Typography>
@@ -132,12 +200,9 @@ export default function UserBook() {
 
 
                     {reviewData && <Container>
-
                         <Typography variant='subtitle1'>
                             Your Reviews:
                         </Typography>
-
-
                         {reviewData.map((review) => (
                             <Paper key={`${review.id}`} elevation={6} sx={{ width: '60%', p: 2 }}>
                                 {editId !== review.id && <Container>
@@ -164,8 +229,6 @@ export default function UserBook() {
 
                                             <Chip label={`Date Finished: ${review.date_finished}`} variant='outlined' />
                                         </Stack>
-
-
                                         <Stack spacing={3} sx={{ m: 1, p: 1 }}>
                                             <Stack direction="row" spacing={0}>
                                                 <Typography component="legend">Your Rating:</Typography>
@@ -181,9 +244,10 @@ export default function UserBook() {
                                         {review.review}
                                     </Typography>
                                 </Container>}
-                                {editId===review.id &&
+
+                                {editId === review.id &&
                                     <EditReview reviewData={review} setEditReview={setEditReview} reviewInfo={reviewInfo} setEditId={setEditId} />
-                                 }
+                                }
                             </Paper>
                         ))}
                     </Container>}

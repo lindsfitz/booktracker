@@ -143,12 +143,12 @@ export default function Search() {
                     <Stack spacing={1} sx={{mr:'auto', ml:'auto', mt:10}}>
                         {/* For variant="text", adjust the height via font-size */}
                         {/* For other variants, adjust the size with `width` and `height` */}
-                        <Skeleton variant="rectangular" width='90%' height={100} />
-                        <Skeleton width='90%' />
-                        <Skeleton variant="rectangular" width='90%' height={100} />
-                        <Skeleton width='90%' />
-                        <Skeleton variant="rectangular" width='90%' height={100} />
-                        <Skeleton width='90%' />
+                        <Skeleton variant="rectangular" width='90' height={100} />
+                        <Skeleton width='90' />
+                        <Skeleton variant="rectangular" width='90' height={100} />
+                        <Skeleton width='90' />
+                        <Skeleton variant="rectangular" width='90' height={100} />
+                        <Skeleton width='90' />
                     </Stack>
                 )
 

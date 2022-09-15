@@ -48,6 +48,9 @@ const API = {
     getOneBook:(id)=> {
         return axios.get(`${URL_PREFIX}/book/one/${id}`)
     },
+    getBookandShelves:(bookid,userid)=>{
+        return axios.get(`${URL_PREFIX}/book/one/${bookid}/${userid}`)
+    },
     newBook:(bookData) => {
         return axios.post(`${URL_PREFIX}/book/new`,bookData)
     },
