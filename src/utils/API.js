@@ -101,20 +101,26 @@ const API = {
 
     // STATS ROUTES 
 
-    allReadStats:(id)=> {
-        return axios.get(`${URL_PREFIX}/stats/read/${id}`)
+    // allReadStats:(id)=> {
+    //     return axios.get(`${URL_PREFIX}/stats/read/${id}`)
+    // },
+    // allShelfStats:(id)=> {
+    //     return axios.get(`${URL_PREFIX}/stats/shelves/${id}`)
+    // },
+    // yearlyStats:(year,id)=> {
+    //     return axios.get(`${URL_PREFIX}/stats/year/${year}/${id}`)
+    // },
+    yearlyBooks:(year,id)=> {
+        return axios.get(`${URL_PREFIX}/stats/yearly/${year}/${id}`)
     },
-    allShelfStats:(id)=> {
-        return axios.get(`${URL_PREFIX}/stats/shelves/${id}`)
-    },
-    yearlyStats:(year,id)=> {
-        return axios.get(`${URL_PREFIX}/stats/year/${year}/${id}`)
-    },
-    monthlyStats:(month,id)=> {
-        return axios.get(`${URL_PREFIX}/stats/month/${month}/${id}`)
+    // monthlyStats:(month,id)=> {
+    //     return axios.get(`${URL_PREFIX}/stats/month/${month}/${id}`)
+    // },
+    monthlyBooks:(month,id)=> {
+        return axios.get(`${URL_PREFIX}/stats/monthly/${month}/${id}`)
     },
     allStats:(id,year,month) => {
-        return axios.get(`${URL_PREFIX}/stats/${id}/${year}/${month}`)
+        return axios.get(`${URL_PREFIX}/stats/all/${id}/${year}/${month}`)
     },
 
 

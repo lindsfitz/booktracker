@@ -155,7 +155,7 @@ export default function UserBook() {
                             <Typography variant='caption'>On Shelves:</Typography>
                             <Stack direction='row'>
                                 {bookData.Shelves.map((shelf) => (
-                                    <Chip label={shelf.name} variant="outlined" onDelete={() => removeFromShelf(shelf.id)} />
+                                    <Chip key={`${shelf.name}${shelf.id}`} label={shelf.name} variant="outlined" onDelete={() => removeFromShelf(shelf.id)} />
                                 ))}
                             </Stack>
                         </Stack>
@@ -204,7 +204,7 @@ export default function UserBook() {
                             Your Reviews:
                         </Typography>
                         {reviewData.map((review) => (
-                            <Paper key={`${review.id}`} elevation={6} sx={{ width: '60%', p: 2 }}>
+                            <Paper key={`${review.id}${review.UserId}`} elevation={6} sx={{ width: '60%', p: 2 }}>
                                 {editId !== review.id && <Container>
                                     <Stack spacing={0.5} direction="row" justifyContent="flex-end">
                                         <IconButton onClick={() => toggleEditForm(review.id)} aria-label="delete" size="small">

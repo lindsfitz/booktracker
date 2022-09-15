@@ -48,9 +48,6 @@ export default function Bookcase() {
 
 
         <React.Fragment>
-            {/* ONE LIST COMPONENT ALREADY EXISTS PRE DATA PULL */}
-            {/* ***** ONCE DATA IS BEING PULLED VIA API SUCCESSFULLY - MAP OVER SHELF RESULTS. CREATE LIST ITEM COMPONENT FOR EACH SHELF IN RESULTS DATA & LIST ITEM TEXT FOR THE TITLE OF EACH SHELF */}
-            {/* *** ONE IMAGE LIST ITEM IS CREATED FOR EACH BOOK INSIDE OF THE SHELF. JUST SET THE SRC TO THE IMAGE LINK FROM THE RESULTS */}
             <h1>All User Shelves</h1>
             <Button variant="outlined" onClick={context.toggleShelfDialog}>
                 Add A Shelf
@@ -58,13 +55,7 @@ export default function Bookcase() {
             <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                 {context.userShelves.map((shelf) => (
                     <React.Fragment>
-                        <ListItem key={`${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                            {/* <Link to={`/shelf/${shelf.id}`}><ListItemText
-                                primary={`${shelf.name}`}
-                                sx={{ maxWidth: '10%' }}
-                            /></Link> */}
-
-
+                        <ListItem key={`${shelf.name}${shelf.id}`} id={`${shelf.name}${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                             <Container sx={{ display: 'flex', alignItems:'center', justifyContent:'space-between' }}>
                                 <Link to={`/shelf/${shelf.id}`}>
                                     <Typography variant='subtitle1'>{shelf.name}</Typography>
@@ -77,7 +68,7 @@ export default function Bookcase() {
                             <div style={{ display: 'flex', width: '100%' }}>
 
                                 {shelf.Books.map((book) => (
-                                    <Card key={`${book.id}`} sx={{ maxWidth: 200, textAlign: 'center', bgcolor:'transparent' }} className='book-card'>
+                                    <Card key={`${shelf.id}${book.id}`} id={`${shelf.id}${book.id}`} sx={{ maxWidth: 200, textAlign: 'center', bgcolor:'transparent' }} className='book-card'>
                                         <CardContent className='book-card'>
                                             <CardMedia
                                                 component="img"

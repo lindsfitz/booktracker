@@ -110,22 +110,21 @@ export default function Dashboard(props) {
 
     return (
         <React.Fragment>
-            {/* ONE LIST COMPONENT ALREADY EXISTS PRE DATA PULL */}
-            {/* ***** ONCE DATA IS BEING PULLED VIA API SUCCESSFULLY - MAP OVER SHELF RESULTS. CREATE LIST ITEM COMPONENT FOR EACH SHELF IN RESULTS DATA & LIST ITEM TEXT FOR THE TITLE OF EACH SHELF */}
-            {/* *** ONE IMAGE LIST ITEM IS CREATED FOR EACH BOOK INSIDE OF THE SHELF. JUST SET THE SRC TO THE IMAGE LINK FROM THE RESULTS */}
+
 
             {/* switch div to MUI component & this will be xs: width full; how to make # of items different for sizes? maybe have current reads div 2x with different spliced indexes for how many books? */}
             <div id='currently-reading' style={{ margin: "20px" }}>
                 {/* spans whole width of the screen  */}
                 <Divider />
                 <Typography variant='subtitle1'>Currently Reading</Typography>
-                {currentReads && <div style={{ display: 'flex', width: '100%', padding: '15px' }}>
+                {currentReads && 
+                <div style={{ display: 'flex', width: '100%', padding: '15px' }}>
                     {currentReads.map((book) => (
-                        <Card sx={{ maxWidth: {xs:120, md:345} }} key={`${book.title}`} className='book-card'>
+                        <Card sx={{ maxWidth: { xs: 120, md: 345 } }} key={`${book.id}`} className='book-card'>
                             <CardContent>
                                 <CardMedia
                                     component="img"
-                                    sx={{ maxHeight: {xs:140, md:218}, maxWidth: {xs: 95, md:148} }}
+                                    sx={{ maxHeight: { xs: 140, md: 218 }, maxWidth: { xs: 95, md: 148 } }}
                                     onClick={() => { navigate(`/book/${book.id}`) }}
                                     image={`${book.cover_img}`}
                                     alt={`${book.title}`}
@@ -141,7 +140,7 @@ export default function Dashboard(props) {
 
             </div>
 
-{/* -----------------------------------------------MOBILE LAYOUT------------------------------------------------------ */}
+            {/* -----------------------------------------------MOBILE LAYOUT------------------------------------------------------ */}
             <Container sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column' }}>
                 {userStats && <div id='stats'>
                     <Box sx={{ width: '100%' }}>
@@ -159,61 +158,68 @@ export default function Dashboard(props) {
 
                             </Tabs>
                         </Box>
+
                         {/* THIS MONTH Stats */}
                         <TabPanel value={value} index={0}>
-                            {/* <Box sx={{ margin: '10px', padding: '5px' }}> */}
                             <Typography variant='h6'>So Far in {months[month]}</Typography>
-                            {userStats.month && <div>
-                                <Typography variant='subtitle1'>Total Books Read: {userStats.month.bookCount}</Typography>
-                                <Typography variant='subtitle1'>Total Pages Read: {userStats.month.totalPages}</Typography>
-                                <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.month.avgRating)} precision={0.5} readOnly /></Typography>
-                            </div>}
-                            {!userStats.month && <div>
-                                <Typography variant='subtitle1'>You haven't marked any books as read so far this month.</Typography>
-                            </div>}
-                            {/* </Box> */}
+                            {userStats.month ? (
+                                <div>
+                                    <Typography variant='subtitle1'>Total Books Read: {userStats.month.bookCount}</Typography>
+                                    <Typography variant='subtitle1'>Total Pages Read: {userStats.month.totalPages}</Typography>
+                                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.month.avgRating)} precision={0.5} readOnly /></Typography>
+                                </div>
+                            ) : (
+                                <div>
+                                    <Typography variant='subtitle1'>You haven't marked any books as read so far this month.</Typography>
+                                </div>
+                            )}
                         </TabPanel>
+
                         {/* This Year's Stats */}
                         <TabPanel value={value} index={1}>
-                            {/* <Box sx={{ margin: '10px', padding: '5px' }}> */}
                             <Typography variant='h6'>So Far in {year}</Typography>
-                            {userStats.year && <div>
-                                <Typography variant='subtitle1'>Total Books Read: {userStats.year.bookCount}</Typography>
-                                <Typography variant='subtitle1'>Total Pages Read: {userStats.year.totalPages}</Typography>
-                                <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.year.avgRating)} precision={0.5} readOnly /></Typography>
-                            </div>}
-                            {!userStats.year && <div>
-                                <Typography variant='subtitle1'>You haven't marked any books as read so far this year.</Typography>
-                            </div>}
-                            {/* </Box> */}
+                            {userStats.year ? (
+                                <div>
+                                    <Typography variant='subtitle1'>Total Books Read: {userStats.year.bookCount}</Typography>
+                                    <Typography variant='subtitle1'>Total Pages Read: {userStats.year.totalPages}</Typography>
+                                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.year.avgRating)} precision={0.5} readOnly /></Typography>
+                                </div>
+                            ) : (
+                                <div>
+                                    <Typography variant='subtitle1'>You haven't marked any books as read so far this year.</Typography>
+                                </div>
+                            )}
                         </TabPanel>
+
                         {/* ALL TIME Stats */}
                         <TabPanel value={value} index={2}>
-                            {/* <Box sx={{ margin: '10px', padding: '5px', borderRadius: '10px' }}> */}
                             <Typography variant='h6'>All-Time</Typography>
-
-                            {userStats.all && <div>
-                                <Typography variant='subtitle1'>Total Books Read: {userStats.all.bookCount}</Typography>
-                                <Typography variant='subtitle1'>Total Pages Read: {userStats.all.totalPages}</Typography>
-                                <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.all.avgRating)} precision={0.5} readOnly /></Typography>
-                            </div>}
-                            {!userStats.all && <div>
-                                <Typography variant='subtitle1'>You haven't marked any books as read on this account yet.</Typography>
-                            </div>}
-                            {/* </Box> */}
+                            {userStats.all ? (
+                                <div>
+                                    <Typography variant='subtitle1'>Total Books Read: {userStats.all.bookCount}</Typography>
+                                    <Typography variant='subtitle1'>Total Pages Read: {userStats.all.totalPages}</Typography>
+                                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.all.avgRating)} precision={0.5} readOnly /></Typography>
+                                </div>
+                            ) : (
+                                <div>
+                                    <Typography variant='subtitle1'>You haven't marked any books as read on this account yet.</Typography>
+                                </div>
+                            )}
                         </TabPanel>
+
                         {/* ALL SHELVED BOOKS */}
                         <TabPanel value={value} index={3}>
-                            {/* <Box sx={{ margin: '10px', padding: '5px', borderRadius: '10px' }}> */}
                             <Typography variant='h6'>Currently Shelved Books</Typography>
-                            {userStats.shelved && <div>
-                                <Typography variant='subtitle1'>Total Bookcase Books: {userStats.shelved.bookCount}</Typography>
-                                <Typography variant='subtitle1'>Total Shelved Pages: {userStats.shelved.totalPages}</Typography>
-                            </div>}
-                            {/* </Box> */}
-                            {!userStats.shelved && <div>
-                                <Typography variant='subtitle1'>You don't have any books in your Bookcase yet.</Typography>
-                            </div>}
+                            {userStats.shelved ? (
+                                <div>
+                                    <Typography variant='subtitle1'>Total Bookcase Books: {userStats.shelved.bookCount}</Typography>
+                                    <Typography variant='subtitle1'>Total Shelved Pages: {userStats.shelved.totalPages}</Typography>
+                                </div>
+                            ) : (
+                                <div>
+                                    <Typography variant='subtitle1'>You don't have any books in your Bookcase yet.</Typography>
+                                </div>
+                            )}
                         </TabPanel>
                     </Box>
                 </div>}
@@ -222,18 +228,16 @@ export default function Dashboard(props) {
                         <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                             {context.userShelves.slice(0, 3).map((shelf) => (
                                 <React.Fragment>
-                                    <ListItem key={`${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                                    <ListItem key={`${shelf.name}${shelf.id}mobile`} id={`${shelf.name}${shelf.id}mobile`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                                         <ListItemText
                                             primary={`${shelf.name}`}
                                             sx={{ maxWidth: '10%' }}
                                         />
                                         <div style={{ display: 'flex', width: '100%' }}>
 
-                                            {shelf.Books.slice(0,2).map((book) => (
-                                         
-                                                <Card sx={{ maxWidth: 345 }} key={`${book.title}`} className='book-card'>
+                                            {shelf.Books.slice(0, 2).map((book) => (
+                                                <Card sx={{ maxWidth: 345 }} key={`${book.id}`} className='book-card'>
                                                     <CardContent>
-
                                                         <CardMedia
                                                             component="img"
                                                             height="140"
@@ -241,7 +245,6 @@ export default function Dashboard(props) {
                                                             image={`${book.cover_img}`}
                                                             alt={`${book.title}`}
                                                         />
-
                                                     </CardContent>
                                                 </Card>
 
@@ -262,12 +265,12 @@ export default function Dashboard(props) {
                                 {/* quick links sections  */}
                                 {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
                                 <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
-                                <Button onClick={()=> navigate('/shelves')}>My Bookcase</Button>
-                                <Button onClick={()=>navigate('/books/current')}>Currently Reading</Button>
-                                <Button onClick={()=>navigate('/books/read')}>Read</Button>
-                                <Button onClick={()=> navigate('/search')}>Find Books</Button>
-                                <Button onClick={()=> navigate('/activity')}>Reading Activity</Button>
-                                <Button onClick={()=>navigate('/books')}>All My Books</Button>
+                                <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
+                                <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
+                                <Button onClick={() => navigate('/books/read')}>Read</Button>
+                                <Button onClick={() => navigate('/search')}>Find Books</Button>
+                                <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
+                                <Button onClick={() => navigate('/books')}>All My Books</Button>
                             </Stack>
                         </div>
                         <Divider />
@@ -278,7 +281,6 @@ export default function Dashboard(props) {
                             <Stack spacing={0.5}
                                 alignItems="flex-start"
                             >
-
                                 {context.userShelves.map((shelf) => (
                                     <Button
                                         key={`${shelf.id}`}
@@ -289,14 +291,11 @@ export default function Dashboard(props) {
                                 ))}
                             </Stack>
                         </div>
-
-
-
                     </div>
                 </Container>
             </Container>
 
-{/* -----------------------------------------------DESKTOP LAYOUT------------------------------------------------------ */}
+            {/* -----------------------------------------------DESKTOP LAYOUT------------------------------------------------------ */}
             <Container sx={{ display: { xs: 'none', md: 'flex' }, flexDirection: 'row-reverse' }} id='dash'>
 
                 <div id='right-column'>
@@ -317,61 +316,68 @@ export default function Dashboard(props) {
 
                                 </Tabs>
                             </Box>
+
                             {/* THIS MONTH Stats */}
                             <TabPanel value={value} index={0}>
-                                {/* <Box sx={{ margin: '10px', padding: '5px' }}> */}
                                 <Typography variant='h6'>So Far in {months[month]}</Typography>
-                                {userStats.month && <div>
-                                    <Typography variant='subtitle1'>Total Books Read: {userStats.month.bookCount}</Typography>
-                                    <Typography variant='subtitle1'>Total Pages Read: {userStats.month.totalPages}</Typography>
-                                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.month.avgRating)} precision={0.5} readOnly /></Typography>
-                                </div>}
-                                {!userStats.month && <div>
-                                    <Typography variant='subtitle1'>You haven't marked any books as read so far this month.</Typography>
-                                </div>}
-                                {/* </Box> */}
+                                {userStats.month ? (
+                                    <div>
+                                        <Typography variant='subtitle1'>Total Books Read: {userStats.month.bookCount}</Typography>
+                                        <Typography variant='subtitle1'>Total Pages Read: {userStats.month.totalPages}</Typography>
+                                        <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.month.avgRating)} precision={0.5} readOnly /></Typography>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <Typography variant='subtitle1'>You haven't marked any books as read so far this month.</Typography>
+                                    </div>
+                                )}
                             </TabPanel>
+
                             {/* This Year's Stats */}
                             <TabPanel value={value} index={1}>
-                                {/* <Box sx={{ margin: '10px', padding: '5px' }}> */}
                                 <Typography variant='h6'>So Far in {year}</Typography>
-                                {userStats.year && <div>
-                                    <Typography variant='subtitle1'>Total Books Read: {userStats.year.bookCount}</Typography>
-                                    <Typography variant='subtitle1'>Total Pages Read: {userStats.year.totalPages}</Typography>
-                                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.year.avgRating)} precision={0.5} readOnly /></Typography>
-                                </div>}
-                                {!userStats.year && <div>
-                                    <Typography variant='subtitle1'>You haven't marked any books as read so far this year.</Typography>
-                                </div>}
-                                {/* </Box> */}
+                                {userStats.year ? (
+                                    <div>
+                                        <Typography variant='subtitle1'>Total Books Read: {userStats.year.bookCount}</Typography>
+                                        <Typography variant='subtitle1'>Total Pages Read: {userStats.year.totalPages}</Typography>
+                                        <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.year.avgRating)} precision={0.5} readOnly /></Typography>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <Typography variant='subtitle1'>You haven't marked any books as read so far this year.</Typography>
+                                    </div>
+                                )}
                             </TabPanel>
+
                             {/* ALL TIME Stats */}
                             <TabPanel value={value} index={2}>
-                                {/* <Box sx={{ margin: '10px', padding: '5px', borderRadius: '10px' }}> */}
                                 <Typography variant='h6'>All-Time</Typography>
-
-                                {userStats.all && <div>
-                                    <Typography variant='subtitle1'>Total Books Read: {userStats.all.bookCount}</Typography>
-                                    <Typography variant='subtitle1'>Total Pages Read: {userStats.all.totalPages}</Typography>
-                                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.all.avgRating)} precision={0.5} readOnly /></Typography>
-                                </div>}
-                                {!userStats.all && <div>
-                                    <Typography variant='subtitle1'>You haven't marked any books as read on this account yet.</Typography>
-                                </div>}
-                                {/* </Box> */}
+                                {userStats.all ? (
+                                    <div>
+                                        <Typography variant='subtitle1'>Total Books Read: {userStats.all.bookCount}</Typography>
+                                        <Typography variant='subtitle1'>Total Pages Read: {userStats.all.totalPages}</Typography>
+                                        <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.all.avgRating)} precision={0.5} readOnly /></Typography>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <Typography variant='subtitle1'>You haven't marked any books as read on this account yet.</Typography>
+                                    </div>
+                                )}
                             </TabPanel>
+
                             {/* ALL SHELVED BOOKS */}
                             <TabPanel value={value} index={3}>
-                                {/* <Box sx={{ margin: '10px', padding: '5px', borderRadius: '10px' }}> */}
                                 <Typography variant='h6'>Currently Shelved Books</Typography>
-                                {userStats.shelved && <div>
-                                    <Typography variant='subtitle1'>Total Bookcase Books: {userStats.shelved.bookCount}</Typography>
-                                    <Typography variant='subtitle1'>Total Shelved Pages: {userStats.shelved.totalPages}</Typography>
-                                </div>}
-                                {/* </Box> */}
-                                {!userStats.shelved && <div>
-                                    <Typography variant='subtitle1'>You don't have any books in your Bookcase yet.</Typography>
-                                </div>}
+                                {userStats.shelved ? (
+                                    <div>
+                                        <Typography variant='subtitle1'>Total Bookcase Books: {userStats.shelved.bookCount}</Typography>
+                                        <Typography variant='subtitle1'>Total Shelved Pages: {userStats.shelved.totalPages}</Typography>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <Typography variant='subtitle1'>You don't have any books in your Bookcase yet.</Typography>
+                                    </div>
+                                )}
                             </TabPanel>
                         </Box>
                     </div>}
@@ -400,16 +406,15 @@ export default function Dashboard(props) {
                         <div id='quicklinks'>
                             <Stack spacing={0} alignItems="flex-end"
                             >
-
                                 {/* quick links sections  */}
                                 {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
                                 <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
-                                <Button onClick={()=> navigate('/shelves')}>My Bookcase</Button>
-                                <Button onClick={()=>navigate('/books/current')}>Currently Reading</Button>
-                                <Button onClick={()=>navigate('/books/read')}>Read</Button>
-                                <Button onClick={()=> navigate('/search')}>Find Books</Button>
-                                <Button onClick={()=> navigate('/activity')}>Reading Activity</Button>
-                                <Button onClick={()=>navigate('/books')}>All My Books</Button>
+                                <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
+                                <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
+                                <Button onClick={() => navigate('/books/read')}>Read</Button>
+                                <Button onClick={() => navigate('/search')}>Find Books</Button>
+                                <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
+                                <Button onClick={() => navigate('/books')}>All My Books</Button>
                             </Stack>
                         </div>
                     </div>
@@ -422,7 +427,7 @@ export default function Dashboard(props) {
                         <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                             {context.userShelves.slice(0, 3).map((shelf) => (
                                 <React.Fragment>
-                                    <ListItem key={`${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                                    <ListItem key={`${shelf.name}${shelf.id}`} id={`${shelf.name}${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                                         <ListItemText
                                             primary={`${shelf.name}`}
                                             sx={{ maxWidth: '10%' }}
@@ -430,9 +435,8 @@ export default function Dashboard(props) {
                                         <div style={{ display: 'flex', width: '100%' }}>
 
                                             {shelf.Books.map((book) => (
-                                                <Card sx={{ maxWidth: 345 }} key={`${book.title}`} className='book-card'>
+                                                <Card sx={{ maxWidth: 345 }} key={`${shelf.name}${book.id}`} className='book-card'>
                                                     <CardContent>
-
                                                         <CardMedia
                                                             component="img"
                                                             height="140"
@@ -440,10 +444,8 @@ export default function Dashboard(props) {
                                                             image={`${book.cover_img}`}
                                                             alt={`${book.title}`}
                                                         />
-
                                                     </CardContent>
                                                 </Card>
-
                                             ))}
                                         </div>
                                     </ListItem>

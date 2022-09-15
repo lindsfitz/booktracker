@@ -9,7 +9,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import EditShelf from './components/EditShelf';
-import { List, ListItem, Divider, ListItemText, ImageListItem, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { List, ListItem, Divider, ListItemText, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 
 export default function Shelf() {
@@ -72,9 +72,7 @@ export default function Shelf() {
                     {shelf.Books.map((book) => (
 
                         <React.Fragment>
-                            <ListItem key={`${book.title}`} alignItems="flex-start">
-
-                                {/* <ImageListItem key={book.title}> */}
+                            <ListItem key={`${book.title}${shelf.name}shelf`} id={`${book.title}${shelf.name}shelf`} alignItems="flex-start">
                                     <img
                                         src={`${book.cover_img}`}
                                         srcSet={`${book.cover_img}`}
@@ -82,8 +80,6 @@ export default function Shelf() {
                                         loading="lazy"
                                         onClick={() => { navigate(`/book/${book.id}`) }}
                                     />
-                                {/* </ImageListItem> */}
-
                                 <ListItemText
                                     primary={book.title}
                                     secondary={
