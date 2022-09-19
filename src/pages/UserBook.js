@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from "react-router-dom";
 import AppContext from '../AppContext';
 import API from '../utils/API'
+import dayjs from 'dayjs'
 import { Card, Button, Rating, CardContent, CardMedia, Typography, Box, Container, Paper, Divider, Switch, Stack, Chip, Link, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -67,8 +68,8 @@ export default function UserBook() {
 
     const moveToRead = async () => {
         await API.finishedReading({
-            UserId:context.userData.id,
-            BookId:bookData.id,
+            UserId: context.userData.id,
+            BookId: bookData.id,
             last_update: new Date()
         })
     }
@@ -101,8 +102,10 @@ export default function UserBook() {
         <React.Fragment>
             {bookData && <div>
                 {/* ----BOOK DETAILS @ TOP---- */}
-                <Container sx={{ display: "flex", m: 3, p: 2 }}>
-                    <Card sx={{ maxWidth: 345 }} >
+                <Container 
+                sx={{ display:"flex", flexDirection:{xs:'column', md:'row'}, 
+                m:{xs:1,md:3}, p:{xs:0,md:2} }}>
+                    <Card sx={{ maxWidth: {xs:250, md:345}, minWidth:{xs:240}, alignSelf:'center' }} >
                         <CardContent>
                             <CardMedia
                                 component="img"
@@ -112,7 +115,7 @@ export default function UserBook() {
                             />
                         </CardContent>
                     </Card>
-                    <Box sx={{ maxWidth: "60%", p: 4 }}>
+                    <Box sx={{ maxWidth: {xs:1/1, md:3/5}, p: 4 }}>
                         <Typography gutterBottom variant="h5" component="div">
                             {bookData.title}
                         </Typography>
@@ -138,7 +141,7 @@ export default function UserBook() {
 
                 {/* ----CONDITIONALS FOR READ/READING & SHELVES---- */}
                 {bookData.Shelves &&
-                    <Stack direction="row" spacing={2}>
+                    <Stack direction="row" spacing={2} sx={{mb:3, ml:5}}>
                         {markedRead &&
                             <Stack spacing={0}>
                                 <Typography variant='caption'>Marked As:</Typography>
@@ -153,7 +156,7 @@ export default function UserBook() {
                         }
                         <Stack spacing={0}>
                             <Typography variant='caption'>On Shelves:</Typography>
-                            <Stack direction='row'>
+                            <Stack direction={{xs:'column', md:'row'}}>
                                 {bookData.Shelves.map((shelf) => (
                                     <Chip key={`${shelf.name}${shelf.id}`} label={shelf.name} variant="outlined" onDelete={() => removeFromShelf(shelf.id)} />
                                 ))}
@@ -204,45 +207,52 @@ export default function UserBook() {
                             Your Reviews:
                         </Typography>
                         {reviewData.map((review) => (
-                            <Paper key={`${review.id}${review.UserId}`} elevation={6} sx={{ width: '60%', p: 2 }}>
+                            <Paper key={`${review.id}${review.UserId}`} elevation={6} sx={{ width: {xs:3/4, md:3/5}, p: 2 }}>
                                 {editId !== review.id && <Container>
-                                    <Stack spacing={0.5} direction="row" justifyContent="flex-end">
-                                        <IconButton onClick={() => toggleEditForm(review.id)} aria-label="delete" size="small">
-                                            <EditIcon fontSize="inherit" />
-                                        </IconButton>
-                                        <IconButton onClick={() => deleteReview(review.id)} aria-label="delete" size="small">
-                                            <DeleteIcon fontSize="inherit" />
-                                        </IconButton>
+                                    <Stack direction='row' justifyContent="space-between">
+                                        <Stack direction="row" spacing={1} alignItems="center">
+                                            <Typography variant='caption'>Unread</Typography>
+                                            <Switch name='read'
+                                                id='read'
+                                                checked={review.read}
+                                                size='small'
+                                                disabled />
+                                            <Typography variant='caption'>Read</Typography>
+                                        </Stack>
+
+                                        <Stack spacing={0.5} direction="row" alignItems="center">
+                                            <IconButton onClick={() => toggleEditForm(review.id)} aria-label="delete" size="small">
+                                                <EditIcon fontSize="inherit" />
+                                            </IconButton>
+                                            <IconButton onClick={() => deleteReview(review.id)} aria-label="delete" size="small">
+                                                <DeleteIcon fontSize="inherit" />
+                                            </IconButton>
+                                        </Stack>
                                     </Stack>
-                                    <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                        <Stack spacing={3} sx={{ m: 1, p: 1 }}>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography>Unread</Typography>
-                                                <Switch name='read'
-                                                    id='read'
-                                                    checked={review.read}
-                                                    disabled />
-                                                <Typography>Read</Typography>
+
+                                    <Box sx={{ p: 2, mt: 1 }}>
+                                        <Box sx={{textAlign:'center'}}>
+                                            <Stack direction={{xs:'column', md:'row'}} spacing={{xs:1, md:3}} alignItems='center' justifyContent="center">
+                                                <Stack direction="row" spacing={0} alignItems="center">
+                                                    <Typography component="legend" variant='caption'>Rated It:</Typography>
+                                                    <Rating name="half-rating-read" defaultValue={review.rating} precision={0.5} readOnly />
+                                                </Stack>
+                                                <Typography variant='caption'>On {dayjs(review.last_update).format('MMMM D, YYYY')}</Typography>
                                             </Stack>
 
-                                            <Chip label={`Date Started: ${review.date_started}`} variant='outlined' />
-
-                                            <Chip label={`Date Finished: ${review.date_finished}`} variant='outlined' />
-                                        </Stack>
-                                        <Stack spacing={3} sx={{ m: 1, p: 1 }}>
-                                            <Stack direction="row" spacing={0}>
-                                                <Typography component="legend">Your Rating:</Typography>
-                                                <Rating name="half-rating-read" defaultValue={review.rating} precision={0.5} readOnly />
+                                            <Stack direction={{xs:'column', md:'row'}} spacing={{xs:1, md:3}} justifyContent='center' sx={{ m: 1, p: 1 }}>                                               
+                                                {review.format && <Chip label={`Format: ${review.format}`} variant='outlined' />}
+                                                {review.series && <Chip label={`Series: ${review.series}`} variant='outlined' />}
                                             </Stack>
-                                            <Chip label={`Format: ${review.format}`} variant='outlined' />
+                                            {review.date_started && review.date_finished &&
+                                                <Typography variant='caption'>Read From: {dayjs(review.date_started).format('MMM D, YYYY')} - {dayjs(review.date_finished).format('MMM D, YYYY')}</Typography>}
+                                        </Box>
 
-                                            <Chip label={`Series: ${review.series}`} variant='outlined' />
-                                        </Stack>
+                                        {review.review && <Typography variant="subtitle1" color="text.secondary">
+                                            {review.review}
+                                        </Typography>}
                                     </Box>
 
-                                    <Typography variant="subtitle1" color="text.secondary">
-                                        {review.review}
-                                    </Typography>
                                 </Container>}
 
                                 {editId === review.id &&
