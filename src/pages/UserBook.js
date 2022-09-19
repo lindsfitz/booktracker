@@ -1,11 +1,15 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import AppContext from '../AppContext';
 import API from '../utils/API'
 import dayjs from 'dayjs'
-import { Card, Button, Rating, CardContent, CardMedia, Typography, Box, Container, Paper, Divider, Switch, Stack, Chip, Link, IconButton } from '@mui/material';
+import {
+    Card,
+    Button, ButtonGroup, Grow, Popper, MenuItem, MenuList, Rating, CardContent, CardMedia, Typography, Box, Container, Paper, Divider, Switch, Stack, Chip, Link, IconButton, ClickAwayListener, Snackbar
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AddReview from './components/AddReview';
 import EditReview from './components/EditReview';
 
@@ -16,6 +20,8 @@ import EditReview from './components/EditReview';
 // Maybe this bottom section is conditionally rendered? Aka if no review, render add review button; if review, render review; if button is clicked (or edit btn) render the review form? Not sure exactly what would be best here 
 // toggle for Read vs unread books goes here and the rating also goes here 
 
+
+
 export default function UserBook() {
     const context = useContext(AppContext);
     const params = useParams();
@@ -24,19 +30,48 @@ export default function UserBook() {
     const [reviewData, setReviewData] = useState(false)
     const [reviewForm, setReviewForm] = useState(false)
     const [editReview, setEditReview] = useState(false);
+    const [shelfChoices, setShelfChoices] = useState([])
     const [editId, setEditId] = useState(null);
     const [markedRead, setMarkedRead] = useState(false);
     const [markedReading, setMarkedReading] = useState(false)
+    const [open, setOpen] = useState(false);
+    const anchorRef = useRef(null);
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [snack, setSnack] = useState(false);
+    const [snackMessage, setSnackMessage] = useState(null)
 
 
     const bookInfo = async () => {
         const book = await API.getBookandShelves(params.id, context.userData.id);
-        // const book = await API.getOneBook(params.id);
-        // console.log(book)
         setBookData(book.data)
         if (book.data.Users.length) {
             setMarkedReading(true)
         }
+        if (book.data.Reviews.length) {
+            setReviewData(book.data.Reviews)
+            for (let i = 0; i < book.data.Reviews.length; i++) {
+                if (book.data.Reviews[i].read === true) {
+                    setMarkedRead(true)
+                }
+            }
+        }
+        shelfOptions(book.data)
+    }
+
+    const shelfOptions = (data) => {
+        setShelfChoices([])
+        if (!data.Shelves.length) {
+            setShelfChoices(context.userShelves)
+            return;
+        }
+
+        context.userShelves.forEach(shelf => {
+            const found = data.Shelves.find(element => element.name === shelf.name)
+            // console.log(found)
+            if (!found) {
+                setShelfChoices(current => [...current, shelf])
+            }
+        })
     }
 
     const reviewInfo = async () => {
@@ -52,10 +87,12 @@ export default function UserBook() {
         }
     }
 
-    const addToRead = () => {
-        API.newReview({
+    const addToRead = async () => {
+        await API.newReview({
             last_update: new Date()
         })
+        openSnackbar('Marked As Read')
+        bookInfo()
     }
 
     const addToCurrentlyReading = async () => {
@@ -63,7 +100,8 @@ export default function UserBook() {
             userId: context.userData.id,
             bookId: bookData.id
         })
-        // console.log(added)
+        openSnackbar('Marked As Currently Reading')
+        bookInfo()
     }
 
     const moveToRead = async () => {
@@ -72,6 +110,27 @@ export default function UserBook() {
             BookId: bookData.id,
             last_update: new Date()
         })
+        openSnackbar('Marked As Read')
+        bookInfo()
+    }
+
+    const addToShelf = async (e) => {
+        await API.addtoShelf(e.target.id, { id: bookData.id })
+        setOpen(false);
+        openSnackbar(`Added to ${e.target.textContent}`)
+        bookInfo()
+    }
+
+    const deleteReview = async (id) => {
+        await API.deleteReview(id)
+        openSnackbar('Review Removed')
+        reviewInfo()
+    }
+
+    const removeFromShelf = async (shelfName, shelfId) => {
+        await API.removefromShelf(shelfId, bookData.id)
+        openSnackbar(`Removed from ${shelfName}`)
+        bookInfo()
     }
 
     const toggleReviewForm = () => {
@@ -83,29 +142,42 @@ export default function UserBook() {
         setEditReview(!editReview)
     }
 
-    const deleteReview = async (id) => {
-        API.deleteReview(id)
-        reviewInfo()
+    const toggleShelfMenu = () => {
+        setOpen((prevOpen) => !prevOpen);
+    };
+
+    const closeShelfMenu = (event) => {
+        if (anchorRef.current && anchorRef.current.contains(event.target)) {
+            return;
+        }
+        setOpen(false);
+    };
+
+    const openSnackbar = (message) => {
+        setSnackMessage(message)
+        setSnack(true)
     }
 
-    const removeFromShelf = (shelfid) => {
-        API.removefromShelf(shelfid, bookData.id)
-    }
+
+
+
+
 
     useEffect(() => {
         bookInfo()
-        reviewInfo()
-    }, [])
+    }, [params.id])
 
 
     return (
         <React.Fragment>
             {bookData && <div>
                 {/* ----BOOK DETAILS @ TOP---- */}
-                <Container 
-                sx={{ display:"flex", flexDirection:{xs:'column', md:'row'}, 
-                m:{xs:1,md:3}, p:{xs:0,md:2} }}>
-                    <Card sx={{ maxWidth: {xs:250, md:345}, minWidth:{xs:240}, alignSelf:'center' }} >
+                <Container
+                    sx={{
+                        display: "flex", flexDirection: { xs: 'column', md: 'row' },
+                        m: { xs: 1, md: 3 }, p: { xs: 0, md: 2 }
+                    }}>
+                    <Card sx={{ maxWidth: { xs: 250, md: 345 }, minWidth: { xs: 240 }, alignSelf: 'center' }} >
                         <CardContent>
                             <CardMedia
                                 component="img"
@@ -115,7 +187,7 @@ export default function UserBook() {
                             />
                         </CardContent>
                     </Card>
-                    <Box sx={{ maxWidth: {xs:1/1, md:3/5}, p: 4 }}>
+                    <Box sx={{ maxWidth: { xs: 1 / 1, md: 3 / 5 }, p: 4 }}>
                         <Typography gutterBottom variant="h5" component="div">
                             {bookData.title}
                         </Typography>
@@ -141,7 +213,7 @@ export default function UserBook() {
 
                 {/* ----CONDITIONALS FOR READ/READING & SHELVES---- */}
                 {bookData.Shelves &&
-                    <Stack direction="row" spacing={2} sx={{mb:3, ml:5}}>
+                    <Stack direction="row" spacing={2} sx={{ mb: 3, ml: 5 }}>
                         {markedRead &&
                             <Stack spacing={0}>
                                 <Typography variant='caption'>Marked As:</Typography>
@@ -156,9 +228,9 @@ export default function UserBook() {
                         }
                         <Stack spacing={0}>
                             <Typography variant='caption'>On Shelves:</Typography>
-                            <Stack direction={{xs:'column', md:'row'}}>
+                            <Stack direction={{ xs: 'column', md: 'row' }}>
                                 {bookData.Shelves.map((shelf) => (
-                                    <Chip key={`${shelf.name}${shelf.id}`} label={shelf.name} variant="outlined" onDelete={() => removeFromShelf(shelf.id)} />
+                                    <Chip key={`${shelf.name}${shelf.id}`} id={shelf.id} label={shelf.name} variant="outlined" onDelete={(event) => removeFromShelf(shelf.name, shelf.id)} />
                                 ))}
                             </Stack>
                         </Stack>
@@ -173,7 +245,62 @@ export default function UserBook() {
                     <AddReview reviewInfo={reviewInfo} toggleReviewForm={toggleReviewForm} />
                     <Button onClick={toggleReviewForm}>Cancel</Button>
                 </div>) : (<div>
-                    <Button>Add to Shelf</Button>
+
+
+                    <ButtonGroup variant="text" aria-label="text button group" ref={anchorRef}>
+                        <Button onClick={toggleShelfMenu}>Add to Shelf</Button>
+                        <Button
+                            size="small"
+                            aria-controls={open ? 'split-button-menu' : undefined}
+                            aria-expanded={open ? 'true' : undefined}
+                            aria-label="select merge strategy"
+                            aria-haspopup="menu"
+                            onClick={toggleShelfMenu}
+                        >
+                            <ArrowDropDownIcon />
+                        </Button>
+                    </ButtonGroup>
+                    <Popper
+                        sx={{
+                            zIndex: 1,
+                        }}
+                        open={open}
+                        anchorEl={anchorRef.current}
+                        role={undefined}
+                        transition
+                        disablePortal
+                    >
+                        {({ TransitionProps, placement }) => (
+                            <Grow
+                                {...TransitionProps}
+                                style={{
+                                    transformOrigin:
+                                        placement === 'bottom' ? 'center top' : 'center bottom',
+                                }}
+                            >
+                                <Paper>
+                                    <ClickAwayListener onClickAway={closeShelfMenu}>
+                                        <MenuList id="split-button-menu" autoFocusItem>
+                                            {shelfChoices.map((shelf, index) => (
+                                                <MenuItem
+                                                    key={shelf.name}
+                                                    id={shelf.id}
+                                                    selected={index === selectedIndex}
+                                                    onClick={(event) => addToShelf(event)}
+                                                >
+                                                    {shelf.name}
+                                                </MenuItem>
+                                            ))}
+                                        </MenuList>
+                                    </ClickAwayListener>
+                                </Paper>
+                            </Grow>
+                        )}
+                    </Popper>
+
+
+
+
                     {!markedRead && !markedReading &&
                         <React.Fragment>
                             <Button onClick={addToCurrentlyReading}>Add To Currently Reading</Button>
@@ -207,7 +334,7 @@ export default function UserBook() {
                             Your Reviews:
                         </Typography>
                         {reviewData.map((review) => (
-                            <Paper key={`${review.id}${review.UserId}`} elevation={6} sx={{ width: {xs:3/4, md:3/5}, p: 2 }}>
+                            <Paper key={`${review.id}${review.UserId}`} elevation={6} sx={{ width: { xs: 3 / 4, md: 3 / 5 }, p: 2 }}>
                                 {editId !== review.id && <Container>
                                     <Stack direction='row' justifyContent="space-between">
                                         <Stack direction="row" spacing={1} alignItems="center">
@@ -231,8 +358,8 @@ export default function UserBook() {
                                     </Stack>
 
                                     <Box sx={{ p: 2, mt: 1 }}>
-                                        <Box sx={{textAlign:'center'}}>
-                                            <Stack direction={{xs:'column', md:'row'}} spacing={{xs:1, md:3}} alignItems='center' justifyContent="center">
+                                        <Box sx={{ textAlign: 'center' }}>
+                                            <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }} alignItems='center' justifyContent="center">
                                                 <Stack direction="row" spacing={0} alignItems="center">
                                                     <Typography component="legend" variant='caption'>Rated It:</Typography>
                                                     <Rating name="half-rating-read" defaultValue={review.rating} precision={0.5} readOnly />
@@ -240,7 +367,7 @@ export default function UserBook() {
                                                 <Typography variant='caption'>On {dayjs(review.last_update).format('MMMM D, YYYY')}</Typography>
                                             </Stack>
 
-                                            <Stack direction={{xs:'column', md:'row'}} spacing={{xs:1, md:3}} justifyContent='center' sx={{ m: 1, p: 1 }}>                                               
+                                            <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }} justifyContent='center' sx={{ m: 1, p: 1 }}>
                                                 {review.format && <Chip label={`Format: ${review.format}`} variant='outlined' />}
                                                 {review.series && <Chip label={`Series: ${review.series}`} variant='outlined' />}
                                             </Stack>
@@ -265,7 +392,15 @@ export default function UserBook() {
 
             </div>}
 
-            {/* {editReview && } */}
+            <Snackbar
+                anchorOrigin={{vertical: 'bottom',
+                horizontal: 'center' }}
+                open={snack}
+                // onClose={handleClose}
+                message={snackMessage}
+                key={snackMessage}
+            />
+
 
         </React.Fragment>
     )

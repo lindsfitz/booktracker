@@ -4,7 +4,9 @@ import AddShelf from './components/AddShelf'
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import EditShelf from './components/EditShelf';
-import { List, ListItem, Divider, ListItemText, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Card, CardMedia, CardContent, Container, ButtonGroup } from '@mui/material/';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { List, ListItem, Divider, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Card, CardMedia, CardContent, Container, ButtonGroup, IconButton, Tooltip } from '@mui/material/';
 
 
 
@@ -48,27 +50,47 @@ export default function Bookcase() {
 
 
         <React.Fragment>
-            <h1>All User Shelves</h1>
-            <Button variant="outlined" onClick={context.toggleShelfDialog}>
-                Add A Shelf
-            </Button>
+            <h1>My Bookcase</h1>
+            <Container sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <ButtonGroup>
+                    <Button variant="outlined" onClick={() => navigate('/books/currently')}>
+                        Currently Reading
+                    </Button>
+                    <Button variant="outlined" onClick={() => navigate('/books/read')}>
+                        Read
+                    </Button>
+                </ButtonGroup>
+                <Button variant="outlined" onClick={context.toggleShelfDialog}>
+                    Add A Shelf
+                </Button>
+            </Container>
             <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                 {context.userShelves.map((shelf) => (
                     <React.Fragment>
                         <ListItem key={`${shelf.name}${shelf.id}`} id={`${shelf.name}${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                            <Container sx={{ display: 'flex', alignItems:'center', justifyContent:'space-between' }}>
+                            <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <Link to={`/shelf/${shelf.id}`}>
                                     <Typography variant='subtitle1'>{shelf.name}</Typography>
                                 </Link>
                                 <ButtonGroup variant="outlined" aria-label="text button group">
-                                    <Button onClick={() => handleShelfEdit(shelf)}>Edit</Button>
-                                    <Button onClick={handleClickOpen}>Delete</Button>
+                                    {/* <Button onClick={() => handleShelfEdit(shelf)}>Edit</Button> */}
+                                    <Tooltip title="Edit">
+                                        <IconButton size='small' onClick={() => handleShelfEdit(shelf)}>
+                                            <EditIcon fontSize="inherit" />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Delete">
+                                        <IconButton size='small' onClick={handleClickOpen}>
+                                            <DeleteIcon fontSize="inherit" />
+                                        </IconButton>
+                                    </Tooltip>
+                                    {/* <Button onClick={handleClickOpen}>Delete</Button> */}
                                 </ButtonGroup>
                             </Container>
                             <div style={{ display: 'flex', width: '100%' }}>
 
                                 {shelf.Books.map((book) => (
-                                    <Card key={`${shelf.id}${book.id}`} id={`${shelf.id}${book.id}`} sx={{ maxWidth: 200, textAlign: 'center', bgcolor:'transparent' }} className='book-card'>
+                                    <Card key={`${shelf.id}${book.id}`} id={`${shelf.id}${book.id}`} sx={{ maxWidth: 200, textAlign: 'center', bgcolor: 'transparent' }} className='book-card'>
                                         <CardContent className='book-card'>
                                             <CardMedia
                                                 component="img"
@@ -83,9 +105,9 @@ export default function Bookcase() {
                                     </Card>
 
                                 ))}
-                            
-                                <Button variant='outlined' sx={{color:'#9da283', border:'#939876 1px solid'}}  
-                                onClick={() => navigate(`/shelf/${shelf.id}`)}>Shelf Details</Button> 
+
+                                <Button variant='outlined' sx={{ color: '#9da283', border: '#939876 1px solid' }}
+                                    onClick={() => navigate(`/shelf/${shelf.id}`)}>Shelf Details</Button>
                             </div>
                         </ListItem>
                         <Divider variant="inset" component="li" />

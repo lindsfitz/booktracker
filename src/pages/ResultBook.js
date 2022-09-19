@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import AppContext from '../AppContext';
 import API from '../utils/API';
-import { Container, Paper, Box, Typography, Stack, Chip, Divider, Button, ButtonGroup, ClickAwayListener, Grow, Popper, MenuItem, MenuList, Grid } from '@mui/material'
+import { Container, Paper, Box, Typography, Stack, Chip, Divider, Button, ButtonGroup, ClickAwayListener, Grow, Popper, MenuItem, MenuList, Grid, Snackbar, Card, CardContent, CardMedia } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AddReview from './components/AddReview';
 import { data } from 'uikit';
@@ -27,6 +27,8 @@ export default function ResultBook() {
         id: 0
     }])
     const [description, setDescription] = useState('')
+    const [snack, setSnack] = useState(false);
+    const [snackMessage, setSnackMessage] = useState(null)
 
     const openShelfMenu = (e) => {
         console.info(`Select a shelf to add to!`);
@@ -42,6 +44,13 @@ export default function ResultBook() {
         }
         setOpen(false);
     };
+
+    const openSnackbar = (message) => {
+        setSnackMessage(message)
+        setSnack(true)
+    }
+
+   
 
 
     // takes book info from API response & sends to db - returns found book or creates new one and returns db book info
@@ -60,7 +69,7 @@ export default function ResultBook() {
 
         return postBook
     }
-    
+
     // adds book to selected shelf
     // after adding shelf -- need to update context.userShelves so other pages update as well 
     const handleShelfAdd = async (e) => {
@@ -68,43 +77,39 @@ export default function ResultBook() {
         setOpen(false);
         const postBook = await bookCheck()
         const shelfAdd = await API.addtoShelf(e.target.id, { id: postBook.data.id })
-        if (shelfAdd.data.message){
+        if (shelfAdd.data.message) {
             console.log('wow added to shelf')
-            // add conditional span here to tell user book was added to shelf 
-            // then call shelf pull api and update user shelves 
+            // then call shelf pull api and update user shelves
+            openSnackbar(`Added to ${e.target.textContent}`)
         }
         if (shelfAdd.data.name === "SequelizeUniqueConstraintError") {
-            console.log('that book is already on that shelf my guy')
-            // add conditional span here to tell user that this book is already on that shelf 
-        }    
+            openSnackbar(`Already Shelved on ${e.target.textContent}`)
+        }
     };
 
 
     // adds book to 'currently reading' junction table w mix in method
     const markCurrentlyReading = async () => {
         const findBook = await bookCheck();
-        const currentRead = await API.addCurrentRead({
+        await API.addCurrentRead({
             userId: context.userData.id,
             bookId: findBook.data.id
         })
-        console.log(currentRead)
-        console.log('added to currently reading I think')
+        openSnackbar('Marked As Currently Reading')
     }
-
-
 
     // posts new review w just 'read' set to true and other fields as null 
     const markRead = async () => {
         const book = await bookCheck()
         // post request to add review but just setting read to true
         const reviewData = {
-            read:true,
+            read: true,
             last_update: new Date(),
-            UserId:context.userData.id,
-            BookId:book.data.id
+            UserId: context.userData.id,
+            BookId: book.data.id
         }
-       const reviewPost = await API.newReview(reviewData)
-       console.log(reviewPost)
+        await API.newReview(reviewData)
+        openSnackbar('Marked As Read')
     }
 
 
@@ -121,8 +126,6 @@ export default function ResultBook() {
         // this api call gives us title, description, subjects, author key
         const book = await API.getBook(params.id)
         const details = await API.searchByTitle(book.data.title)
-        console.log(book);
-        console.log(details)
         setBookData({
             book: book.data,
             details: details.data.docs[0]
@@ -150,109 +153,120 @@ export default function ResultBook() {
 
     return (
         <React.Fragment>
-            <Container sx={{ mt: 20 }}>
+            <Container sx={{ mt: 10 }}>
                 {bookData &&
-                    <Paper elevation={3}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={4}>
-                                <Box>
-                                    <Box>
-                                        <img src={`https://covers.openlibrary.org/b/olid/${bookData.details.cover_edition_key}-M.jpg`} />
-                                    </Box>
-                                    <ButtonGroup
-                                        orientation="vertical"
-                                        aria-label="vertical outlined button group"
-                                    >
-                                        <Button onClick={markCurrentlyReading}>Currently Reading</Button>
-                                        <Button onClick={markRead}>Mark As Read</Button>
-                                        <Button onClick={showReviewForm}>Add New Review</Button>
-                                        <ButtonGroup variant='contained' ref={anchorRef} aria-label="split button">
-                                            <Button onClick={openShelfMenu}>Add to Shelf</Button>
-                                            <Button
-                                                size="small"
-                                                aria-controls={open ? 'split-button-menu' : undefined}
-                                                aria-expanded={open ? 'true' : undefined}
-                                                aria-label="select merge strategy"
-                                                aria-haspopup="menu"
-                                                onClick={handleToggle}
-                                            >
-                                                <ArrowDropDownIcon />
-                                            </Button>
-                                        </ButtonGroup>
-                                        <Popper
-                                            sx={{
-                                                zIndex: 1,
-                                            }}
-                                            open={open}
-                                            anchorEl={anchorRef.current}
-                                            role={undefined}
-                                            transition
-                                            disablePortal
-                                        >
-                                            {({ TransitionProps, placement }) => (
-                                                <Grow
-                                                    {...TransitionProps}
-                                                    style={{
-                                                        transformOrigin:
-                                                            placement === 'bottom' ? 'center top' : 'center bottom',
-                                                    }}
-                                                >
-                                                    <Paper>
-                                                        <ClickAwayListener onClickAway={closeShelfMenu}>
-                                                            <MenuList id="split-button-menu" autoFocusItem>
-                                                                {options.map((option, index) => (
-                                                                    <MenuItem
-                                                                        key={option.id}
-                                                                        id={option.id}
-                                                                        // disabled={index === 2}
-                                                                        // selected={index === selectedIndex}
-                                                                        onClick={(event) => handleShelfAdd(event)}
-                                                                    >
-                                                                        {option.name}
-                                                                    </MenuItem>
-                                                                ))}
-                                                            </MenuList>
-                                                        </ClickAwayListener>
-                                                    </Paper>
-                                                </Grow>
-                                            )}
-                                        </Popper>
-                                    </ButtonGroup>
-                                </Box>
-                            </Grid>
-                            <Grid item xs={8}>
-                                <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Box>
-                                        <Typography variant='h3' gutterBottom>
-                                            {bookData.book.title}
-                                        </Typography>
-                                        <Typography variant='subtitle1' gutterBottom>
-                                            by {bookData.details.author_name[0]}
-                                        </Typography>
-                                        <Divider />
-                                        <Stack direction="row" spacing={1}>
-                                            <Chip label={`Published: ${bookData.details.first_publish_year}`} variant="outlined" />
-                                            <Chip label={`Pages: ${bookData.details.number_of_pages_median}`} variant="outlined" />
-                                        </Stack>
-                                        <Divider />
-                                    </Box>
-                                    <Box>
-                                        <Typography variant='body1'>
-                                            {description}
-                                        </Typography>
-                                    </Box>
-                                </Box>
-                            </Grid>
-                        </Grid>
+                    <Paper elevation={3} sx={{
+                        display: "flex", flexDirection: { xs: 'column', md: 'row' },
+                        m: { xs: 1, md: 3 }, p: { xs: 0, md: 2 }
+                    }}>
+                        <Card sx={{ maxWidth: { xs: 250, md: 345 }, minWidth: { xs: 240 }, alignSelf: 'center' }} >
+                            <CardContent>
+                                <CardMedia
+                                    component="img"
+                                    image={`https://covers.openlibrary.org/b/olid/${bookData.details.cover_edition_key}-M.jpg`}
+                                    alt={`${bookData.book.title}-Cover`}
+                                />
+                            </CardContent>
+                        </Card>
+
+
+                        <Box sx={{ maxWidth: { xs: 1 / 1, md: 3 / 5 }, p: 4 }}>
+                            <Typography variant='h5' gutterBottom>
+                                {bookData.book.title}
+                            </Typography>
+                            <Typography variant='subtitle2' gutterBottom>
+                                by {bookData.details.author_name[0]}
+                            </Typography>
+                            <Divider />
+                            <Stack direction="row" spacing={1}>
+                                <Chip label={`Published: ${bookData.details.first_publish_year}`} variant="outlined" />
+                                <Chip label={`Pages: ${bookData.details.number_of_pages_median}`} variant="outlined" />
+                            </Stack>
+                            <Divider />
+                            <Typography variant='body2'>
+                                {description}
+                            </Typography>
+                        </Box>
                     </Paper>
                 }
 
-                {reviewDiv && <div>
+                <Divider />
+
+                {reviewDiv ? (<div>
                     <AddReview />
                     <Button onClick={showReviewForm}>Cancel</Button>
-                </div>
+                </div>) :
+                    (<ButtonGroup
+                        aria-label="vertical outlined button group"
+                    >
+                        <Button onClick={markCurrentlyReading}>Currently Reading</Button>
+                        <Button onClick={markRead}>Mark As Read</Button>
+                        <Button onClick={showReviewForm}>Add New Review</Button>
+                        <ButtonGroup variant='contained' ref={anchorRef} aria-label="split button">
+                            <Button onClick={openShelfMenu}>Add to Shelf</Button>
+                            <Button
+                                size="small"
+                                aria-controls={open ? 'split-button-menu' : undefined}
+                                aria-expanded={open ? 'true' : undefined}
+                                aria-label="select merge strategy"
+                                aria-haspopup="menu"
+                                onClick={handleToggle}
+                            >
+                                <ArrowDropDownIcon />
+                            </Button>
+                        </ButtonGroup>
+                        <Popper
+                            sx={{
+                                zIndex: 1,
+                            }}
+                            open={open}
+                            anchorEl={anchorRef.current}
+                            role={undefined}
+                            transition
+                            disablePortal
+                        >
+                            {({ TransitionProps, placement }) => (
+                                <Grow
+                                    {...TransitionProps}
+                                    style={{
+                                        transformOrigin:
+                                            placement === 'bottom' ? 'center top' : 'center bottom',
+                                    }}
+                                >
+                                    <Paper>
+                                        <ClickAwayListener onClickAway={closeShelfMenu}>
+                                            <MenuList id="split-button-menu" autoFocusItem>
+                                                {options.map((option, index) => (
+                                                    <MenuItem
+                                                        key={option.id}
+                                                        id={option.id}
+                                                        onClick={(event) => handleShelfAdd(event)}
+                                                    >
+                                                        {option.name}
+                                                    </MenuItem>
+                                                ))}
+                                            </MenuList>
+                                        </ClickAwayListener>
+                                    </Paper>
+                                </Grow>
+                            )}
+                        </Popper>
+                    </ButtonGroup>)
                 }
+                <Divider />
+
             </Container>
+
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center'
+                }}
+                open={snack}
+                // onClose={handleClose}
+                message={snackMessage}
+                key={snackMessage}
+            />
 
         </React.Fragment>
     )

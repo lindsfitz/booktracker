@@ -45,9 +45,11 @@ const API = {
 
     // BOOK ROUTES
     
+    // this route returns just the book data from the db based on book id
     getOneBook:(id)=> {
         return axios.get(`${URL_PREFIX}/book/one/${id}`)
     },
+    // this route gets book info & includes the shelf data 
     getBookandShelves:(bookid,userid)=>{
         return axios.get(`${URL_PREFIX}/book/one/${bookid}/${userid}`)
     },
