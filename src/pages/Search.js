@@ -5,6 +5,23 @@ import API from '../utils/API';
 import AppContext from '../AppContext';
 import { Box, TextField, InputLabel, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography } from '@mui/material';
 
+
+const NYTweekly = [
+    'combined-print-and-e-book-fiction',
+    'combined-print-and-e-book-nonfiction',
+    'hardcover-fiction',
+    'hardcover-nonfiction',
+    'trade-fiction-paperback',
+    'paperback-nonfiction',
+    'young-adult-hardcover']
+
+const NYTmonthly = ["audio-fiction",
+"audio-nonfiction",
+"graphic-books-and-manga",
+"mass-market-monthly",
+"middle-grade-paperback-monthly",
+"young-adult-paperback-monthly"]
+
 export default function Search() {
     const context = useContext(AppContext);
     let navigate = useNavigate();
@@ -64,6 +81,29 @@ export default function Search() {
         // // })
   
     }
+
+    const nytBestSellers = async () => {
+        let testlist = 'combined-print-and-e-book-fiction'
+        const best = await API.nytList(testlist)
+        console.log(best)
+    }
+
+    const subjectSearch = async () => {
+        let subject = 'fantasy romance'
+
+        const OLsearch = await API.searchBySubject(subject)
+        const gbSearch = await API.gbBySubject(subject)
+
+        console.log(OLsearch)
+        console.log('------')
+        console.log(gbSearch)
+
+    }
+
+    // useEffect(()=> {
+    //     nytBestSellers()
+    //     subjectSearch()
+    // },[])
 
 
     return (

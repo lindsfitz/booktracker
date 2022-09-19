@@ -103,21 +103,9 @@ const API = {
 
     // STATS ROUTES 
 
-    // allReadStats:(id)=> {
-    //     return axios.get(`${URL_PREFIX}/stats/read/${id}`)
-    // },
-    // allShelfStats:(id)=> {
-    //     return axios.get(`${URL_PREFIX}/stats/shelves/${id}`)
-    // },
-    // yearlyStats:(year,id)=> {
-    //     return axios.get(`${URL_PREFIX}/stats/year/${year}/${id}`)
-    // },
     yearlyBooks:(year,id)=> {
         return axios.get(`${URL_PREFIX}/stats/yearly/${year}/${id}`)
     },
-    // monthlyStats:(month,id)=> {
-    //     return axios.get(`${URL_PREFIX}/stats/month/${month}/${id}`)
-    // },
     monthlyBooks:(month,id)=> {
         return axios.get(`${URL_PREFIX}/stats/monthly/${month}/${id}`)
     },
@@ -138,7 +126,7 @@ const API = {
         return axios.get(`https://openlibrary.org/search.json?author=${author}&limit=10`)
     },
     searchBySubject:(subject)=>{
-        return axios.get(`http://openlibrary.org/subjects/${subject}.json?details=true`)
+        return axios.get(`http://openlibrary.org/subjects/${subject}.json?details=true&ebooks=true`)
     },
     getAuthor:(key) => {
         return axios.get(`https://openlibrary.org/authors/${key}/works.json`)
@@ -165,6 +153,12 @@ const API = {
     },
     gbByISBN:(isbn) => {
         return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${isbn}+isbn`)
+    },
+
+    // NYT
+
+    nytList:(list)=>{
+        return axios.get(`${URL_PREFIX}/nyt/list/${list}`)
     }
 
 }
