@@ -43,10 +43,10 @@ body {
     display:flex;
     flex-direction:column;
 }
-#left-column, #mobile-shelves {
+/* #left-column, #mobile-shelves {
     width: 60%;
     border-right: 1px solid var(--muted-blue)
-}
+} */
 
 #stats {
     /* border: 1px solid var(--emerald); */

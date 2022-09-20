@@ -6,43 +6,9 @@ import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import AddShelf from './components/AddShelf'
-import PropTypes from 'prop-types';
-import { List, Container, ListItem, Typography, Box, Rating, Tabs, Tab, Card, CardMedia, CardContent, Divider, ListItemText, Button, Stack, Link } from '@mui/material';
-
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
-                </Box>
-            )}
-        </div>
-    );
-}
-
-TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}
-
-const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+import DashStats from './components/DashStats';
+import SwipeableViews from 'react-swipeable-views';
+import { List, Container, ListItem, Typography, Box, Card, CardMedia, CardContent, Divider, ListItemText, Button, Stack, MobileStepper } from '@mui/material';
 
 
 
@@ -51,16 +17,14 @@ export default function Dashboard(props) {
     const context = useContext(AppContext);
     let navigate = useNavigate();
 
-
-    // const [userShelves, setUserShelves] = useState([])
-
     const [userStats, setUserStats] = useState(null);
-    const [value, setValue] = useState(0);
     const [currentReads, setCurrentReads] = useState(null);
+    const [activeStep, setActiveStep] = useState(0)
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+    const handleChangeIndex = (index) => {
+        setActiveStep(index)
+    }
+
 
     const renderCurrentReads = async () => {
         const reads = await API.currentlyReading(context.userData.id)
@@ -73,13 +37,12 @@ export default function Dashboard(props) {
         context.setUserShelves(shelves.data)
     }
 
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = date.getMonth();
-
+    
     const renderStats = async () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth();
         const allStats = await API.allStats(context.userData.id, year, month)
-
         setUserStats(allStats.data)
     }
 
@@ -113,118 +76,99 @@ export default function Dashboard(props) {
 
 
             {/* switch div to MUI component & this will be xs: width full; how to make # of items different for sizes? maybe have current reads div 2x with different spliced indexes for how many books? */}
-            <div id='currently-reading' style={{ margin: "20px" }}>
+            <Container id='currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { xs: 'none', md: 'flex' }, flexDirection: 'column' }}>
                 {/* spans whole width of the screen  */}
                 <Divider />
-                <Typography variant='subtitle1'>Currently Reading</Typography>
-                {currentReads && 
-                <div style={{ display: 'flex', width: '100%', padding: '15px' }}>
-                    {currentReads.map((book) => (
-                        <Card sx={{ maxWidth: { xs: 120, md: 345 } }} key={`${book.id}`} className='book-card'>
-                            <CardContent>
-                                <CardMedia
-                                    component="img"
-                                    sx={{ maxHeight: { xs: 140, md: 218 }, maxWidth: { xs: 95, md: 148 } }}
-                                    onClick={() => { navigate(`/book/${book.id}`) }}
-                                    image={`${book.cover_img}`}
-                                    alt={`${book.title}`}
-                                />
-                                <Typography variant='subtitle2' display='block'>{book.title}</Typography>
-                                <Typography variant='caption' display='block'>{book.author}</Typography>
-                            </CardContent>
-                        </Card>
+                <Typography variant='subtitle1'>Currently Reading:</Typography>
+                {currentReads &&
+                    <div style={{ display: 'flex', width: '100%', padding: '15px' }}>
+                        {currentReads.map((book) => (
+                            <Card sx={{ maxWidth: { xs: 120, md: 345 } }} key={`${book.id}`} className='book-card'>
+                                <CardContent>
+                                    <CardMedia
+                                        component="img"
+                                        sx={{ maxHeight: { xs: 140, md: 218 }, maxWidth: { xs: 95, md: 148 } }}
+                                        onClick={() => { navigate(`/book/${book.id}`) }}
+                                        image={`${book.cover_img}`}
+                                        alt={`${book.title}`}
+                                    />
+                                    <Typography variant='subtitle2' display='block'>{book.title}</Typography>
+                                    <Typography variant='caption' display='block'>{book.author}</Typography>
+                                </CardContent>
+                            </Card>
 
-                    ))}
-                </div>}
+                        ))}
+                    </div>}
                 <Divider />
+            </Container>
 
-            </div>
+
+            <Container id='mobile-currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { md: 'none', xs: 'flex' }, flexDirection: 'column' }}>
+                <Typography variant='subtitle2' color='text.secondary'>Currently Reading:</Typography>
+                {currentReads && <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', borderRadius: 10 }}>
+                    <SwipeableViews
+                        index={activeStep}
+                        onChangeIndex={handleChangeIndex}
+                        enableMouseEvents>
+                        {/* <div style={Object.assign({}, styles.slide, styles.slide1)}>slide n°1</div>
+                    <div style={Object.assign({}, styles.slide, styles.slide2)}>slide n°2</div>
+                    <div style={Object.assign({}, styles.slide, styles.slide3)}>slide n°3</div> */}
+                        {currentReads.map((book) => (
+                            <Card key={`${book.id}`} className='book-card'>
+                                <CardContent sx={{ display: 'flex' }}>
+                                    <CardMedia
+                                        component="img"
+                                        sx={{ maxHeight: { xs: 190, md: 218 }, maxWidth: { xs: 125, md: 148 } }}
+                                        onClick={() => { navigate(`/book/${book.id}`) }}
+                                        image={`${book.cover_img}`}
+                                        alt={`${book.title}`}
+                                    />
+                                    <Box sx={{ m: 'auto', alignItems: 'center' }}>
+                                        <Typography variant='subtitle2' display='block'>{book.title}</Typography>
+                                        <Typography variant='caption' display='block'>{book.author}</Typography>
+                                    </Box>
+                                </CardContent>
+                            </Card>
+
+                        ))}
+                    </SwipeableViews>
+                    <MobileStepper
+                        variant="dots"
+                        steps={currentReads.length}
+                        position="static"
+                        activeStep={activeStep}
+                        sx={{ flexGrow: 1, bgcolor: 'transparent' }}
+                    />
+                </Box>
+                }
+
+            </Container>
 
             {/* -----------------------------------------------MOBILE LAYOUT------------------------------------------------------ */}
             <Container sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column' }}>
                 {userStats && <div id='stats'>
-                    <Box sx={{ width: '100%' }}>
-                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                            <Tabs
-                                value={value}
-                                onChange={handleChange}
-                                variant="scrollable"
-                                scrollButtons="auto"
-                                aria-label="stats tabs">
-                                <Tab label="This Month" {...a11yProps(0)} />
-                                <Tab label="This Year" {...a11yProps(1)} />
-                                <Tab label="All-Time" {...a11yProps(2)} />
-                                <Tab label="All Shelves" {...a11yProps(3)} />
-
-                            </Tabs>
-                        </Box>
-
-                        {/* THIS MONTH Stats */}
-                        <TabPanel value={value} index={0}>
-                            <Typography variant='h6'>So Far in {months[month]}</Typography>
-                            {userStats.month ? (
-                                <div>
-                                    <Typography variant='subtitle1'>Total Books Read: {userStats.month.bookCount}</Typography>
-                                    <Typography variant='subtitle1'>Total Pages Read: {userStats.month.totalPages}</Typography>
-                                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.month.avgRating)} precision={0.5} readOnly /></Typography>
-                                </div>
-                            ) : (
-                                <div>
-                                    <Typography variant='subtitle1'>You haven't marked any books as read so far this month.</Typography>
-                                </div>
-                            )}
-                        </TabPanel>
-
-                        {/* This Year's Stats */}
-                        <TabPanel value={value} index={1}>
-                            <Typography variant='h6'>So Far in {year}</Typography>
-                            {userStats.year ? (
-                                <div>
-                                    <Typography variant='subtitle1'>Total Books Read: {userStats.year.bookCount}</Typography>
-                                    <Typography variant='subtitle1'>Total Pages Read: {userStats.year.totalPages}</Typography>
-                                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.year.avgRating)} precision={0.5} readOnly /></Typography>
-                                </div>
-                            ) : (
-                                <div>
-                                    <Typography variant='subtitle1'>You haven't marked any books as read so far this year.</Typography>
-                                </div>
-                            )}
-                        </TabPanel>
-
-                        {/* ALL TIME Stats */}
-                        <TabPanel value={value} index={2}>
-                            <Typography variant='h6'>All-Time</Typography>
-                            {userStats.all ? (
-                                <div>
-                                    <Typography variant='subtitle1'>Total Books Read: {userStats.all.bookCount}</Typography>
-                                    <Typography variant='subtitle1'>Total Pages Read: {userStats.all.totalPages}</Typography>
-                                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.all.avgRating)} precision={0.5} readOnly /></Typography>
-                                </div>
-                            ) : (
-                                <div>
-                                    <Typography variant='subtitle1'>You haven't marked any books as read on this account yet.</Typography>
-                                </div>
-                            )}
-                        </TabPanel>
-
-                        {/* ALL SHELVED BOOKS */}
-                        <TabPanel value={value} index={3}>
-                            <Typography variant='h6'>Currently Shelved Books</Typography>
-                            {userStats.shelved ? (
-                                <div>
-                                    <Typography variant='subtitle1'>Total Bookcase Books: {userStats.shelved.bookCount}</Typography>
-                                    <Typography variant='subtitle1'>Total Shelved Pages: {userStats.shelved.totalPages}</Typography>
-                                </div>
-                            ) : (
-                                <div>
-                                    <Typography variant='subtitle1'>You don't have any books in your Bookcase yet.</Typography>
-                                </div>
-                            )}
-                        </TabPanel>
-                    </Box>
+                    <DashStats userStats={userStats} />
                 </div>}
-                <Container sx={{ display: 'flex' }}>
-                    <div id='mobile-shelves'>
+                <Container sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <Box id='mobile-quicklinks' sx={{ display: 'flex' }}>
+                        <Stack spacing={0} alignItems="center"
+                        >
+                            {/* quick links sections  */}
+                            {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
+                            <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
+                            <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
+                            <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
+                        </Stack>
+                        <Stack spacing={0} alignItems="center"
+                        >
+                            <Button onClick={() => navigate('/books/read')}>Read</Button>
+                            {/* <Button onClick={() => navigate('/search')}>Find Books</Button> */}
+                            <Button onClick={() => navigate('/books')}>All Books</Button>
+                            <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
+
+                        </Stack>
+                    </Box>
+                    <Box id='mobile-shelves'>
                         <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                             {context.userShelves.slice(0, 3).map((shelf) => (
                                 <React.Fragment>
@@ -251,20 +195,20 @@ export default function Dashboard(props) {
                                             ))}
                                         </div>
                                     </ListItem>
-                                    <Divider variant="inset" />
+
                                 </React.Fragment>
                             ))}
                         </List>
-                    </div>
+                    </Box>
 
-                    <div id='mobile-quicknav' style={{ margin: '5px auto 5px auto' }}>
-                        <div id='mobile-quicklinks'>
+                    <Box id='mobile-quicknav' sx={{ m: '5px auto 5px auto', display: 'flex' }}>
+                        {/* <div id='mobile-quicklinks'>
                             <Stack spacing={0} alignItems="flex-start"
                             >
 
                                 {/* quick links sections  */}
                                 {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
-                                <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
+                                {/* <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
                                 <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
                                 <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
                                 <Button onClick={() => navigate('/books/read')}>Read</Button>
@@ -272,8 +216,8 @@ export default function Dashboard(props) {
                                 <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
                                 <Button onClick={() => navigate('/books')}>All My Books</Button>
                             </Stack>
-                        </div>
-                        <Divider />
+                        </div> */}
+                        {/* <Divider variant="inset" orientation='vertical' /> */}
 
                         <div id='mobile-bookshelf'>
                             {/* List of links to all existing shelves directly */}
@@ -291,7 +235,7 @@ export default function Dashboard(props) {
                                 ))}
                             </Stack>
                         </div>
-                    </div>
+                    </Box>
                 </Container>
             </Container>
 
@@ -299,87 +243,8 @@ export default function Dashboard(props) {
             <Container sx={{ display: { xs: 'none', md: 'flex' }, flexDirection: 'row-reverse' }} id='dash'>
 
                 <div id='right-column'>
-                    {/* Add tabs here for the stats on mobile -- leave as flexbox boxes on desktop */}
                     {userStats && <div id='stats'>
-                        <Box sx={{ width: '100%' }}>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                <Tabs
-                                    value={value}
-                                    onChange={handleChange}
-                                    variant="scrollable"
-                                    scrollButtons="auto"
-                                    aria-label="stats tabs">
-                                    <Tab label="This Month" {...a11yProps(0)} />
-                                    <Tab label="This Year" {...a11yProps(1)} />
-                                    <Tab label="All-Time" {...a11yProps(2)} />
-                                    <Tab label="All Shelves" {...a11yProps(3)} />
-
-                                </Tabs>
-                            </Box>
-
-                            {/* THIS MONTH Stats */}
-                            <TabPanel value={value} index={0}>
-                                <Typography variant='h6'>So Far in {months[month]}</Typography>
-                                {userStats.month ? (
-                                    <div>
-                                        <Typography variant='subtitle1'>Total Books Read: {userStats.month.bookCount}</Typography>
-                                        <Typography variant='subtitle1'>Total Pages Read: {userStats.month.totalPages}</Typography>
-                                        <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.month.avgRating)} precision={0.5} readOnly /></Typography>
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <Typography variant='subtitle1'>You haven't marked any books as read so far this month.</Typography>
-                                    </div>
-                                )}
-                            </TabPanel>
-
-                            {/* This Year's Stats */}
-                            <TabPanel value={value} index={1}>
-                                <Typography variant='h6'>So Far in {year}</Typography>
-                                {userStats.year ? (
-                                    <div>
-                                        <Typography variant='subtitle1'>Total Books Read: {userStats.year.bookCount}</Typography>
-                                        <Typography variant='subtitle1'>Total Pages Read: {userStats.year.totalPages}</Typography>
-                                        <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.year.avgRating)} precision={0.5} readOnly /></Typography>
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <Typography variant='subtitle1'>You haven't marked any books as read so far this year.</Typography>
-                                    </div>
-                                )}
-                            </TabPanel>
-
-                            {/* ALL TIME Stats */}
-                            <TabPanel value={value} index={2}>
-                                <Typography variant='h6'>All-Time</Typography>
-                                {userStats.all ? (
-                                    <div>
-                                        <Typography variant='subtitle1'>Total Books Read: {userStats.all.bookCount}</Typography>
-                                        <Typography variant='subtitle1'>Total Pages Read: {userStats.all.totalPages}</Typography>
-                                        <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.all.avgRating)} precision={0.5} readOnly /></Typography>
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <Typography variant='subtitle1'>You haven't marked any books as read on this account yet.</Typography>
-                                    </div>
-                                )}
-                            </TabPanel>
-
-                            {/* ALL SHELVED BOOKS */}
-                            <TabPanel value={value} index={3}>
-                                <Typography variant='h6'>Currently Shelved Books</Typography>
-                                {userStats.shelved ? (
-                                    <div>
-                                        <Typography variant='subtitle1'>Total Bookcase Books: {userStats.shelved.bookCount}</Typography>
-                                        <Typography variant='subtitle1'>Total Shelved Pages: {userStats.shelved.totalPages}</Typography>
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <Typography variant='subtitle1'>You don't have any books in your Bookcase yet.</Typography>
-                                    </div>
-                                )}
-                            </TabPanel>
-                        </Box>
+                        <DashStats userStats={userStats} />
                     </div>}
 
                     <div id='quicknav' style={{ display: 'flex', margin: '5px auto 5px auto' }}>
