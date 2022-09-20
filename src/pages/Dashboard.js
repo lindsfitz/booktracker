@@ -110,9 +110,6 @@ export default function Dashboard(props) {
                         index={activeStep}
                         onChangeIndex={handleChangeIndex}
                         enableMouseEvents>
-                        {/* <div style={Object.assign({}, styles.slide, styles.slide1)}>slide n°1</div>
-                    <div style={Object.assign({}, styles.slide, styles.slide2)}>slide n°2</div>
-                    <div style={Object.assign({}, styles.slide, styles.slide3)}>slide n°3</div> */}
                         {currentReads.map((book) => (
                             <Card key={`${book.id}`} className='book-card'>
                                 <CardContent sx={{ display: 'flex' }}>

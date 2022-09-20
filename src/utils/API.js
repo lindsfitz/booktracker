@@ -134,6 +134,9 @@ const API = {
     getBook:(key) => {
         return axios.get(`https://openlibrary.org/works/${key}.json`)
     },
+    getBookISBN:(isbn)=>{
+        return axios.get(`https://openlibrary.org/isbn/${isbn}.json`)
+    },
 
 
     // GOOGLE BOOKS API 
