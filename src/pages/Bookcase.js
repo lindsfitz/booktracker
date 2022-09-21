@@ -50,95 +50,102 @@ export default function Bookcase() {
 
 
         <React.Fragment>
-            <h1>My Bookcase</h1>
-            <Container sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <ButtonGroup>
-                    <Button variant="outlined" onClick={() => navigate('/books/currently')}>
-                        Currently Reading
+            <Container sx={{ mr: 'auto', ml: 'auto' }}>
+                <h1>My Bookcase</h1>
+                <Container sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <ButtonGroup>
+                        <Button variant="outlined" onClick={() => navigate('/books/currently')}>
+                            Currently Reading
+                        </Button>
+                        <Button variant="outlined" onClick={() => navigate('/books/read')}>
+                            Read
+                        </Button>
+                    </ButtonGroup>
+                    <Button variant="outlined" onClick={context.toggleShelfDialog}>
+                        Add A Shelf
                     </Button>
-                    <Button variant="outlined" onClick={() => navigate('/books/read')}>
-                        Read
-                    </Button>
-                </ButtonGroup>
-                <Button variant="outlined" onClick={context.toggleShelfDialog}>
-                    Add A Shelf
-                </Button>
+                </Container>
+                <List sx={{ width: '100%', bgcolor: 'transparent' }}>
+                    {context.userShelves.map((shelf) => (
+                        <React.Fragment>
+                            <ListItem key={`${shelf.name}${shelf.id}`} id={`${shelf.name}${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                                <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <Typography variant='subtitle1'>
+                                        <Link to={`/shelf/${shelf.id}`} style={{
+                                            textDecoration: "none",
+                                            color: '#5F5B71'
+                                        }}>
+                                            {shelf.name}
+                                        </Link>
+                                    </Typography>
+                                    <ButtonGroup variant="outlined" aria-label="text button group">
+                                        {/* <Button onClick={() => handleShelfEdit(shelf)}>Edit</Button> */}
+                                        <Tooltip title="Edit">
+                                            <IconButton size='small' onClick={() => handleShelfEdit(shelf)}>
+                                                <EditIcon fontSize="inherit" />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="Delete">
+                                            <IconButton size='small' onClick={handleClickOpen}>
+                                                <DeleteIcon fontSize="inherit" />
+                                            </IconButton>
+                                        </Tooltip>
+                                        {/* <Button onClick={handleClickOpen}>Delete</Button> */}
+                                    </ButtonGroup>
+                                </Container>
+                                <div style={{ display: 'flex', width: '100%' }}>
+
+                                    {shelf.Books.map((book) => (
+                                        <Card key={`${shelf.id}${book.id}`} id={`${shelf.id}${book.id}`} sx={{ maxWidth: 200, textAlign: 'center', bgcolor: 'transparent' }} className='book-card'>
+                                            <CardContent className='book-card'>
+                                                <CardMedia
+                                                    component="img"
+                                                    sx={{ maxHeight: 218, maxWidth: 148 }}
+                                                    onClick={() => { navigate(`/book/${book.id}`) }}
+                                                    image={`${book.cover_img}`}
+                                                    alt={`${book.title}`}
+                                                />
+                                                <Typography variant='subtitle2' display='block'>{book.title}</Typography>
+                                                <Typography variant='caption' display='block'>{book.author}</Typography>
+                                            </CardContent>
+                                        </Card>
+
+                                    ))}
+
+                                    <Button variant='outlined' sx={{ color: '#9da283', border: '#939876 1px solid' }}
+                                        onClick={() => navigate(`/shelf/${shelf.id}`)}>Shelf Details</Button>
+                                </div>
+                            </ListItem>
+                            <Divider variant="inset" component="li" />
+                            <Dialog
+                                open={open}
+                                onClose={handleClose}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                            >
+                                <DialogTitle id="alert-dialog-title">
+                                    {"Are you positive you want to delete this Shelf from your Bookcase?"}
+                                </DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText id="alert-dialog-description">
+                                        This action cannot be undone!
+                                        Any book on this Shelf, and its associated reviews, will still be included on your All Books page.
+                                    </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={handleClose}>Cancel</Button>
+                                    <Button id={shelf.id} onClick={handleDelete}>Delete</Button>
+                                </DialogActions>
+                            </Dialog>
+                        </React.Fragment>
+                    ))}
+                </List>
+
+                {context.shelfDialog && <AddShelf />}
+
+                {editShelf && <EditShelf shelf={shelf} setEditShelf={setEditShelf} editShelf={editShelf} />}
+
             </Container>
-            <List sx={{ width: '100%', bgcolor: 'transparent' }}>
-                {context.userShelves.map((shelf) => (
-                    <React.Fragment>
-                        <ListItem key={`${shelf.name}${shelf.id}`} id={`${shelf.name}${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                            <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <Link to={`/shelf/${shelf.id}`}>
-                                    <Typography variant='subtitle1'>{shelf.name}</Typography>
-                                </Link>
-                                <ButtonGroup variant="outlined" aria-label="text button group">
-                                    {/* <Button onClick={() => handleShelfEdit(shelf)}>Edit</Button> */}
-                                    <Tooltip title="Edit">
-                                        <IconButton size='small' onClick={() => handleShelfEdit(shelf)}>
-                                            <EditIcon fontSize="inherit" />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title="Delete">
-                                        <IconButton size='small' onClick={handleClickOpen}>
-                                            <DeleteIcon fontSize="inherit" />
-                                        </IconButton>
-                                    </Tooltip>
-                                    {/* <Button onClick={handleClickOpen}>Delete</Button> */}
-                                </ButtonGroup>
-                            </Container>
-                            <div style={{ display: 'flex', width: '100%' }}>
-
-                                {shelf.Books.map((book) => (
-                                    <Card key={`${shelf.id}${book.id}`} id={`${shelf.id}${book.id}`} sx={{ maxWidth: 200, textAlign: 'center', bgcolor: 'transparent' }} className='book-card'>
-                                        <CardContent className='book-card'>
-                                            <CardMedia
-                                                component="img"
-                                                sx={{ maxHeight: 218, maxWidth: 148 }}
-                                                onClick={() => { navigate(`/book/${book.id}`) }}
-                                                image={`${book.cover_img}`}
-                                                alt={`${book.title}`}
-                                            />
-                                            <Typography variant='subtitle2' display='block'>{book.title}</Typography>
-                                            <Typography variant='caption' display='block'>{book.author}</Typography>
-                                        </CardContent>
-                                    </Card>
-
-                                ))}
-
-                                <Button variant='outlined' sx={{ color: '#9da283', border: '#939876 1px solid' }}
-                                    onClick={() => navigate(`/shelf/${shelf.id}`)}>Shelf Details</Button>
-                            </div>
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-                        <Dialog
-                            open={open}
-                            onClose={handleClose}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                        >
-                            <DialogTitle id="alert-dialog-title">
-                                {"Are you positive you want to delete this Shelf from your Bookcase?"}
-                            </DialogTitle>
-                            <DialogContent>
-                                <DialogContentText id="alert-dialog-description">
-                                    This action cannot be undone!
-                                    Any book on this Shelf, and its associated reviews, will still be included on your All Books page.
-                                </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                                <Button onClick={handleClose}>Cancel</Button>
-                                <Button id={shelf.id} onClick={handleDelete}>Delete</Button>
-                            </DialogActions>
-                        </Dialog>
-                    </React.Fragment>
-                ))}
-            </List>
-
-            {context.shelfDialog && <AddShelf />}
-
-            {editShelf && <EditShelf shelf={shelf} setEditShelf={setEditShelf} editShelf={editShelf} />}
-
 
 
         </React.Fragment>

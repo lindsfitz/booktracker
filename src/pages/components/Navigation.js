@@ -18,12 +18,12 @@ const Navigation = () => {
         textDecoration: "underline",
         cursor: 'default',
         pointeEvents: 'none',
-        color:'#637086'
+        color: '#5F5B71'
     };
 
     let inactiveStyle = {
         textDecoration: 'none',
-        color:'#637086'
+        color: '#5F5B71'
     }
 
     const [anchorElNav, setAnchorElNav] = useState(null);
@@ -102,29 +102,27 @@ const Navigation = () => {
                             sx={{
                                 display: { xs: 'block', md: 'none' },
                             }}
-                            
+
                         >
 
                             <MenuItem>
-                                <Typography textAlign="center">
-                                    <NavLink to='/' style={({ isActive }) =>
-                                        isActive ? activeStyle : inactiveStyle
-                                    }>Home</NavLink>
-                                </Typography>
-                            </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
-                                <Typography textAlign="center">
-                                    <NavLink to='/shelves' style={({ isActive }) =>
-                                        isActive ? activeStyle : inactiveStyle
-                                    }>Bookcase</NavLink>
-                                </Typography>
+                                <Button variant="text" color="custom"
+                                    onClick={() => navigate('/')}
+                                >
+                                    Home
+                                </Button>
                             </MenuItem>
                             <MenuItem>
-                                <Typography textAlign="center">
-                                    <NavLink to='/search' style={({ isActive }) =>
-                                        isActive ? activeStyle : inactiveStyle
-                                    }>Browse</NavLink>
-                                </Typography>
+                                <Button variant="text" color="custom"
+                                    onClick={() => navigate('/shelves')}>
+                                    Bookcase
+                                </Button>
+                            </MenuItem>
+                            <MenuItem>
+                                <Button variant="text" color="custom"
+                                    onClick={() => navigate('/search')}>
+                                    Browse
+                                </Button>
                             </MenuItem>
 
                         </Menu>
@@ -149,20 +147,18 @@ const Navigation = () => {
                         BOOKTRACKER
                     </Typography>
                     <Box sx={{ color: 'white', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        <Button variant="text">
-                            <NavLink to='/' style={({ isActive }) =>
-                                isActive ? activeStyle : inactiveStyle
-                            }>Home</NavLink>
+                        <Button variant="text" color="custom"
+                            onClick={() => navigate('/')}
+                        >
+                            Home
                         </Button>
-                        <Button variant="text">
-                            <NavLink to='/shelves' style={({ isActive }) =>
-                                isActive ? activeStyle : inactiveStyle
-                            }>Bookcase</NavLink>
+                        <Button variant="text" color="custom"
+                            onClick={() => navigate('/shelves')}>
+                            Bookcase
                         </Button>
-                        <Button variant="text">
-                            <NavLink to='/search' style={({ isActive }) =>
-                                isActive ? activeStyle : inactiveStyle
-                            }>Browse</NavLink>
+                        <Button variant="text" color="custom"
+                            onClick={() => navigate('/search')}>
+                            Browse
                         </Button>
                     </Box>
 
@@ -200,20 +196,11 @@ const Navigation = () => {
                                 </ListItemIcon>
                                 Friends
                             </MenuItem>
-                            <MenuItem onClick={context.toggleShelfDialog}>
+                            <MenuItem onClick={() => navigate('/books')}>
                                 <ListItemIcon>
                                     <MenuBookIcon fontSize='small' />
                                 </ListItemIcon>
-                                New Shelf
-                            </MenuItem>
-                            <MenuItem>
-                                <ListItemIcon>
-                                    <MenuBookIcon fontSize='small' />
-                                </ListItemIcon>
-                                <Link to='/books'>
-                                    My Books
-
-                                </Link>
+                                My Books
                             </MenuItem>
                             <Divider />
                             <MenuItem>
