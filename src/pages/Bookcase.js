@@ -6,13 +6,18 @@ import AppContext from '../AppContext';
 import EditShelf from './components/EditShelf';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { List, ListItem, Divider, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Card, CardMedia, CardContent, Container, ButtonGroup, IconButton, Tooltip } from '@mui/material/';
+import SwipeableViews from 'react-swipeable-views';
+import { useTheme } from '@mui/material/styles';
+import { List, ListItem, Divider, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Card, CardMedia, CardContent, Container, ButtonGroup, IconButton, Tooltip, useMediaQuery } from '@mui/material/';
+import BCMobile from './components/BCMobile';
 
 
 
 export default function Bookcase() {
     const context = useContext(AppContext);
     let navigate = useNavigate()
+    const theme = useTheme();
+    const md = useMediaQuery(theme.breakpoints.down('md'))
 
     const [open, setOpen] = useState(false);
     const [editShelf, setEditShelf] = useState(false)
@@ -43,8 +48,6 @@ export default function Bookcase() {
         context.setUserShelves(shelves.data)
         setOpen(false)
     }
-
-    // use effect to perform api call on page load , change the shelves piece of state post use effect and use the state variable to render the dependent components?
 
     return (
 
@@ -79,7 +82,6 @@ export default function Bookcase() {
                                         </Link>
                                     </Typography>
                                     <ButtonGroup variant="outlined" aria-label="text button group">
-                                        {/* <Button onClick={() => handleShelfEdit(shelf)}>Edit</Button> */}
                                         <Tooltip title="Edit">
                                             <IconButton size='small' onClick={() => handleShelfEdit(shelf)}>
                                                 <EditIcon fontSize="inherit" />
@@ -90,31 +92,37 @@ export default function Bookcase() {
                                                 <DeleteIcon fontSize="inherit" />
                                             </IconButton>
                                         </Tooltip>
-                                        {/* <Button onClick={handleClickOpen}>Delete</Button> */}
                                     </ButtonGroup>
                                 </Container>
-                                <div style={{ display: 'flex', width: '100%' }}>
 
-                                    {shelf.Books.map((book) => (
-                                        <Card key={`${shelf.id}${book.id}`} id={`${shelf.id}${book.id}`} sx={{ maxWidth: 200, textAlign: 'center', bgcolor: 'transparent' }} className='book-card'>
-                                            <CardContent className='book-card'>
-                                                <CardMedia
-                                                    component="img"
-                                                    sx={{ maxHeight: 218, maxWidth: 148 }}
-                                                    onClick={() => { navigate(`/book/${book.id}`) }}
-                                                    image={`${book.cover_img}`}
-                                                    alt={`${book.title}`}
-                                                />
-                                                <Typography variant='subtitle2' display='block'>{book.title}</Typography>
-                                                <Typography variant='caption' display='block'>{book.author}</Typography>
-                                            </CardContent>
-                                        </Card>
-
-                                    ))}
-
-                                    <Button variant='outlined' sx={{ color: '#9da283', border: '#939876 1px solid' }}
-                                        onClick={() => navigate(`/shelf/${shelf.id}`)}>Shelf Details</Button>
-                                </div>
+                                {md ? (
+                                    // <div
+                                    //     style={{ display: 'flex', width: '100%' }}
+                                    // >
+                                        <BCMobile shelfId={shelf.id} books={shelf.Books} />
+                                        
+                                    // </div>
+                                ) : (
+                                    <div style={{ display: 'flex', width: '100%' }}>
+                                        {shelf.Books.slice(0, 5).map((book) => (
+                                            <Card key={`${shelf.id}${book.id}`} id={`${shelf.id}${book.id}`} sx={{ maxWidth: 200, textAlign: 'center', bgcolor: 'transparent' }} className='book-card'>
+                                                <CardContent className='book-card'>
+                                                    <CardMedia
+                                                        component="img"
+                                                        sx={{ maxHeight: 218, maxWidth: 148 }}
+                                                        onClick={() => { navigate(`/book/${book.id}`) }}
+                                                        image={`${book.cover_img}`}
+                                                        alt={`${book.title}`}
+                                                    />
+                                                    <Typography variant='subtitle2' display='block'>{book.title}</Typography>
+                                                    <Typography variant='caption' display='block'>{book.author}</Typography>
+                                                </CardContent>
+                                            </Card>
+                                        ))}
+                                        <Button variant='outlined' sx={{ color: '#9da283', border: '#939876 1px solid' }}
+                                            onClick={() => navigate(`/shelf/${shelf.id}`)}>Shelf Details</Button>
+                                    </div>
+                                )}
                             </ListItem>
                             <Divider variant="inset" component="li" />
                             <Dialog
@@ -148,6 +156,6 @@ export default function Bookcase() {
             </Container>
 
 
-        </React.Fragment>
+        </React.Fragment >
     )
 }

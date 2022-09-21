@@ -2,34 +2,33 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
-import AppContext from '../AppContext';
+// import AppContext from '../AppContext';
 import { useTheme } from '@mui/material/styles';
-import SwipeableViews from 'react-swipeable-views';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import { Box, TextField, InputLabel, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography, Badge, Card, CardMedia, CardContent, IconButton, MobileStepper, useMediaQuery } from '@mui/material';
+import { Box, TextField, InputLabel, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography, Badge, Card, CardMedia, CardContent, useMediaQuery } from '@mui/material';
 import NYTMobile from './components/NYTMobile';
 
 
-const NYTweekly = [
-    'combined-print-and-e-book-fiction',
-    'combined-print-and-e-book-nonfiction',
-    'hardcover-fiction',
-    'hardcover-nonfiction',
-    'trade-fiction-paperback',
-    'paperback-nonfiction',
-    'young-adult-hardcover']
+// const NYTweekly = [
+//     'combined-print-and-e-book-fiction',
+//     'combined-print-and-e-book-nonfiction',
+//     'hardcover-fiction',
+//     'hardcover-nonfiction',
+//     'trade-fiction-paperback',
+//     'paperback-nonfiction',
+//     'young-adult-hardcover']
 
-const NYTmonthly = ["audio-fiction",
-    "audio-nonfiction",
-    "graphic-books-and-manga",
-    "mass-market-monthly",
-    "middle-grade-paperback-monthly",
-    "young-adult-paperback-monthly"]
+// const NYTmonthly = ["audio-fiction",
+//     "audio-nonfiction",
+//     "graphic-books-and-manga",
+//     "mass-market-monthly",
+//     "middle-grade-paperback-monthly",
+//     "young-adult-paperback-monthly"]
 
 export default function Search() {
-    const context = useContext(AppContext);
     let navigate = useNavigate();
+    const theme = useTheme();
+    const smxs = useMediaQuery(theme.breakpoints.down('sm'))
+
     const [searchBy, setSearchBy] = useState('title');
     const [searchTerm, setSearchTerm] = useState('')
     const [searchResults, setSearchResults] = useState([])
@@ -37,23 +36,10 @@ export default function Search() {
     const [noResults, setNoResults] = useState(false)
     const [bestSellers, setBestSellers] = useState(null)
     const [bestListInfo, setBestListInfo] = useState(null)
-    // const [activeStep, setActiveStep] = useState(0)
 
     const handleInputChange = (e) => {
         setSearchTerm(e.target.value)
     }
-
-    // const handleNext = () => {
-    //     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    // };
-
-    // const handleBack = () => {
-    //     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    // };
-
-    // const handleStepChange = (step) => {
-    //     setActiveStep(step);
-    // };
 
     const changeSearchBy = (event) => {
         setSearchBy(event.target.value);
@@ -138,12 +124,6 @@ export default function Search() {
     }, [])
 
 
-    const theme = useTheme();
-    const smxs = useMediaQuery(theme.breakpoints.down('sm'))
-    const md = useMediaQuery(theme.breakpoints.between('sm', 'lg'))
-    const lg = useMediaQuery(theme.breakpoints.up('lg'))
-
-
     return (
         <Container sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
             <Box
@@ -175,11 +155,9 @@ export default function Search() {
                 <Button onClick={search}>Search</Button>
             </Box>
 
-            {noResults &&
-                <Container sx={{ m: '20px auto 20px auto', textAlign: 'center' }}>
+            {noResults && <Container sx={{ m: '20px auto 20px auto', textAlign: 'center' }}>
                     <Typography variant='subtitle2'>No Results Found</Typography>
-                </Container>
-            }
+                </Container>}
 
             {searchResults ? (
                 <Container>
@@ -244,15 +222,8 @@ export default function Search() {
                             ))}
                         </Box>
                     )}
-
-
                 </Box>
-            </Container>
-
-
-
-
-            }
+            </Container>}
 
         </Container>
     );

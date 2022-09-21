@@ -8,7 +8,8 @@ import AppContext from '../AppContext';
 import AddShelf from './components/AddShelf'
 import DashStats from './components/DashStats';
 import SwipeableViews from 'react-swipeable-views';
-import { List, Container, ListItem, Typography, Box, Card, CardMedia, CardContent, Divider, ListItemText, Button, Stack, MobileStepper } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { List, Container, ListItem, Typography, Box, Card, CardMedia, CardContent, Divider, ListItemText, Button, Stack, MobileStepper, useMediaQuery } from '@mui/material';
 
 
 
@@ -16,6 +17,11 @@ export default function Dashboard(props) {
 
     const context = useContext(AppContext);
     let navigate = useNavigate();
+    const theme = useTheme();
+    const xs = useMediaQuery('(max-width:450px)')
+    const smxs = useMediaQuery(theme.breakpoints.down('sm'))
+    const md = useMediaQuery(theme.breakpoints.down('md'))
+    const middle = useMediaQuery(theme.breakpoints.between('md', 'lg'))
 
     const [userStats, setUserStats] = useState(null);
     const [currentReads, setCurrentReads] = useState(null);
@@ -37,7 +43,7 @@ export default function Dashboard(props) {
         context.setUserShelves(shelves.data)
     }
 
-    
+
     const renderStats = async () => {
         const date = new Date();
         const year = date.getFullYear();
@@ -74,138 +80,158 @@ export default function Dashboard(props) {
     return (
         <React.Fragment>
 
+            {smxs ? (
+                <Container id='mobile-currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { xs: 'flex' }, flexDirection: 'column' }}>
+                    <Typography variant='subtitle2' color='text.secondary'>Currently Reading:</Typography>
+                    {currentReads && <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', borderRadius: 10 }}>
+                        <SwipeableViews
+                            index={activeStep}
+                            onChangeIndex={handleChangeIndex}
+                            enableMouseEvents>
+                            {currentReads.map((book) => (
+                                <Card key={`${book.id}`} className='book-card'>
+                                    <CardContent sx={{ display: 'flex' }}>
+                                        <CardMedia
+                                            component="img"
+                                            sx={{ maxHeight: { xs: 190, md: 218 }, maxWidth: { xs: 125, md: 148 } }}
+                                            onClick={() => { navigate(`/book/${book.id}`) }}
+                                            image={`${book.cover_img}`}
+                                            alt={`${book.title}`}
+                                        />
+                                        <Box sx={{ m: 'auto', alignItems: 'center' }}>
+                                            <Typography variant='subtitle2' display='block'>{book.title}</Typography>
+                                            <Typography variant='caption' display='block'>{book.author}</Typography>
+                                        </Box>
+                                    </CardContent>
+                                </Card>
 
-            {/* switch div to MUI component & this will be xs: width full; how to make # of items different for sizes? maybe have current reads div 2x with different spliced indexes for how many books? */}
-            <Container id='currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { xs: 'none', md: 'flex' }, flexDirection: 'column' }}>
-                {/* spans whole width of the screen  */}
-                <Divider />
-                <Typography variant='subtitle1'>Currently Reading:</Typography>
-                {currentReads &&
-                    <div style={{ display: 'flex', width: '100%', padding: '15px' }}>
-                        {currentReads.map((book) => (
-                            <Card sx={{ maxWidth: { xs: 120, md: 345 } }} key={`${book.id}`} className='book-card'>
-                                <CardContent>
-                                    <CardMedia
-                                        component="img"
-                                        sx={{ maxHeight: { xs: 140, md: 218 }, maxWidth: { xs: 95, md: 148 } }}
-                                        onClick={() => { navigate(`/book/${book.id}`) }}
-                                        image={`${book.cover_img}`}
-                                        alt={`${book.title}`}
-                                    />
-                                    <Typography variant='subtitle2' display='block'>{book.title}</Typography>
-                                    <Typography variant='caption' display='block'>{book.author}</Typography>
-                                </CardContent>
-                            </Card>
+                            ))}
+                        </SwipeableViews>
+                        <MobileStepper
+                            variant="dots"
+                            steps={currentReads.length}
+                            position="static"
+                            activeStep={activeStep}
+                            sx={{ flexGrow: 1, bgcolor: 'transparent' }}
+                        />
+                    </Box>
+                    }
 
-                        ))}
-                    </div>}
-                <Divider />
-            </Container>
-
-
-            <Container id='mobile-currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { md: 'none', xs: 'flex' }, flexDirection: 'column' }}>
-                <Typography variant='subtitle2' color='text.secondary'>Currently Reading:</Typography>
-                {currentReads && <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', borderRadius: 10 }}>
-                    <SwipeableViews
-                        index={activeStep}
-                        onChangeIndex={handleChangeIndex}
-                        enableMouseEvents>
-                        {currentReads.map((book) => (
-                            <Card key={`${book.id}`} className='book-card'>
-                                <CardContent sx={{ display: 'flex' }}>
-                                    <CardMedia
-                                        component="img"
-                                        sx={{ maxHeight: { xs: 190, md: 218 }, maxWidth: { xs: 125, md: 148 } }}
-                                        onClick={() => { navigate(`/book/${book.id}`) }}
-                                        image={`${book.cover_img}`}
-                                        alt={`${book.title}`}
-                                    />
-                                    <Box sx={{ m: 'auto', alignItems: 'center' }}>
+                </Container>
+            ) : (
+                <Container id='currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { md: 'flex' }, flexDirection: 'column' }}>
+                    {/* spans whole width of the screen  */}
+                    <Divider />
+                    <Typography variant='subtitle1'>Currently Reading:</Typography>
+                    {currentReads &&
+                        <div style={{ display: 'flex', width: '100%', padding: '15px' }}>
+                            {currentReads.map((book) => (
+                                <Card sx={{ maxWidth: { xs: 120, md: 345 } }} key={`${book.id}`} className='book-card'>
+                                    <CardContent>
+                                        <CardMedia
+                                            component="img"
+                                            sx={{ maxHeight: { xs: 140, md: 218 }, maxWidth: { xs: 95, md: 148 } }}
+                                            onClick={() => { navigate(`/book/${book.id}`) }}
+                                            image={`${book.cover_img}`}
+                                            alt={`${book.title}`}
+                                        />
                                         <Typography variant='subtitle2' display='block'>{book.title}</Typography>
                                         <Typography variant='caption' display='block'>{book.author}</Typography>
-                                    </Box>
-                                </CardContent>
-                            </Card>
+                                    </CardContent>
+                                </Card>
 
-                        ))}
-                    </SwipeableViews>
-                    <MobileStepper
-                        variant="dots"
-                        steps={currentReads.length}
-                        position="static"
-                        activeStep={activeStep}
-                        sx={{ flexGrow: 1, bgcolor: 'transparent' }}
-                    />
-                </Box>
-                }
-
-            </Container>
-
-            {/* -----------------------------------------------MOBILE LAYOUT------------------------------------------------------ */}
-            <Container sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column' }}>
-                {userStats && <div id='stats'>
-                    <DashStats userStats={userStats} />
-                </div>}
-                <Container sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <Box id='mobile-quicklinks' sx={{ display: 'flex' }}>
-                        <Stack spacing={0} alignItems="center"
-                        >
-                            {/* quick links sections  */}
-                            {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
-                            <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
-                            <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
-                            <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
-                        </Stack>
-                        <Stack spacing={0} alignItems="center"
-                        >
-                            <Button onClick={() => navigate('/books/read')}>Read</Button>
-                            {/* <Button onClick={() => navigate('/search')}>Find Books</Button> */}
-                            <Button onClick={() => navigate('/books')}>All Books</Button>
-                            <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
-
-                        </Stack>
-                    </Box>
-                    <Box id='mobile-shelves'>
-                        <List sx={{ width: '100%', bgcolor: 'transparent' }}>
-                            {context.userShelves.slice(0, 3).map((shelf) => (
-                                <React.Fragment>
-                                    <ListItem key={`${shelf.name}${shelf.id}mobile`} id={`${shelf.name}${shelf.id}mobile`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                                        <ListItemText
-                                            primary={`${shelf.name}`}
-                                            sx={{ maxWidth: '10%' }}
-                                        />
-                                        <div style={{ display: 'flex', width: '100%' }}>
-
-                                            {shelf.Books.slice(0, 2).map((book) => (
-                                                <Card sx={{ maxWidth: 345 }} key={`${book.id}`} className='book-card'>
-                                                    <CardContent>
-                                                        <CardMedia
-                                                            component="img"
-                                                            height="140"
-                                                            onClick={() => { navigate(`/book/${book.id}`) }}
-                                                            image={`${book.cover_img}`}
-                                                            alt={`${book.title}`}
-                                                        />
-                                                    </CardContent>
-                                                </Card>
-
-                                            ))}
-                                        </div>
-                                    </ListItem>
-
-                                </React.Fragment>
                             ))}
-                        </List>
-                    </Box>
+                        </div>}
+                    <Divider />
+                </Container>
+            )}
 
-                    <Box id='mobile-quicknav' sx={{ m: '5px auto 5px auto', display: 'flex' }}>
-                        {/* <div id='mobile-quicklinks'>
+            {md ? (
+                <Container sx={{ display: { xs: 'flex' }, flexDirection: 'column' }}>
+                    {/* <h1>breakpoint is true</h1> */}
+                    {userStats && <div id='stats'>
+                        <DashStats userStats={userStats} />
+                    </div>}
+                    <Container sx={{ display: 'flex', flexDirection: 'column' }}>
+                        <Box id='mobile-quicklinks' sx={{ display: 'flex' }}>
+                            <Stack spacing={0} alignItems="center"
+                            >
+                                {/* quick links sections  */}
+                                {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
+                                <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
+                                <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
+                                <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
+                            </Stack>
+                            <Stack spacing={0} alignItems="center"
+                            >
+                                <Button onClick={() => navigate('/books/read')}>Read</Button>
+                                {/* <Button onClick={() => navigate('/search')}>Find Books</Button> */}
+                                <Button onClick={() => navigate('/books')}>All Books</Button>
+                                <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
+
+                            </Stack>
+                        </Box>
+                        <Box id='mobile-shelves'>
+                            <List sx={{ width: '100%', bgcolor: 'transparent' }}>
+                                {context.userShelves.slice(0, 3).map((shelf) => (
+                                    <React.Fragment>
+                                        <ListItem key={`${shelf.name}${shelf.id}mobile`} id={`${shelf.name}${shelf.id}mobile`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                                            <ListItemText
+                                                primary={`${shelf.name}`}
+                                                sx={{ maxWidth: '10%' }}
+                                            />
+                                            {xs ? (
+                                                <div style={{ display: 'flex', width: '100%' }}>
+
+                                                {shelf.Books.slice(0, 2).map((book) => (
+                                                    <Card sx={{ maxWidth: 345 }} key={`${book.id}`} className='book-card'>
+                                                        <CardContent>
+                                                            <CardMedia
+                                                                component="img"
+                                                                height="140"
+                                                                onClick={() => { navigate(`/book/${book.id}`) }}
+                                                                image={`${book.cover_img}`}
+                                                                alt={`${book.title}`}
+                                                            />
+                                                        </CardContent>
+                                                    </Card>
+
+                                                ))}
+                                            </div>
+                                            ):(
+                                            <div style={{ display: 'flex', width: '100%' }}>
+
+                                                {shelf.Books.slice(0, 3).map((book) => (
+                                                    <Card sx={{ maxWidth: 345 }} key={`${book.id}`} className='book-card'>
+                                                        <CardContent>
+                                                            <CardMedia
+                                                                component="img"
+                                                                height="140"
+                                                                onClick={() => { navigate(`/book/${book.id}`) }}
+                                                                image={`${book.cover_img}`}
+                                                                alt={`${book.title}`}
+                                                            />
+                                                        </CardContent>
+                                                    </Card>
+
+                                                ))}
+                                            </div>
+                                            )}
+                                        </ListItem>
+
+                                    </React.Fragment>
+                                ))}
+                            </List>
+                        </Box>
+
+                        <Box id='mobile-quicknav' sx={{ m: '5px auto 5px auto', display: 'flex' }}>
+                            {/* <div id='mobile-quicklinks'>
                             <Stack spacing={0} alignItems="flex-start"
                             >
 
                                 {/* quick links sections  */}
-                                {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
-                                {/* <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
+                            {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
+                            {/* <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
                                 <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
                                 <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
                                 <Button onClick={() => navigate('/books/read')}>Read</Button>
@@ -214,115 +240,129 @@ export default function Dashboard(props) {
                                 <Button onClick={() => navigate('/books')}>All My Books</Button>
                             </Stack>
                         </div> */}
-                        {/* <Divider variant="inset" orientation='vertical' /> */}
+                            {/* <Divider variant="inset" orientation='vertical' /> */}
 
-                        <div id='mobile-bookshelf'>
-                            {/* List of links to all existing shelves directly */}
-                            <Typography variant='h6'>Your Bookcase:</Typography>
-                            <Stack spacing={0.5}
-                                alignItems="flex-start"
-                            >
-                                {context.userShelves.map((shelf) => (
-                                    <Button
-                                        key={`${shelf.id}`}
-                                        id={`${shelf.id}`}
-                                        onClick={() => navigate(`/shelf/${shelf.id}`)}
-                                    >
-                                        {shelf.name}</Button>
-                                ))}
-                            </Stack>
-                        </div>
-                    </Box>
+                            <div id='mobile-bookshelf'>
+                                {/* List of links to all existing shelves directly */}
+                                <Typography variant='h6'>Your Bookcase:</Typography>
+                                <Stack spacing={0.5}
+                                    alignItems="flex-start"
+                                >
+                                    {context.userShelves.map((shelf) => (
+                                        <Button
+                                            key={`${shelf.id}`}
+                                            id={`${shelf.id}`}
+                                            onClick={() => navigate(`/shelf/${shelf.id}`)}
+                                        >
+                                            {shelf.name}</Button>
+                                    ))}
+                                </Stack>
+                            </div>
+                        </Box>
+                    </Container>
                 </Container>
-            </Container>
+            ) : (
+                <Container sx={{ display: { md: 'flex' }, flexDirection: 'row-reverse' }} id='dash'>
+                    <div id='right-column'>
+                        {userStats && <div id='stats'>
+                            <DashStats userStats={userStats} />
+                        </div>}
 
-            {/* -----------------------------------------------DESKTOP LAYOUT------------------------------------------------------ */}
-            <Container sx={{ display: { xs: 'none', md: 'flex' }, flexDirection: 'row-reverse' }} id='dash'>
+                        <div id='quicknav' style={{ display: 'flex', margin: '5px auto 5px auto' }}>
+                            <div id='bookshelf'>
+                                {/* List of links to all existing shelves directly */}
+                                <Typography variant='h6'>Your Bookcase:</Typography>
+                                <Stack spacing={0.5}
+                                    alignItems="flex-start"
+                                >
 
-                <div id='right-column'>
-                    {userStats && <div id='stats'>
-                        <DashStats userStats={userStats} />
-                    </div>}
+                                    {context.userShelves.map((shelf) => (
+                                        <Button
+                                            key={`${shelf.id}`}
+                                            id={`${shelf.id}`}
+                                            onClick={() => navigate(`/shelf/${shelf.id}`)}
+                                        >
+                                            {shelf.name}</Button>
+                                    ))}
+                                </Stack>
+                            </div>
 
-                    <div id='quicknav' style={{ display: 'flex', margin: '5px auto 5px auto' }}>
-                        <div id='bookshelf'>
-                            {/* List of links to all existing shelves directly */}
-                            <Typography variant='h6'>Your Bookcase:</Typography>
-                            <Stack spacing={0.5}
-                                alignItems="flex-start"
-                            >
+                            <Divider orientation='vertical' />
 
-                                {context.userShelves.map((shelf) => (
-                                    <Button
-                                        key={`${shelf.id}`}
-                                        id={`${shelf.id}`}
-                                        onClick={() => navigate(`/shelf/${shelf.id}`)}
-                                    >
-                                        {shelf.name}</Button>
+                            <div id='quicklinks'>
+                                <Stack spacing={0} alignItems="flex-end"
+                                >
+                                    {/* quick links sections  */}
+                                    {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
+                                    <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
+                                    <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
+                                    <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
+                                    <Button onClick={() => navigate('/books/read')}>Read</Button>
+                                    <Button onClick={() => navigate('/search')}>Find Books</Button>
+                                    <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
+                                    <Button onClick={() => navigate('/books')}>All My Books</Button>
+                                </Stack>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id='left-column'>
+                        {/* TO DO ON THIS PAGE -- add styling to the shelves; pick a font, add some shadowing to the book cover images, etc.  */}
+                        <div id='shelves'>
+                            <List sx={{ width: '100%', bgcolor: 'transparent' }}>
+                                {context.userShelves.slice(0, 3).map((shelf) => (
+                                    <React.Fragment>
+                                        <ListItem key={`${shelf.name}${shelf.id}`} id={`${shelf.name}${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                                            <ListItemText
+                                                primary={`${shelf.name}`}
+                                                sx={{ maxWidth: '10%' }}
+                                            />
+                                            {middle ? (
+                                                <div style={{ display: 'flex', width: '100%' }}>
+                                                    {shelf.Books.slice(0, 3).map((book) => (
+                                                        <Card sx={{ maxWidth: 345 }} key={`${shelf.name}${book.id}`} className='book-card'>
+                                                            <CardContent>
+                                                                <CardMedia
+                                                                    component="img"
+                                                                    height="140"
+                                                                    onClick={() => { navigate(`/book/${book.id}`) }}
+                                                                    image={`${book.cover_img}`}
+                                                                    alt={`${book.title}`}
+                                                                />
+                                                            </CardContent>
+                                                        </Card>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div style={{ display: 'flex', width: '100%' }}>
+                                                    {shelf.Books.slice(0, 5).map((book) => (
+                                                        <Card sx={{ maxWidth: 345 }} key={`${shelf.name}${book.id}`} className='book-card'>
+                                                            <CardContent>
+                                                                <CardMedia
+                                                                    component="img"
+                                                                    height="140"
+                                                                    onClick={() => { navigate(`/book/${book.id}`) }}
+                                                                    image={`${book.cover_img}`}
+                                                                    alt={`${book.title}`}
+                                                                />
+                                                            </CardContent>
+                                                        </Card>
+                                                    ))}
+                                                </div>)}
+                                        </ListItem>
+                                        <Divider variant="inset" />
+                                    </React.Fragment>
                                 ))}
-                            </Stack>
+                            </List>
                         </div>
 
-                        <Divider orientation='vertical' />
-
-                        <div id='quicklinks'>
-                            <Stack spacing={0} alignItems="flex-end"
-                            >
-                                {/* quick links sections  */}
-                                {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
-                                <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
-                                <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
-                                <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
-                                <Button onClick={() => navigate('/books/read')}>Read</Button>
-                                <Button onClick={() => navigate('/search')}>Find Books</Button>
-                                <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
-                                <Button onClick={() => navigate('/books')}>All My Books</Button>
-                            </Stack>
+                        <div id='read-books'>
+                            {/* shelf for all books marked as read */}
                         </div>
                     </div>
-
-                </div>
-
-                <div id='left-column'>
-                    {/* TO DO ON THIS PAGE -- add styling to the shelves; pick a font, add some shadowing to the book cover images, etc.  */}
-                    <div id='shelves'>
-                        <List sx={{ width: '100%', bgcolor: 'transparent' }}>
-                            {context.userShelves.slice(0, 3).map((shelf) => (
-                                <React.Fragment>
-                                    <ListItem key={`${shelf.name}${shelf.id}`} id={`${shelf.name}${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                                        <ListItemText
-                                            primary={`${shelf.name}`}
-                                            sx={{ maxWidth: '10%' }}
-                                        />
-                                        <div style={{ display: 'flex', width: '100%' }}>
-
-                                            {shelf.Books.slice(0,5).map((book) => (
-                                                <Card sx={{ maxWidth: 345 }} key={`${shelf.name}${book.id}`} className='book-card'>
-                                                    <CardContent>
-                                                        <CardMedia
-                                                            component="img"
-                                                            height="140"
-                                                            onClick={() => { navigate(`/book/${book.id}`) }}
-                                                            image={`${book.cover_img}`}
-                                                            alt={`${book.title}`}
-                                                        />
-                                                    </CardContent>
-                                                </Card>
-                                            ))}
-                                        </div>
-                                    </ListItem>
-                                    <Divider variant="inset" />
-                                </React.Fragment>
-                            ))}
-                        </List>
-                    </div>
-
-                    <div id='read-books'>
-                        {/* shelf for all books marked as read */}
-                    </div>
-                </div>
-            </Container>
-
+                </Container>
+            )}
 
             {context.shelfDialog && <AddShelf />}
 
