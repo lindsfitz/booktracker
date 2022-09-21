@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Typography, Box, Rating, Tabs, Tab } from '@mui/material';
+import { Typography, Box, Rating, Tabs, Tab, Divider } from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -61,19 +61,22 @@ export default function DashStats({ userStats }) {
 
     return (
         <React.Fragment>
-            <Box sx={{ width: '100%' }}>
+            <Box id='stats' sx={{ width: '100%', mr:'auto',ml:'auto' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs
                         value={value}
                         onChange={handleChange}
-                        variant="scrollable"
-                        scrollButtons="auto"
-                        aria-label="stats tabs">
+                        // variant="scrollable"
+                        // scrollButtons="auto"
+                        centered
+                        
+                        aria-label="stats tabs"
+                        >
                         <Tab label="This Month" {...a11yProps(0)} />
                         <Tab label="This Year" {...a11yProps(1)} />
                         <Tab label="All-Time" {...a11yProps(2)} />
                         <Tab label="All Shelves" {...a11yProps(3)} />
-
+                        
                     </Tabs>
                 </Box>
 
@@ -81,8 +84,9 @@ export default function DashStats({ userStats }) {
                 <SwipeableViews 
                 index={value} 
                 onChangeIndex={handleChangeIndex}
-                enableMouseEvents>
-                    <TabPanel value={value} index={0}>
+                enableMouseEvents
+                style={{marginLeft:'auto', marginRight:'auto', textAlign:'center'}}>
+                    <TabPanel value={value} index={0} >
                         <Typography variant='h6'>So Far in {months[month]}</Typography>
                         {userStats.month ? (
                             <div>
@@ -98,7 +102,7 @@ export default function DashStats({ userStats }) {
                     </TabPanel>
 
                     {/* This Year's Stats */}
-                    <TabPanel value={value} index={1}>
+                    <TabPanel value={value} index={1} component="div">
                         <Typography variant='h6'>So Far in {year}</Typography>
                         {userStats.year ? (
                             <div>
@@ -114,7 +118,7 @@ export default function DashStats({ userStats }) {
                     </TabPanel>
 
                     {/* ALL TIME Stats */}
-                    <TabPanel value={value} index={2}>
+                    <TabPanel value={value} index={2} component="div">
                         <Typography variant='h6'>All-Time</Typography>
                         {userStats.all ? (
                             <div>
@@ -130,7 +134,7 @@ export default function DashStats({ userStats }) {
                     </TabPanel>
 
                     {/* ALL SHELVED BOOKS */}
-                    <TabPanel value={value} index={3}>
+                    <TabPanel value={value} index={3} component="div">
                         <Typography variant='h6'>Currently Shelved Books</Typography>
                         {userStats.shelved ? (
                             <div>
@@ -144,6 +148,7 @@ export default function DashStats({ userStats }) {
                         )}
                     </TabPanel>
                 </SwipeableViews>
+                <Divider />
             </Box>
         </React.Fragment>
     )

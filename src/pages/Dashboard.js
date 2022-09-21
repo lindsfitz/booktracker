@@ -119,7 +119,7 @@ export default function Dashboard(props) {
 
                 </Container>
             ) : (
-                <Container id='currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { md: 'flex' }, flexDirection: 'column' }}>
+                <Container id='currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { md: 'flex' }, flexDirection: 'column',width:1/1 }}>
                     {/* spans whole width of the screen  */}
                     <Divider />
                     <Typography variant='subtitle1'>Currently Reading:</Typography>
@@ -149,11 +149,11 @@ export default function Dashboard(props) {
             {md ? (
                 <Container sx={{ display: { xs: 'flex' }, flexDirection: 'column' }}>
                     {/* <h1>breakpoint is true</h1> */}
-                    {userStats && <div id='stats'>
+                    {userStats && 
                         <DashStats userStats={userStats} />
-                    </div>}
+                    }
                     <Container sx={{ display: 'flex', flexDirection: 'column' }}>
-                        <Box id='mobile-quicklinks' sx={{ display: 'flex' }}>
+                        <Box id='mobile-quicklinks' sx={{ display: 'flex', justifyContent:'center', m:3 }}>
                             <Stack spacing={0} alignItems="center"
                             >
                                 {/* quick links sections  */}
@@ -171,14 +171,14 @@ export default function Dashboard(props) {
 
                             </Stack>
                         </Box>
-                        <Box id='mobile-shelves'>
+                        <Box id='mobile-shelves' sx={{mr:'auto', ml:'auto'}}>
                             <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                                 {context.userShelves.slice(0, 3).map((shelf) => (
                                     <React.Fragment>
                                         <ListItem key={`${shelf.name}${shelf.id}mobile`} id={`${shelf.name}${shelf.id}mobile`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                                             <ListItemText
                                                 primary={`${shelf.name}`}
-                                                sx={{ maxWidth: '10%' }}
+                                                sx={{ maxWidth: '30%' }}
                                             />
                                             {xs ? (
                                                 <div style={{ display: 'flex', width: '100%' }}>
@@ -262,13 +262,13 @@ export default function Dashboard(props) {
                     </Container>
                 </Container>
             ) : (
-                <Container sx={{ display: { md: 'flex' }, flexDirection: 'row-reverse' }} id='dash'>
-                    <div id='right-column'>
+                <Container sx={{ display: { md: 'flex' }, flexDirection: 'row-reverse', justifyContent:'center' }} id='dash'>
+                    <Box id='right-column' sx={{ml:3, mr:3}}>
                         {userStats && <div id='stats'>
                             <DashStats userStats={userStats} />
                         </div>}
 
-                        <div id='quicknav' style={{ display: 'flex', margin: '5px auto 5px auto' }}>
+                        <div id='quicknav' style={{ display: 'flex', margin: '5px auto 5px auto', justifyContent:'center' }}>
                             <div id='bookshelf'>
                                 {/* List of links to all existing shelves directly */}
                                 <Typography variant='h6'>Your Bookcase:</Typography>
@@ -305,9 +305,9 @@ export default function Dashboard(props) {
                             </div>
                         </div>
 
-                    </div>
+                    </Box>
 
-                    <div id='left-column'>
+                    <Box id='left-column' sx={{mr:3}}>
                         {/* TO DO ON THIS PAGE -- add styling to the shelves; pick a font, add some shadowing to the book cover images, etc.  */}
                         <div id='shelves'>
                             <List sx={{ width: '100%', bgcolor: 'transparent' }}>
@@ -360,7 +360,7 @@ export default function Dashboard(props) {
                         <div id='read-books'>
                             {/* shelf for all books marked as read */}
                         </div>
-                    </div>
+                    </Box>
                 </Container>
             )}
 

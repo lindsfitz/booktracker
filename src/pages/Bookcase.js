@@ -96,12 +96,12 @@ export default function Bookcase() {
                                 </Container>
 
                                 {md ? (
-                                    // <div
-                                    //     style={{ display: 'flex', width: '100%' }}
-                                    // >
+                                    <div
+                                        style={{ display: 'flex', width: '100%', justifyContent:'center' }}
+                                    >
                                         <BCMobile shelfId={shelf.id} books={shelf.Books} />
                                         
-                                    // </div>
+                                     </div>
                                 ) : (
                                     <div style={{ display: 'flex', width: '100%' }}>
                                         {shelf.Books.slice(0, 5).map((book) => (

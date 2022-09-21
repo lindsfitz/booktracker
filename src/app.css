@@ -49,18 +49,8 @@ body {
 } */
 
 #stats {
-    /* border: 1px solid var(--emerald); */
-    border-bottom:1px solid var(--muted-blue);
-    display:flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width:75%;
-    margin:10px auto 10px auto;
-    padding:10px;
-    text-align: center;
+    border:1px solid var(--muted-blue)
 }
-
 
 
 #shelves {
