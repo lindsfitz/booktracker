@@ -158,14 +158,19 @@ export default function UserBook() {
         setSnack(true)
     }
 
-
-
-
-
-
     useEffect(() => {
         bookInfo()
     }, [params.id])
+
+
+    // useEffect - runs when snack state changes, timer to remove snackbar after 1sec
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            console.log('timer is running')
+            setSnack(false)
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, [snack])
 
 
     return (
@@ -393,8 +398,10 @@ export default function UserBook() {
             </div>}
 
             <Snackbar
-                anchorOrigin={{vertical: 'bottom',
-                horizontal: 'center' }}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center'
+                }}
                 open={snack}
                 // onClose={handleClose}
                 message={snackMessage}

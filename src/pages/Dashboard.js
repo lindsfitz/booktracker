@@ -296,7 +296,7 @@ export default function Dashboard(props) {
                                         />
                                         <div style={{ display: 'flex', width: '100%' }}>
 
-                                            {shelf.Books.map((book) => (
+                                            {shelf.Books.slice(0,5).map((book) => (
                                                 <Card sx={{ maxWidth: 345 }} key={`${shelf.name}${book.id}`} className='book-card'>
                                                     <CardContent>
                                                         <CardMedia

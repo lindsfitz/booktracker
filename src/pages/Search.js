@@ -3,7 +3,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
-import { Box, TextField, InputLabel, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography, Badge, Card, CardMedia, CardContent } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import SwipeableViews from 'react-swipeable-views';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import { Box, TextField, InputLabel, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography, Badge, Card, CardMedia, CardContent, IconButton, MobileStepper, useMediaQuery } from '@mui/material';
+import NYTMobile from './components/NYTMobile';
 
 
 const NYTweekly = [
@@ -28,23 +33,31 @@ export default function Search() {
     const [searchBy, setSearchBy] = useState('title');
     const [searchTerm, setSearchTerm] = useState('')
     const [searchResults, setSearchResults] = useState([])
-    const [shelves, setShelves] = useState(null)
-    const [shelfAdd, setShelfAdd] = useState('')
+    const [NYTdiv, setNYTdiv] = useState(true)
     const [noResults, setNoResults] = useState(false)
     const [bestSellers, setBestSellers] = useState(null)
     const [bestListInfo, setBestListInfo] = useState(null)
+    // const [activeStep, setActiveStep] = useState(0)
 
     const handleInputChange = (e) => {
         setSearchTerm(e.target.value)
     }
 
+    // const handleNext = () => {
+    //     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    // };
+
+    // const handleBack = () => {
+    //     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    // };
+
+    // const handleStepChange = (step) => {
+    //     setActiveStep(step);
+    // };
+
     const changeSearchBy = (event) => {
         setSearchBy(event.target.value);
     };
-
-    const addToShelf = (shelf, book) => {
-        console.log(shelf, book)
-    }
 
     const searchByTitle = async () => {
         API.searchByTitle(searchTerm).then(books => {
@@ -55,7 +68,6 @@ export default function Search() {
         }).catch(err => {
             console.log(err)
         })
-        // setShelves([...context.userShelves])
     }
 
     const searchByAuthor = async () => {
@@ -68,8 +80,8 @@ export default function Search() {
     }
 
     const search = async () => {
+        setNYTdiv(false)
         setSearchResults(null)
-        setShelves([...context.userShelves])
         if (searchBy === 'title') {
             searchByTitle()
         }
@@ -87,7 +99,6 @@ export default function Search() {
     const nytBestSellers = async () => {
         let testlist = 'combined-print-and-e-book-fiction'
         const best = await API.nytList(testlist)
-        console.log(best)
         setBestSellers(best.data.results.books)
         setBestListInfo({
             date: best.data.results.bestsellers_date,
@@ -127,14 +138,20 @@ export default function Search() {
     }, [])
 
 
+    const theme = useTheme();
+    const smxs = useMediaQuery(theme.breakpoints.down('sm'))
+    const md = useMediaQuery(theme.breakpoints.between('sm', 'lg'))
+    const lg = useMediaQuery(theme.breakpoints.up('lg'))
+
+
     return (
         <Container sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
             <Box
                 component="form"
                 sx={{
                     display: 'flex',
-                    maxWidth: 3 / 5,
-                    m: 5
+                    maxWidth: { xs: 4 / 5, sm: 3 / 5 },
+                    m: { xs: 2, sm: 5 }
                 }}
                 noValidate
                 autoComplete="off"
@@ -158,50 +175,30 @@ export default function Search() {
                 <Button onClick={search}>Search</Button>
             </Box>
 
-            {
-                noResults && <Container sx={{ m: '20px auto 20px auto', textAlign: 'center' }}>
+            {noResults &&
+                <Container sx={{ m: '20px auto 20px auto', textAlign: 'center' }}>
                     <Typography variant='subtitle2'>No Results Found</Typography>
                 </Container>
             }
 
-            {searchResults ? <Container>
-                <List>
-                    {searchResults.map((book) => (
-                        <ListItem key={`${book.cover_edition_key}`} id={book.cover_edition_key}
-                        >
-                            <img src={`https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-M.jpg`} alt={`${book.title}-cover`} />
-                            {
-                                book.author_name[0] &&
-                                <ListItemText primary={book.title} secondary={book.author_name[0]} />
-                            }
-                            <FormControl edge="end" variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                                <InputLabel id="demo-simple-select-standard-label">Add to Shelf</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-standard-label"
-                                    id="demo-simple-select-standard"
-                                    value={shelfAdd}
-                                    // onClick={changeShelfAdd}
-                                    label="Add to List"
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    {shelves.map((shelf) => (
-                                        <MenuItem onClick={() => addToShelf(shelf.id, book.key)} key={shelf.id} value={shelf.id}>{shelf.name}
-                                        </MenuItem>
-                                    ))}
-
-                                </Select>
+            {searchResults ? (
+                <Container>
+                    <List>
+                        {searchResults.map((book) => (
+                            <ListItem key={`${book.cover_edition_key}`} id={book.cover_edition_key}
+                            >
+                                <img src={`https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-M.jpg`} alt={`${book.title}-cover`} />
+                                {
+                                    book.author_name[0] &&
+                                    <ListItemText primary={book.title} secondary={book.author_name[0]} />
+                                }
                                 <Button onClick={() => { navigate(`${book.key}`) }}>VIEW DETAILS</Button>
-                            </FormControl>
-                        </ListItem>
-                    ))}
-                </List>
-
-            </Container> : (
+                            </ListItem>
+                        ))}
+                    </List>
+                </Container>
+            ) : (
                 <Stack spacing={1} sx={{ mr: 'auto', ml: 'auto', mt: 10, width: 1 / 1 }}>
-                    {/* For variant="text", adjust the height via font-size */}
-                    {/* For other variants, adjust the size with `width` and `height` */}
                     <Skeleton variant="rectangular" width={4 / 5} height={100} />
                     <Skeleton width={4 / 5} />
                     <Skeleton variant="rectangular" width={4 / 5} height={100} />
@@ -211,44 +208,51 @@ export default function Search() {
                 </Stack>
             )}
 
-            {bestSellers && <Container>
+            {NYTdiv && bestSellers && <Container>
                 <Box>
                     <Typography variant='h6'>New York Times Best Sellers List</Typography>
                     <Typography variant='subtitle1'>{bestListInfo.title}</Typography>
                     <Typography variant='subtitle2' color='text.secondary'>{bestListInfo.date}</Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-                        {bestSellers.map(book => (
-                            <Card sx={{ maxWidth: 120 }}>
-                                <CardContent sx={{ wordWrap: 'break-word' }}>
-                                    <Badge anchorOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                    }}
-                                        badgeContent={book.rank} color="primary">
-                                        <CardMedia
-                                            component="img"
-                                            onClick={() => nytSearch(book.primary_isbn13)}
-                                            // sx={{ maxHeight: { xs: 190, md: 218 }, maxWidth: { xs: 125, md: 148 } }}
-                                            height='140'
-                                            image={`${book.book_image}`}
-                                            alt={`${book.title}`}
-                                        />
-                                    </Badge>
+                    {smxs ? (
+                        <NYTMobile bestSellers={bestSellers} nytSearch={nytSearch} />
+                    ) : (
+                        <Box sx={{ display: { sm: 'flex' }, flexWrap: 'wrap' }}>
+                            {bestSellers.map(book => (
+                                <Card key={book.primary_isbn13} sx={{ maxWidth: 120 }}>
+                                    <CardContent sx={{ wordWrap: 'break-word' }}>
+                                        <Badge anchorOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'left',
+                                        }}
+                                            badgeContent={book.rank} color="primary">
+                                            <CardMedia
+                                                component="img"
+                                                onClick={() => nytSearch(book.primary_isbn13)}
+                                                // sx={{ maxHeight: { xs: 190, md: 218 }, maxWidth: { xs: 125, md: 148 } }}
+                                                height='140'
+                                                image={`${book.book_image}`}
+                                                alt={`${book.title}`}
+                                            />
+                                        </Badge>
+                                        <Typography variant='caption' sx={{ fontWeight: 'bold' }}>{book.title}</Typography>
+                                        <br />
+                                        <Typography variant='caption' color='text.secondary'>{book.author}</Typography>
+                                        <br />
+                                        <Typography variant='caption'>Weeks on List: {book.weeks_on_list}</Typography>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </Box>
+                    )}
 
 
-                                    <Typography variant='caption' sx={{ fontWeight: 'bold' }}>{book.title}</Typography>
-                                    <br />
-                                    <Typography variant='caption' color='text.secondary'>{book.author}</Typography>
-                                    <br />
-                                    <Typography variant='caption'>Weeks on List: {book.weeks_on_list}</Typography>
-                                </CardContent>
-                            </Card>
-                        ))
-                        }
-
-                    </Box>
                 </Box>
-            </Container>}
+            </Container>
+
+
+
+
+            }
 
         </Container>
     );
