@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import PropTypes from 'prop-types';
-import { Typography, Box, Rating, Tabs, Tab, Divider } from '@mui/material';
+import { Typography, Box, Rating, Tabs, Tab, Divider, Button } from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -18,7 +19,7 @@ function TabPanel(props) {
         >
             {value === index && (
                 <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
+                    <Typography component='div'>{children}</Typography>
                 </Box>
             )}
         </div>
@@ -40,6 +41,7 @@ function a11yProps(index) {
 
 
 export default function DashStats({ userStats }) {
+    let navigate = useNavigate();
 
     const [value, setValue] = useState(0);
     const [year, setYear] = useState(null)
@@ -99,6 +101,9 @@ export default function DashStats({ userStats }) {
                                 <Typography variant='subtitle1'>You haven't marked any books as read so far this month.</Typography>
                             </div>
                         )}
+                       
+                            <Button onClick={()=>navigate('/activity')}>View All Activity</Button>
+                      
                     </TabPanel>
 
                     {/* This Year's Stats */}
@@ -115,6 +120,7 @@ export default function DashStats({ userStats }) {
                                 <Typography variant='subtitle1'>You haven't marked any books as read so far this year.</Typography>
                             </div>
                         )}
+                        <Button onClick={()=>navigate('/activity')}>View All Activity</Button>
                     </TabPanel>
 
                     {/* ALL TIME Stats */}
@@ -131,6 +137,7 @@ export default function DashStats({ userStats }) {
                                 <Typography variant='subtitle1'>You haven't marked any books as read on this account yet.</Typography>
                             </div>
                         )}
+                         <Button onClick={()=>navigate('/books/read')}>Marked As Read</Button>
                     </TabPanel>
 
                     {/* ALL SHELVED BOOKS */}
@@ -146,6 +153,7 @@ export default function DashStats({ userStats }) {
                                 <Typography variant='subtitle1'>You don't have any books in your Bookcase yet.</Typography>
                             </div>
                         )}
+                         <Button onClick={()=>navigate('/books')}>View Your Books</Button>
                     </TabPanel>
                 </SwipeableViews>
                 <Divider />

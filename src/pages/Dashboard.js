@@ -119,7 +119,7 @@ export default function Dashboard(props) {
 
                 </Container>
             ) : (
-                <Container id='currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { md: 'flex' }, flexDirection: 'column',width:1/1 }}>
+                <Container id='currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { md: 'flex' }, flexDirection: 'column', width: 1 / 1 }}>
                     {/* spans whole width of the screen  */}
                     <Divider />
                     <Typography variant='subtitle1'>Currently Reading:</Typography>
@@ -148,12 +148,11 @@ export default function Dashboard(props) {
 
             {md ? (
                 <Container sx={{ display: { xs: 'flex' }, flexDirection: 'column' }}>
-                    {/* <h1>breakpoint is true</h1> */}
-                    {userStats && 
+                    {userStats &&
                         <DashStats userStats={userStats} />
                     }
                     <Container sx={{ display: 'flex', flexDirection: 'column' }}>
-                        <Box id='mobile-quicklinks' sx={{ display: 'flex', justifyContent:'center', m:3 }}>
+                        <Box id='mobile-quicklinks' sx={{ display: 'flex', justifyContent: 'center', m: 3 }}>
                             <Stack spacing={0} alignItems="center"
                             >
                                 {/* quick links sections  */}
@@ -171,7 +170,7 @@ export default function Dashboard(props) {
 
                             </Stack>
                         </Box>
-                        <Box id='mobile-shelves' sx={{mr:'auto', ml:'auto'}}>
+                        <Box id='mobile-shelves' sx={{ mr: 'auto', ml: 'auto' }}>
                             <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                                 {context.userShelves.slice(0, 3).map((shelf) => (
                                     <React.Fragment>
@@ -183,41 +182,42 @@ export default function Dashboard(props) {
                                             {xs ? (
                                                 <div style={{ display: 'flex', width: '100%' }}>
 
-                                                {shelf.Books.slice(0, 2).map((book) => (
-                                                    <Card sx={{ maxWidth: 345 }} key={`${book.id}`} className='book-card'>
-                                                        <CardContent>
-                                                            <CardMedia
-                                                                component="img"
-                                                                height="140"
-                                                                onClick={() => { navigate(`/book/${book.id}`) }}
-                                                                image={`${book.cover_img}`}
-                                                                alt={`${book.title}`}
-                                                            />
-                                                        </CardContent>
-                                                    </Card>
+                                                    {shelf.Books.slice(0, 2).map((book) => (
+                                                        <Card sx={{ maxWidth: 345 }} key={`${book.id}`} className='book-card'>
+                                                            <CardContent>
+                                                                <CardMedia
+                                                                    component="img"
+                                                                    height="140"
+                                                                    onClick={() => { navigate(`/book/${book.id}`) }}
+                                                                    image={`${book.cover_img}`}
+                                                                    alt={`${book.title}`}
+                                                                />
+                                                            </CardContent>
+                                                        </Card>
 
-                                                ))}
-                                            </div>
-                                            ):(
-                                            <div style={{ display: 'flex', width: '100%' }}>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div style={{ display: 'flex', width: '100%' }}>
 
-                                                {shelf.Books.slice(0, 3).map((book) => (
-                                                    <Card sx={{ maxWidth: 345 }} key={`${book.id}`} className='book-card'>
-                                                        <CardContent>
-                                                            <CardMedia
-                                                                component="img"
-                                                                height="140"
-                                                                onClick={() => { navigate(`/book/${book.id}`) }}
-                                                                image={`${book.cover_img}`}
-                                                                alt={`${book.title}`}
-                                                            />
-                                                        </CardContent>
-                                                    </Card>
+                                                    {shelf.Books.slice(0, 3).map((book) => (
+                                                        <Card sx={{ maxWidth: 345 }} key={`${book.id}`} className='book-card'>
+                                                            <CardContent>
+                                                                <CardMedia
+                                                                    component="img"
+                                                                    height="140"
+                                                                    onClick={() => { navigate(`/book/${book.id}`) }}
+                                                                    image={`${book.cover_img}`}
+                                                                    alt={`${book.title}`}
+                                                                />
+                                                            </CardContent>
+                                                        </Card>
 
-                                                ))}
-                                            </div>
+                                                    ))}
+                                                </div>
                                             )}
                                         </ListItem>
+                                        <Divider key={`${shelf.id}dividersm`} />
 
                                     </React.Fragment>
                                 ))}
@@ -225,50 +225,30 @@ export default function Dashboard(props) {
                         </Box>
 
                         <Box id='mobile-quicknav' sx={{ m: '5px auto 5px auto', display: 'flex' }}>
-                            {/* <div id='mobile-quicklinks'>
-                            <Stack spacing={0} alignItems="flex-start"
+                            <Typography variant='h6'>Your Bookcase:</Typography>
+                            <Stack spacing={0.5}
+                                alignItems="flex-start"
                             >
-
-                                {/* quick links sections  */}
-                            {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
-                            {/* <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
-                                <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
-                                <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
-                                <Button onClick={() => navigate('/books/read')}>Read</Button>
-                                <Button onClick={() => navigate('/search')}>Find Books</Button>
-                                <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
-                                <Button onClick={() => navigate('/books')}>All My Books</Button>
+                                {context.userShelves.map((shelf) => (
+                                    <Button
+                                        key={`${shelf.id}`}
+                                        id={`${shelf.id}`}
+                                        onClick={() => navigate(`/shelf/${shelf.id}`)}
+                                    >
+                                        {shelf.name}</Button>
+                                ))}
                             </Stack>
-                        </div> */}
-                            {/* <Divider variant="inset" orientation='vertical' /> */}
-
-                            <div id='mobile-bookshelf'>
-                                {/* List of links to all existing shelves directly */}
-                                <Typography variant='h6'>Your Bookcase:</Typography>
-                                <Stack spacing={0.5}
-                                    alignItems="flex-start"
-                                >
-                                    {context.userShelves.map((shelf) => (
-                                        <Button
-                                            key={`${shelf.id}`}
-                                            id={`${shelf.id}`}
-                                            onClick={() => navigate(`/shelf/${shelf.id}`)}
-                                        >
-                                            {shelf.name}</Button>
-                                    ))}
-                                </Stack>
-                            </div>
                         </Box>
                     </Container>
                 </Container>
             ) : (
-                <Container sx={{ display: { md: 'flex' }, flexDirection: 'row-reverse', justifyContent:'center' }} id='dash'>
-                    <Box id='right-column' sx={{ml:3, mr:3}}>
+                <Container sx={{ display: { md: 'flex' }, flexDirection: 'row-reverse', justifyContent: 'center' }} id='dash'>
+                    <Box id='right-column' sx={{ ml: 3, mr: 3 }}>
                         {userStats && <div id='stats'>
                             <DashStats userStats={userStats} />
                         </div>}
 
-                        <div id='quicknav' style={{ display: 'flex', margin: '5px auto 5px auto', justifyContent:'center' }}>
+                        <div id='quicknav' style={{ display: 'flex', margin: '5px auto 5px auto', justifyContent: 'center' }}>
                             <div id='bookshelf'>
                                 {/* List of links to all existing shelves directly */}
                                 <Typography variant='h6'>Your Bookcase:</Typography>
@@ -294,26 +274,26 @@ export default function Dashboard(props) {
                                 >
                                     {/* quick links sections  */}
                                     {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
-                                    <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
-                                    <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
-                                    <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
                                     <Button onClick={() => navigate('/books/read')}>Read</Button>
-                                    <Button onClick={() => navigate('/search')}>Find Books</Button>
+                                    <Button onClick={() => navigate('/books')}>All Books</Button>
+                                    <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
+                                    <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
                                     <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
-                                    <Button onClick={() => navigate('/books')}>All My Books</Button>
+                                    <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
+                                    {/* <Button onClick={() => navigate('/search')}>Find Books</Button> */}
                                 </Stack>
                             </div>
                         </div>
 
                     </Box>
 
-                    <Box id='left-column' sx={{mr:3}}>
+                    <Box id='left-column' sx={{ mr: 3 }}>
                         {/* TO DO ON THIS PAGE -- add styling to the shelves; pick a font, add some shadowing to the book cover images, etc.  */}
                         <div id='shelves'>
                             <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                                 {context.userShelves.slice(0, 3).map((shelf) => (
                                     <React.Fragment>
-                                        <ListItem key={`${shelf.name}${shelf.id}`} id={`${shelf.name}${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                                        <ListItem key={`${shelf.name}${shelf.id}lg`} id={`${shelf.name}${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                                             <ListItemText
                                                 primary={`${shelf.name}`}
                                                 sx={{ maxWidth: '10%' }}
@@ -351,7 +331,7 @@ export default function Dashboard(props) {
                                                     ))}
                                                 </div>)}
                                         </ListItem>
-                                        <Divider variant="inset" />
+                                        <Divider key={`${shelf.id}dividerlg`} />
                                     </React.Fragment>
                                 ))}
                             </List>
