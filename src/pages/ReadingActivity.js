@@ -148,7 +148,7 @@ export default function ReadingActivity() {
                                     <div>
                                         <Typography variant='subtitle1'>Total Books Read: {stats.month.bookCount}</Typography>
                                         <Typography variant='subtitle1'>Total Pages Read: {stats.month.totalPages}</Typography>
-                                        <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(stats.month.avgRating)} precision={0.5} readOnly /></Typography>
+                                        <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" value={parseInt(stats.month.avgRating)} precision={0.5} readOnly /></Typography>
                                     </div>
                                 ) : (
                                     <div>
@@ -220,7 +220,7 @@ export default function ReadingActivity() {
                                 <div>
                                     <Typography variant='subtitle1'>Total Books Read: {stats.year.bookCount}</Typography>
                                     <Typography variant='subtitle1'>Total Pages Read: {stats.year.totalPages}</Typography>
-                                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(stats.year.avgRating)} precision={0.5} readOnly /></Typography>
+                                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" value={parseInt(stats.year.avgRating)} precision={0.5} readOnly /></Typography>
                                 </div>
                             ) : (
                                 <div>
