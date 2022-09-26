@@ -24,6 +24,7 @@ export default function Dashboard(props) {
     const middle = useMediaQuery(theme.breakpoints.between('md', 'lg'))
 
     const [userStats, setUserStats] = useState(null);
+    const [activityGoals, setActivityGoals] = useState(null)
     const [currentReads, setCurrentReads] = useState(null);
     const [activeStep, setActiveStep] = useState(0)
 
@@ -49,6 +50,8 @@ export default function Dashboard(props) {
         const year = date.getFullYear();
         const month = date.getMonth();
         const allStats = await API.allStats(context.userData.id, year, month)
+        const activity = await API.currentGoals(context.userData.id)
+        setActivityGoals(activity.data)
         setUserStats(allStats.data)
     }
 
@@ -60,7 +63,8 @@ export default function Dashboard(props) {
                 context.setToken(myToken)
                 context.setUserData({
                     name: res.data.first_name,
-                    id: res.data.id
+                    id: res.data.id,
+                    created: res.data.createdAt
                 })
                 renderCurrentReads()
                 renderShelves()
@@ -149,7 +153,7 @@ export default function Dashboard(props) {
             {md ? (
                 <Container sx={{ display: { xs: 'flex' }, flexDirection: 'column' }}>
                     {userStats &&
-                        <DashStats userStats={userStats} />
+                        <DashStats userStats={userStats} goals={activityGoals} />
                     }
                     <Container sx={{ display: 'flex', flexDirection: 'column' }}>
                         <Box id='mobile-quicklinks' sx={{ display: 'flex', justifyContent: 'center', m: 3 }}>
@@ -245,7 +249,7 @@ export default function Dashboard(props) {
                 <Container sx={{ display: { md: 'flex' }, flexDirection: 'row-reverse', justifyContent: 'center' }} id='dash'>
                     <Box id='right-column' sx={{ ml: 3, mr: 3 }}>
                         {userStats && <div id='stats'>
-                            <DashStats userStats={userStats} />
+                            <DashStats userStats={userStats} goals={activityGoals} />
                         </div>}
 
                         <div id='quicknav' style={{ display: 'flex', margin: '5px auto 5px auto', justifyContent: 'center' }}>

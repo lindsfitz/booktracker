@@ -50,6 +50,11 @@ export default function ResultBook() {
         setSnack(true)
     }
 
+    const actualBookCheck = async () => {
+        const bookcheck = await API.getOneBook()
+
+    }
+
    
 
 

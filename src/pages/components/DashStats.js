@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
+import AppContext from '../../AppContext';
+import dayjs from 'dayjs'
 import PropTypes from 'prop-types';
-import { Typography, Box, Rating, Tabs, Tab, Divider, Button } from '@mui/material';
+import { Typography, Box, Rating, Tabs, Tab, Divider, Button, CircularProgress, Stack } from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -39,13 +41,39 @@ function a11yProps(index) {
     };
 }
 
+function CircularProgressWithLabel(props) {
+    return (
+        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+            <CircularProgress variant="determinate" {...props} />
+            <Box
+                sx={{
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    position: 'absolute',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <Typography variant="caption" component="div" color="text.secondary">
+                    {`${Math.round(props.value)}%`}
+                </Typography>
+            </Box>
+        </Box>
+    );
+}
 
-export default function DashStats({ userStats }) {
+export default function DashStats({ userStats, goals }) {
+    const context = useContext(AppContext);
     let navigate = useNavigate();
 
     const [value, setValue] = useState(0);
     const [year, setYear] = useState(null)
     const [month, setMonth] = useState(null)
+    const [monthProgress, setMonthProgress] = useState(0);
+    const [yearProgress, setYearProgress] = useState(0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -59,11 +87,13 @@ export default function DashStats({ userStats }) {
         const date = new Date();
         setYear(date.getFullYear())
         setMonth(date.getMonth())
+        setMonthProgress((userStats.month.bookCount / goals.month.value * 100))
+        setYearProgress((userStats.year.bookCount / goals.year.value * 100))
     }, [])
 
     return (
         <React.Fragment>
-            <Box id='stats' sx={{ width: '100%', mr:'auto',ml:'auto' }}>
+            <Box id='stats' sx={{ width: '100%', mr: 'auto', ml: 'auto' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs
                         value={value}
@@ -71,73 +101,94 @@ export default function DashStats({ userStats }) {
                         // variant="scrollable"
                         // scrollButtons="auto"
                         centered
-                        
+
                         aria-label="stats tabs"
-                        >
+                    >
                         <Tab label="This Month" {...a11yProps(0)} />
                         <Tab label="This Year" {...a11yProps(1)} />
                         <Tab label="All-Time" {...a11yProps(2)} />
                         <Tab label="All Shelves" {...a11yProps(3)} />
-                        
+
                     </Tabs>
                 </Box>
 
                 {/* THIS MONTH Stats */}
-                <SwipeableViews 
-                index={value} 
-                onChangeIndex={handleChangeIndex}
-                enableMouseEvents
-                style={{marginLeft:'auto', marginRight:'auto', textAlign:'center'}}>
+                <SwipeableViews
+                    index={value}
+                    onChangeIndex={handleChangeIndex}
+                    enableMouseEvents
+                    style={{ marginLeft: 'auto', marginRight: 'auto', textAlign: 'center' }}>
                     <TabPanel value={value} index={0} >
-                        <Typography variant='h6'>So Far in {months[month]}</Typography>
+                        <Typography variant='h6'>{months[month]}</Typography>
+                        <Typography variant='subtitle1'>Reading Activity</Typography>
+
                         {userStats.month ? (
                             <div>
-                                <Typography variant='subtitle1'>Total Books Read: {userStats.month.bookCount}</Typography>
-                                <Typography variant='subtitle1'>Total Pages Read: {userStats.month.totalPages}</Typography>
-                                <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.month.avgRating)} precision={0.5} readOnly /></Typography>
+                                {/* <CircularProgress variant="determinate" value={(userStats.month.bookCount / goals.month.value * 100)} /> */}
+                                <CircularProgressWithLabel value={monthProgress} />
+                                <Typography variant='subtitle2'>You have read {userStats.month.bookCount} of {goals.month.value} books this month.</Typography>
+                                <Typography variant='subtitle2'>That adds up to {userStats.month.totalPages} pages so far.</Typography>
+                                <Typography variant='subtitle2'>On average, you gave books </Typography>
+                                <Stack direction='row' spacing={1} justifyContent='center'>
+                                    <Rating name="half-rating-read" defaultValue={parseInt(userStats.month.avgRating)} precision={0.5} readOnly size="small" />
+                                    <Typography>stars.</Typography>
+                                </Stack>
                             </div>
                         ) : (
                             <div>
                                 <Typography variant='subtitle1'>You haven't marked any books as read so far this month.</Typography>
                             </div>
                         )}
-                       
-                            <Button onClick={()=>navigate('/activity')}>View All Activity</Button>
-                      
+
+                        <Button onClick={() => navigate('/activity')}>View All Activity</Button>
+
                     </TabPanel>
 
                     {/* This Year's Stats */}
                     <TabPanel value={value} index={1} component="div">
-                        <Typography variant='h6'>So Far in {year}</Typography>
+                        <Typography variant='h6'>{year}</Typography>
+                        <Typography variant='subtitle1'>Reading Activity</Typography>
                         {userStats.year ? (
                             <div>
-                                <Typography variant='subtitle1'>Total Books Read: {userStats.year.bookCount}</Typography>
-                                <Typography variant='subtitle1'>Total Pages Read: {userStats.year.totalPages}</Typography>
-                                <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.year.avgRating)} precision={0.5} readOnly /></Typography>
+                                <CircularProgressWithLabel value={yearProgress} />
+                                <Typography variant='subtitle2'>You have finished {userStats.year.bookCount} of {goals.year.value} books this year.</Typography>
+                                <Typography variant='subtitle2'>That adds up to {userStats.year.totalPages} pages so far</Typography>
+                                <Typography variant='subtitle2'>On average, you gave books </Typography>
+                                <Stack direction='row' spacing={1} justifyContent='center'>
+                                    <Rating name="half-rating-read" defaultValue={parseInt(userStats.year.avgRating)} precision={0.5} readOnly size="small" />
+                                    <Typography>stars.</Typography>
+                                </Stack>
                             </div>
                         ) : (
                             <div>
                                 <Typography variant='subtitle1'>You haven't marked any books as read so far this year.</Typography>
                             </div>
                         )}
-                        <Button onClick={()=>navigate('/activity')}>View All Activity</Button>
+                        <Button onClick={() => navigate('/activity')}>View All Activity</Button>
                     </TabPanel>
 
                     {/* ALL TIME Stats */}
                     <TabPanel value={value} index={2} component="div">
                         <Typography variant='h6'>All-Time</Typography>
+                        <Typography variant='subtitle1'>Reading Activity</Typography>
+
                         {userStats.all ? (
                             <div>
-                                <Typography variant='subtitle1'>Total Books Read: {userStats.all.bookCount}</Typography>
-                                <Typography variant='subtitle1'>Total Pages Read: {userStats.all.totalPages}</Typography>
-                                <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" defaultValue={parseInt(userStats.all.avgRating)} precision={0.5} readOnly /></Typography>
+                                <Typography variant='subtitle2'>You have been a member since {dayjs(context.userData.created).format('MMM D, YYYY')}</Typography>
+                                <Typography variant='subtitle2'>Since then, you've marked {userStats.all.bookCount} book(s) as read.</Typography>
+                                <Typography variant='subtitle2'>That adds up to {userStats.all.totalPages} pages so far.</Typography>
+                                <Typography variant='subtitle2'>On average, you gave books </Typography>
+                                <Stack direction='row' spacing={1} justifyContent='center'>
+                                    <Rating name="half-rating-read" defaultValue={parseInt(userStats.all.avgRating)} precision={0.5} readOnly size="small" />
+                                    <Typography>stars.</Typography>
+                                </Stack>
                             </div>
                         ) : (
                             <div>
                                 <Typography variant='subtitle1'>You haven't marked any books as read on this account yet.</Typography>
                             </div>
                         )}
-                         <Button onClick={()=>navigate('/books/read')}>Marked As Read</Button>
+                        <Button onClick={() => navigate('/books/read')}>Marked As Read</Button>
                     </TabPanel>
 
                     {/* ALL SHELVED BOOKS */}
@@ -153,7 +204,7 @@ export default function DashStats({ userStats }) {
                                 <Typography variant='subtitle1'>You don't have any books in your Bookcase yet.</Typography>
                             </div>
                         )}
-                         <Button onClick={()=>navigate('/books')}>View Your Books</Button>
+                        <Button onClick={() => navigate('/books')}>View Your Books</Button>
                     </TabPanel>
                 </SwipeableViews>
                 <Divider />

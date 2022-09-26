@@ -8,7 +8,7 @@ import dayjs from 'dayjs'
 import { useTheme } from '@mui/material/styles';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import { List, Container, ListItem, Typography, Box, Rating, Card, CardMedia, Divider, Button, Stack, useMediaQuery, Tabs, Tab, IconButton } from '@mui/material';
+import { List, Container, ListItem, Typography, Box, Rating, Card, CardMedia, Divider, Button, Stack, useMediaQuery, Tabs, Tab, IconButton, CircularProgress, Link } from '@mui/material';
 
 
 function TabPanel(props) {
@@ -44,6 +44,30 @@ TabPanel.propTypes = {
 //     };
 // }
 
+function CircularProgressWithLabel(props) {
+    return (
+        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+            <CircularProgress variant="determinate" {...props} />
+            <Box
+                sx={{
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    position: 'absolute',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <Typography variant="caption" component="div" color="text.secondary">
+                    {`${Math.round(props.value)}%`}
+                </Typography>
+            </Box>
+        </Box>
+    );
+}
+
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 export default function ReadingActivity() {
@@ -58,7 +82,16 @@ export default function ReadingActivity() {
     const [year, setYear] = useState(null);
     const [monthlyBooks, setMonthlyBooks] = useState(null);
     const [yearlyBooks, setYearlyBooks] = useState(null);
+    const [monthlyGoal, setMonthlyGoal] = useState(null);
+    const [yearlyGoal, setYearlyGoal] = useState(null);
+    // const [goal, setGoal] = useState({
+    //     month: 0,
+    //     year: 0
+    // })
+    const [monthProgress, setMonthProgress] = useState(null);
+    const [yearProgress, setYearProgress] = useState(null);
     const [stats, setStats] = useState(null)
+    // const [progress, setProgress] = useState(null)
 
 
     const handleChange = (event, newValue) => {
@@ -86,15 +119,57 @@ export default function ReadingActivity() {
         setYear(year => year - 1)
     }
 
+    const readingActivity = async (month, year) => {
+        const yearBooks = await API.yearlyBooks(year, context.userData.id)
+        const monthBooks = await API.monthlyBooks(month, context.userData.id)
+        const allStats = await API.allStats(context.userData.id, year, month)
+        const monthGoals = await API.monthlyGoal(month, context.userData.id)
+        const yearGoals = await API.yearlyGoal(year, context.userData.id)
+        setMonthlyBooks(monthBooks.data)
+        setYearlyBooks(yearBooks.data)
+        setStats(allStats.data)
+        setMonthlyGoal(monthGoals.data.value)
+        setYearlyGoal(yearGoals.data.value)
+    }
+
+    const getProgress = async () => {
+        // setMonthProgress(null)
+        if (stats && monthlyGoal) {
+            const monthprog = ((stats.month.bookCount) / monthlyGoal);
+            setMonthProgress(monthprog * 100)
+        }
+
+        if (stats && yearlyGoal) {
+            const yearprog = (stats.year.bookCount / yearlyGoal)
+            setYearProgress(yearprog * 100)
+        }
+
+        if (!monthlyGoal) {
+            setMonthProgress(null)
+            console.log('no month goal, progress null')
+        }
+        // if (!yearlyGoal) {
+        //     setYearProgress(null)
+        //     console.log('no year goal, progress null')
+        // }
+    }
+
 
     const monthlyStats = async (month) => {
+        setMonthlyGoal(null)
         const monthBooks = await API.monthlyBooks(month, context.userData.id)
+        const monthGoals = await API.monthlyGoal(month, context.userData.id)
         setMonthlyBooks(monthBooks.data)
+        console.log(monthGoals)
+        if (monthGoals.data) { setMonthlyGoal(monthGoals.data.value) }
+
     }
 
     const yearlyStats = async (year) => {
         const yearBooks = await API.yearlyBooks(year, context.userData.id)
+        const yearGoals = await API.yearlyGoal(year, context.userData.id)
         setYearlyBooks(yearBooks.data)
+        if (yearGoals.data) { setYearlyGoal(yearGoals.data.value) }
     }
 
     const loadStats = async (year, month) => {
@@ -115,7 +190,14 @@ export default function ReadingActivity() {
         monthlyStats(month);
         yearlyStats(year);
         loadStats(year, month)
+        // readingActivity(month, year)
+        console.log('reading activity useeffect')
     }, [month, year])
+
+    useEffect(() => {
+        getProgress()
+        console.log('progress useeffect')
+    }, [stats, monthlyGoal, yearlyGoal])
 
     return (
         <React.Fragment>
@@ -131,34 +213,81 @@ export default function ReadingActivity() {
                 enableMouseEvents
                 style={{ marginLeft: 'auto', marginRight: 'auto', textAlign: 'center' }}>
 
-                    {/* month panel */}
+                {/* month panel */}
                 <TabPanel value={value} index={0} >
                     {stats && <Container>
-                            <Box sx={{display:'flex', flexDirection:'column', alignItems:'center', p:3}}>
-                                <Stack direction='row' spacing={5}>
-                                    <IconButton size="small" onClick={prevMonth} disabled={month === 0}>
-                                        <NavigateBeforeIcon /></IconButton>
-                                    <Typography variant='h6'>Your {months[month]} Activity</Typography>
-                                    <IconButton size="small"
-                                        onClick={nextMonth}
-                                        disabled={month === thismonth}>
-                                        <NavigateNextIcon /></IconButton>
-                                </Stack>
-                                {stats.month ? (
-                                    <div>
-                                        <Typography variant='subtitle1'>Total Books Read: {stats.month.bookCount}</Typography>
-                                        <Typography variant='subtitle1'>Total Pages Read: {stats.month.totalPages}</Typography>
-                                        <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" value={parseInt(stats.month.avgRating)} precision={0.5} readOnly /></Typography>
-                                    </div>
-                                ) : (
-                                    <div>
-                                       { month === thismonth ? <Typography variant='subtitle1'>You haven't marked any books as read so far this month.</Typography> : <Typography variant='subtitle1'>You didn't mark any books as read in {months[month]}.</Typography>}
-                                    </div>
-                                )}
-                            </Box>
-                          
-                            <Divider />
-                        </Container>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+                            <Stack direction='row' spacing={5}>
+                                <IconButton size="small" onClick={prevMonth} disabled={month === 0}>
+                                    <NavigateBeforeIcon /></IconButton>
+                                <Typography variant='h6'>Your {months[month]} Activity</Typography>
+                                <IconButton size="small"
+                                    onClick={nextMonth}
+                                    disabled={month === thismonth}>
+                                    <NavigateNextIcon /></IconButton>
+                            </Stack>
+                            {stats.month ? (
+                                <div>
+                                    {month === thismonth ? (
+                                        <React.Fragment>
+                                            {monthProgress ? (<React.Fragment>
+                                                <CircularProgressWithLabel value={monthProgress} />
+                                                <br />
+                                                <Link href="#" underline="hover" variant='caption'>
+                                                    update activity goal
+                                                </Link>
+                                                <Typography variant='subtitle2'>You have read {stats.month.bookCount} of {monthlyGoal} books this month.</Typography>
+                                            </React.Fragment>) : (
+                                                <React.Fragment>
+                                                    <CircularProgressWithLabel value={0} />
+                                                    <br />
+                                                    <Typography variant='caption'>No Activity Goal</Typography>
+                                                    <Link href="#" underline="hover" variant='caption'>
+                                                        add an activity goal
+                                                    </Link>
+                                                    <Typography variant='subtitle2'>You have read {stats.month.bookCount} books so far this month.</Typography>
+                                                </React.Fragment>
+                                            )}
+
+                                            <Typography variant='subtitle2'>That adds up to {stats.month.totalPages} pages.</Typography>
+                                            <Typography variant='subtitle2'>On average, you gave books </Typography>
+                                            <Stack direction='row' spacing={1} justifyContent='center'>
+                                                <Rating name="half-rating-read" value={parseInt(stats.month.avgRating)} precision={0.5} readOnly size="small" />
+                                                <Typography>stars.</Typography>
+                                            </Stack>
+                                        </React.Fragment>
+                                    ) : (
+                                        <React.Fragment>
+                                            {monthProgress ?
+                                                (<React.Fragment>
+                                                    <CircularProgressWithLabel value={monthProgress} />
+                                                    <Typography variant='subtitle2'>You read {stats.month.bookCount} of {monthlyGoal} books this month.</Typography>
+
+                                                </React.Fragment>) : (
+                                                    <React.Fragment>
+                                                        <Typography variant='caption'>You didn't set an Activity Goal for {months[month]}</Typography><br />
+                                                        <Typography variant='subtitle2'>You read {stats.month.bookCount} books this month.</Typography>
+                                                    </React.Fragment>
+                                                )
+                                            }
+                                            <Typography variant='subtitle2'>That adds up to {stats.month.totalPages} total pages read.</Typography>
+                                            <Typography variant='subtitle2'>On average, you rated books </Typography>
+                                            <Stack direction='row' spacing={1} justifyContent='center'>
+                                                <Rating name="half-rating-read" value={parseInt(stats.month.avgRating)} precision={0.5} readOnly size="small" />
+                                                <Typography>stars.</Typography>
+                                            </Stack>
+                                        </React.Fragment>
+                                    )}
+                                </div>
+                            ) : (
+                                <div>
+                                    {month === thismonth ? <Typography variant='subtitle1'>You haven't marked any books as read so far this month.</Typography> : <Typography variant='subtitle1'>You didn't mark any books as read in {months[month]}.</Typography>}
+                                </div>
+                            )}
+                        </Box>
+
+                        <Divider />
+                    </Container>
                     }
 
                     {monthlyBooks && <Container sx={{ width: { xs: 1 / 1, md: 4 / 5 }, mr: 'auto', ml: 'auto' }}>
@@ -202,12 +331,12 @@ export default function ReadingActivity() {
                     </Container>}
                 </TabPanel>
 
-                    {/* year panel */}
+                {/* year panel */}
                 <TabPanel value={value} index={1} >
                     {stats && <Container>
-                        <Box sx={{display:'flex', flexDirection:'column', alignItems:'center', p:3}}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
                             <Stack direction='row' spacing={5}>
-                                <IconButton size="small" onClick={prevYear} disabled={year === thisyear-2}>
+                                <IconButton size="small" onClick={prevYear} disabled={year === thisyear - 2}>
                                     <NavigateBeforeIcon /></IconButton>
 
                                 <Typography variant='h6'>Your {year} Activity</Typography>
@@ -218,9 +347,64 @@ export default function ReadingActivity() {
                             </Stack>
                             {stats.year ? (
                                 <div>
-                                    <Typography variant='subtitle1'>Total Books Read: {stats.year.bookCount}</Typography>
-                                    <Typography variant='subtitle1'>Total Pages Read: {stats.year.totalPages}</Typography>
-                                    <Typography variant='subtitle1'>Average Rating: <Rating name="half-rating-read" value={parseInt(stats.year.avgRating)} precision={0.5} readOnly /></Typography>
+                                    {year === thisyear ? (
+                                        <React.Fragment>
+                                            {yearProgress ? (
+                                                <React.Fragment>
+                                                    <CircularProgressWithLabel value={yearProgress} />
+                                                    <br />
+                                                    <Link href="#" underline="hover" variant='caption'>
+                                                        update activity goal
+                                                    </Link>
+                                                    <Typography variant='subtitle2'>You have finished {stats.year.bookCount} of {yearlyGoal} books this year.</Typography>
+                                                </React.Fragment>
+
+                                            ) : (
+                                                <React.Fragment>
+                                                    <CircularProgressWithLabel value={0} />
+                                                    <br />
+                                                    <Typography variant='caption'>No Activity Goal</Typography>
+                                                    <Link href="#" underline="hover" variant='caption'>
+                                                        add an activity goal
+                                                    </Link>
+                                                    <Typography variant='subtitle2'>You have finished {stats.year.bookCount} books this year.</Typography>
+
+                                                </React.Fragment>
+                                            )}
+                                            <Typography variant='subtitle2'>That adds up to {stats.year.totalPages} pages so far</Typography>
+                                            <Typography variant='subtitle2'>On average, you gave books </Typography>
+                                            <Stack direction='row' spacing={1} justifyContent='center'>
+                                                <Rating name="half-rating-read" value={parseInt(stats.year.avgRating)} precision={0.5} readOnly size="small" />
+                                                <Typography>stars.</Typography>
+                                            </Stack>
+
+                                        </React.Fragment>
+
+                                    ) : (
+                                        <React.Fragment>
+                                            {yearProgress ? (
+                                                <React.Fragment>
+                                                    <CircularProgressWithLabel value={yearProgress} />
+                                                    <br />
+                                                    <Typography variant='subtitle2'>You finished {stats.year.bookCount} of {yearlyGoal} books this year.</Typography>
+
+                                                </React.Fragment>
+                                            ) : (
+                                                <React.Fragment>
+                                                    <Typography variant='caption'>You didn't set an Activity Goal for {year}</Typography><br />
+                                                    <Typography variant='subtitle2'>You finished {stats.year.bookCount} books this year.</Typography>
+                                                </React.Fragment>
+                                            )}
+                                            <Typography variant='subtitle2'>That adds up to {stats.year.totalPages} pages so far</Typography>
+                                            <Typography variant='subtitle2'>On average, you gave books </Typography>
+                                            <Stack direction='row' spacing={1} justifyContent='center'>
+                                                <Rating name="half-rating-read" value={parseInt(stats.year.avgRating)} precision={0.5} readOnly size="small" />
+                                                <Typography>stars.</Typography>
+                                            </Stack>
+
+                                        </React.Fragment>
+                                    )}
+
                                 </div>
                             ) : (
                                 <div>
@@ -228,7 +412,7 @@ export default function ReadingActivity() {
                                 </div>
                             )}
                         </Box>
-                   
+
                         <Divider />
                     </Container>}
 
