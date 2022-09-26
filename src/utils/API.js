@@ -72,18 +72,38 @@ const API = {
         return axios.get(`${URL_PREFIX}/book/read/${id}`)
     },
     currentlyReading:(id)=> {
-        return axios.get(`${URL_PREFIX}/currentlyreading/${id}`)
+        return axios.get(`${URL_PREFIX}/userbooks/currentreads/${id}`)
     },
-    addCurrentRead:(readData)=> {
-        return axios.post(`${URL_PREFIX}/currentlyreading`, readData)
+    addCurrentRead:(book)=> {
+        return axios.post(`${URL_PREFIX}/userbooks/add/currentread`, book)
     },
     finishedReading:(review)=> {
-        return axios.post(`${URL_PREFIX}/currentlyreading/finishedreading`, review)
+        return axios.post(`${URL_PREFIX}/userbooks/finishedreading`, review)
+    },
+    didNotFinish:(book)=> {
+        return axios.post(`${URL_PREFIX}/userbooks/moveto/dnf`, book)
     },
     removeCurrentlyReading:(userId,bookId)=>{
-        return axios.delete(`${URL_PREFIX}/currentlyreading/${userId}/${bookId}`)
+        return axios.delete(`${URL_PREFIX}/userbooks/delcurrentread/${userId}/${bookId}`)
     },
-
+    getDNFList:(id)=> {
+        return axios.get(`${URL_PREFIX}/userbooks/dnf/${id}`)
+    },
+    addToDNF:(book)=> {
+        return axios.post(`${URL_PREFIX}/userbooks/add/dnf`,book)
+    },
+    removeFromDNF:(userId,bookId) => {
+        return axios.delete(`${URL_PREFIX}/userbooks/deldnf/${userId}/${bookId}`)
+    },
+    allOwnedBooks:(id)=>{
+        return axios.get(`${URL_PREFIX}/userbooks/owned/${id}`)
+    },
+    addOwnedBook:(book)=>{
+        return axios.post(`${URL_PREFIX}/userbooks/add/owned`,book)
+    },
+    removeFromOwned:(userId,bookId)=> {
+        return axios.delete(`${URL_PREFIX}/userbooks/delowned/${userId}/${bookId}`)
+    },
 
     // REVIEW ROUTES
 
@@ -113,6 +133,19 @@ const API = {
         return axios.get(`${URL_PREFIX}/stats/all/${id}/${year}/${month}`)
     },
 
+    // ACTIVITY GOAL ROUTES 
+    currentGoals:(id)=> {
+        return axios.get(`${URL_PREFIX}/activity/current/${id}`)
+    },
+    monthlyGoal:(month,id)=>{
+        return axios.get(`${URL_PREFIX}/activity/month/${month}/${id}`)
+    },
+    yearlyGoal:(year,id)=>{
+        return axios.get(`${URL_PREFIX}/activity/year/${year}/${id}`)
+    },
+    newGoal:(goal)=>{
+        return axios.post(`${URL_PREFIX}/activity/new`, goal)
+    },
 
     // OPEN LIBRARY API 
 

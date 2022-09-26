@@ -59,7 +59,7 @@ export default function Dashboard(props) {
             API.verify(myToken).then(async res => {
                 context.setToken(myToken)
                 context.setUserData({
-                    username: res.data.username,
+                    name: res.data.first_name,
                     id: res.data.id
                 })
                 renderCurrentReads()
@@ -280,7 +280,8 @@ export default function Dashboard(props) {
                                     <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
                                     <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
                                     <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
-                                    {/* <Button onClick={() => navigate('/search')}>Find Books</Button> */}
+                                    <Button onClick={() => navigate('/books/dnf')}>DNF</Button>
+                                    <Button onClick={() => navigate('/books/owned')}>Owned</Button>
                                 </Stack>
                             </div>
                         </div>

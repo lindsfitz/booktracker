@@ -47,7 +47,7 @@ export default function Login() {
         const data = new FormData(event.currentTarget);
         const user = {
             email: data.get('loginEmail'),
-            password: data.get('loginPassword'),
+            password:data.get('loginPassword'),
         }
 
         API.login(user).then(async (res) => {
@@ -55,7 +55,7 @@ export default function Login() {
             localStorage.setItem("token", res.data.token)
             context.setUserData({
                 id: res.data.user.id,
-                username: res.data.user.username
+                name: res.data.user.first_name
             })
             context.setToken(res.data.token)
             navigate('/');
@@ -78,7 +78,6 @@ export default function Login() {
                 localStorage.setItem("token", res.data.token)
                 context.setUserData({
                     id: res.data.user.id,
-                    username: res.data.user.username,
                     name: res.data.user.first_name
                 })
                 context.setToken(res.data.token)

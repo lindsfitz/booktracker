@@ -24,16 +24,48 @@ export default function Booklist() {
         setBookData(books.data)
     }
 
-    useEffect(() => {
-        if (params.list === 'read') {
-            renderReadShelf()
-            setTitle('Read')
-        }
+    const renderDNF = async () => {
+        const books = await API.getDNFList(context.userData.id)
+        setBookData(books.data)
+    }
 
-        if (params.list === 'currently') {
-            renderCurrentlyReading()
-            setTitle('Currently Reading')
+    const renderOwned = async () => {
+        const books = await API.allOwnedBooks(context.userData.id)
+        setBookData(books.data)
+    }
+
+    useEffect(() => {
+        switch (params.list) {
+            case 'read':
+                renderReadShelf()
+                setTitle('Read')
+                break;
+            case 'currently':
+                renderCurrentlyReading()
+                setTitle('Currently Reading')
+                break;
+            case 'dnf':
+                renderDNF()
+                setTitle('Did Not Finish')
+                break;
+            case 'owned':
+                renderOwned()
+                setTitle('Owned')
+                break;
+            default:
+                navigate('/login')
+                break;
+
         }
+        // if (params.list === 'read') {
+        //     renderReadShelf()
+        //     setTitle('Read')
+        // }
+
+        // if (params.list === 'currently') {
+        //     renderCurrentlyReading()
+        //     setTitle('Currently Reading')
+        // }
     }, [])
 
     return (
@@ -44,16 +76,16 @@ export default function Booklist() {
                 {bookData.map((book) => (
                     <React.Fragment>
                         <ListItem key={`${book.title}${params.list}`} id={`${book.title}${params.list}`} alignItems="center">
-                            <Box sx={{ display: 'flex', justifyContent:'center', mr:'auto', ml:'auto' }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'center', mr: 'auto', ml: 'auto' }}>
                                 <img
                                     src={`${book.cover_img}`}
                                     srcSet={`${book.cover_img}`}
                                     alt={`${book.title}`}
                                     loading="lazy"
-                                    style={{height:218, width:148}}
+                                    style={{ height: 218, width: 148 }}
                                     onClick={() => { navigate(`/book/${book.id}`) }}
                                 />
-                                <Box sx={{ display: 'flex', flexDirection:'column', justifyContent:'center', textAlign:'center', ml: 2  }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', ml: 2 }}>
                                     <Stack sx={{ alignSelf: 'center', ml: 1 }}>
                                         <Typography variant='subtitle1'>{book.title}</Typography>
                                         <Typography
@@ -65,7 +97,7 @@ export default function Booklist() {
                                         </Typography>
                                         <Button onClick={() => { navigate(`/book/${book.id}`) }}>View Details</Button>
                                     </Stack>
-                                   {params.list === 'read' && <Stack sx={{ alignSelf: 'center' }}>
+                                    {params.list === 'read' && <Stack sx={{ alignSelf: 'center' }}>
                                         {book.Reviews[0].date_started && <Typography variant='caption' color='text.secondary'>Read Dates: {dayjs(book.Reviews[0].date_started).format('MMM D, YYYY')} - {dayjs(book.Reviews[0].date_finished).format('MMM D, YYYY')}</Typography>}
                                         <Stack direction="row" spacing={0} alignItems="center">
                                             <Typography component="legend" variant='caption'>Rating:</Typography>

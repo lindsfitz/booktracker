@@ -34,7 +34,11 @@ export default function UserBook() {
     const [editId, setEditId] = useState(null);
     const [markedRead, setMarkedRead] = useState(false);
     const [markedReading, setMarkedReading] = useState(false)
-    const [open, setOpen] = useState(false);
+    const [markedDNF, setMarkedDNF] = useState(false);
+    const [markedOwned, setMarkOwned] = useState(false)
+    const [markedAs, setMarkedAs] = useState(null)
+    const [shelfOpen, setShelfOpen] = useState(false);
+    const [markedOpen, setMarkedOpen] = useState(false)
     const anchorRef = useRef(null);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [snack, setSnack] = useState(false);
@@ -44,16 +48,25 @@ export default function UserBook() {
     const bookInfo = async () => {
         const book = await API.getBookandShelves(params.id, context.userData.id);
         setBookData(book.data)
-        if (book.data.Users.length) {
+        if (book.data.CurrentBooks.length) {
             setMarkedReading(true)
+            setMarkedAs('Currently Reading')
         }
         if (book.data.Reviews.length) {
             setReviewData(book.data.Reviews)
             for (let i = 0; i < book.data.Reviews.length; i++) {
                 if (book.data.Reviews[i].read === true) {
                     setMarkedRead(true)
+                    setMarkedAs('Read')
                 }
             }
+        }
+        if (book.data.OwnedBooks.length) {
+            setMarkOwned(true)
+        }
+        if (book.data.DNFBooks.length) {
+            setMarkedDNF(true)
+            setMarkedAs('DNF')
         }
         shelfOptions(book.data)
     }
@@ -67,7 +80,6 @@ export default function UserBook() {
 
         context.userShelves.forEach(shelf => {
             const found = data.Shelves.find(element => element.name === shelf.name)
-            // console.log(found)
             if (!found) {
                 setShelfChoices(current => [...current, shelf])
             }
@@ -114,9 +126,13 @@ export default function UserBook() {
         bookInfo()
     }
 
+    const moveToDNF = async () => {
+        console.log('hi')
+    }
+
     const addToShelf = async (e) => {
         await API.addtoShelf(e.target.id, { id: bookData.id })
-        setOpen(false);
+        setShelfOpen(false);
         openSnackbar(`Added to ${e.target.textContent}`)
         bookInfo()
     }
@@ -143,15 +159,26 @@ export default function UserBook() {
     }
 
     const toggleShelfMenu = () => {
-        setOpen((prevOpen) => !prevOpen);
+        setShelfOpen((prevOpen) => !prevOpen);
     };
 
     const closeShelfMenu = (event) => {
         if (anchorRef.current && anchorRef.current.contains(event.target)) {
             return;
         }
-        setOpen(false);
+        setShelfOpen(false);
     };
+
+    // const toggleMarkedMenu = () => {
+    //     setMarkedOpen((prevOpen) => !prevOpen);
+    // };
+
+    // const closeMarkedMenu = (event) => {
+    //     if (anchorRef.current && anchorRef.current.contains(event.target)) {
+    //         return;
+    //     }
+    //     setMarkedOpen(false);
+    // };
 
     const openSnackbar = (message) => {
         setSnackMessage(message)
@@ -171,6 +198,114 @@ export default function UserBook() {
         }, 1000);
         return () => clearTimeout(timer);
     }, [snack])
+
+
+    // **** CONDITIONALS ********
+    // Book data includes: book specific info, shelves book is currently on, if book is marked as read, currently reading, or DNF, if a book if marked as owned
+    /* If book isnt marked as anything yet:
+            API.addCurrentRead; API.addToDNF; API.addOwnedBook; (mark as read-already a function for this)
+    */
+    /*  *** Can mark a book as 'Owned' at any time! 
+            - Has 'Owned' lil flag -- can click x to remove from owned list
+                - API.removeFromOwned
+    */
+    /* IF BOOK IS MARKED AS CURRENTLY READING:
+        - Has lil marked as: currently reading flag
+        - CAN: 
+            -Mark as Read --> removed from CR, posts new review with just read: true, public: false, last update set to now (API.finishedReading)
+            -Add Review --> currently is not removing from CR, need to fix that. Once removed from CR, posts new review via review form 
+            -Mark as DNF --> removed from CR, added to DNF (API.didNotFinish)
+    */
+
+    /* IF A BOOK IS MARKED AS READ:
+        -Has lil marked as: read flag
+        -CAN:
+            - Add Review 
+    */
+
+    /* IF A BOOK IS MARKED AS DNF:
+        - Has lil marked as: DNF flag
+        - CAN: 
+            - Add Review (Note -- read:false, public:false)
+            - Remove from DNF List (API.removeFromDNF)
+    */
+
+    // const markedAsOptions = () => {
+    //     switch (markedAs) {
+    //         case 'Currently Reading':
+    //             return (
+    //                 <React.Fragment>
+    //                     <MenuItem onClick={moveToRead}>Read</MenuItem>
+    //                     <MenuItem onClick={moveToDNF}>DNF</MenuItem>
+    //                     <MenuItem>Remove</MenuItem>
+    //                 </React.Fragment>
+    //             );
+    //         case 'DNF':
+    //             return (
+    //                 <React.Fragment>
+    //                     <MenuItem onClick={moveToRead}>Read</MenuItem>
+    //                     <MenuItem>Reading</MenuItem>
+    //                     <MenuItem>Remove</MenuItem>
+    //                 </React.Fragment>
+    //             );
+    //         case 'Read':
+    //             return (
+    //                 <React.Fragment>
+    //                     <MenuItem>Reading</MenuItem>
+    //                     <MenuItem>DNF</MenuItem>
+    //                     <MenuItem>Remove</MenuItem>
+    //                 </React.Fragment>
+    //             );
+    //         default:
+    //             return (
+    //                 <React.Fragment>
+    //                     <MenuItem onClick={addToCurrentlyReading}>Reading</MenuItem>
+    //                     <MenuItem onClick={addToRead}>Read</MenuItem>
+    //                     <MenuItem onClick={moveToDNF}>DNF</MenuItem>
+    //                 </React.Fragment>
+    //             )
+
+    //     }
+    // }
+
+    const bookBtnOptions = () => {
+        switch (markedAs) {
+            case 'Currently Reading':
+                return (
+                    <React.Fragment>
+                        <Button onClick={moveToRead}>Mark As Read</Button>
+                        <Button onClick={moveToDNF}>Mark As DNF</Button>
+                        <Button onClick={toggleReviewForm}>Add A Review</Button>
+                        <Button>Remove From Currently Reading</Button>
+                    </React.Fragment>
+                );
+            case 'DNF':
+                return (
+                    <React.Fragment>
+                        <Button>Remove From DNF</Button>
+                        <Button onClick={toggleReviewForm}>Add A Review</Button>
+                    </React.Fragment>
+                );
+            case 'Read':
+                return (
+                    <React.Fragment>
+                        <Button>Remove From DNF</Button>
+                        <Button onClick={toggleReviewForm}>Add A Review</Button>
+                    </React.Fragment>
+                );
+            default:
+                return (
+                    <React.Fragment>
+                        <Button onClick={addToCurrentlyReading}>Add To Currently Reading</Button>
+                        <Button onClick={addToRead}>Mark As Read</Button>
+                        <Button onClick={moveToDNF}>Mark As DNF</Button>
+                        <Button onClick={toggleReviewForm}>Add A Review</Button>
+                    </React.Fragment>
+                )
+
+        }
+
+    }
 
 
     return (
@@ -231,6 +366,12 @@ export default function UserBook() {
                                 <Chip label='Currently Reading' />
                             </Stack>
                         }
+                        {markedDNF &&
+                            <Stack spacing={0}>
+                                <Typography variant='caption'>Marked As:</Typography>
+                                <Chip label='DNF' />
+                            </Stack>
+                        }
                         <Stack spacing={0}>
                             <Typography variant='caption'>On Shelves:</Typography>
                             <Stack direction={{ xs: 'column', md: 'row' }}>
@@ -250,63 +391,113 @@ export default function UserBook() {
                     <AddReview reviewInfo={reviewInfo} toggleReviewForm={toggleReviewForm} />
                     <Button onClick={toggleReviewForm}>Cancel</Button>
                 </div>) : (<div>
+                    <Stack direction='row' spacing={1}>
 
 
-                    <ButtonGroup variant="text" aria-label="text button group" ref={anchorRef}>
-                        <Button onClick={toggleShelfMenu}>Add to Shelf</Button>
-                        <Button
-                            size="small"
-                            aria-controls={open ? 'split-button-menu' : undefined}
-                            aria-expanded={open ? 'true' : undefined}
-                            aria-label="select merge strategy"
-                            aria-haspopup="menu"
-                            onClick={toggleShelfMenu}
-                        >
-                            <ArrowDropDownIcon />
-                        </Button>
-                    </ButtonGroup>
-                    <Popper
-                        sx={{
-                            zIndex: 1,
-                        }}
-                        open={open}
-                        anchorEl={anchorRef.current}
-                        role={undefined}
-                        transition
-                        disablePortal
-                    >
-                        {({ TransitionProps, placement }) => (
-                            <Grow
-                                {...TransitionProps}
-                                style={{
-                                    transformOrigin:
-                                        placement === 'bottom' ? 'center top' : 'center bottom',
-                                }}
+                        <ButtonGroup variant="text" aria-label="text button group" ref={anchorRef}>
+                            <Button onClick={toggleShelfMenu}>Add to Shelf</Button>
+                            <Button
+                                size="small"
+                                aria-controls={shelfOpen ? 'split-button-menu' : undefined}
+                                aria-expanded={shelfOpen ? 'true' : undefined}
+                                aria-label="select merge strategy"
+                                aria-haspopup="menu"
+                                onClick={toggleShelfMenu}
                             >
-                                <Paper>
-                                    <ClickAwayListener onClickAway={closeShelfMenu}>
-                                        <MenuList id="split-button-menu" autoFocusItem>
-                                            {shelfChoices.map((shelf, index) => (
-                                                <MenuItem
-                                                    key={shelf.name}
-                                                    id={shelf.id}
-                                                    selected={index === selectedIndex}
-                                                    onClick={(event) => addToShelf(event)}
-                                                >
-                                                    {shelf.name}
-                                                </MenuItem>
-                                            ))}
-                                        </MenuList>
-                                    </ClickAwayListener>
-                                </Paper>
-                            </Grow>
-                        )}
-                    </Popper>
+                                <ArrowDropDownIcon />
+                            </Button>
+                        </ButtonGroup>
+                        <Popper
+                            sx={{
+                                zIndex: 1,
+                            }}
+                            open={shelfOpen}
+                            anchorEl={anchorRef.current}
+                            role={undefined}
+                            transition
+                            disablePortal
+                        >
+                            {({ TransitionProps, placement }) => (
+                                <Grow
+                                    {...TransitionProps}
+                                    style={{
+                                        transformOrigin:
+                                            placement === 'bottom' ? 'center top' : 'center bottom',
+                                    }}
+                                >
+                                    <Paper>
+                                        <ClickAwayListener onClickAway={closeShelfMenu}>
+                                            <MenuList id="split-button-menu" autoFocusItem>
+                                                {shelfChoices.map((shelf, index) => (
+                                                    <MenuItem
+                                                        key={shelf.name}
+                                                        id={shelf.id}
+                                                        selected={index === selectedIndex}
+                                                        onClick={(event) => addToShelf(event)}
+                                                    >
+                                                        {shelf.name}
+                                                    </MenuItem>
+                                                ))}
+                                            </MenuList>
+                                        </ClickAwayListener>
+                                    </Paper>
+                                </Grow>
+                            )}
+                        </Popper>
 
 
+                        {/* <ButtonGroup variant="text" aria-label="text button group" ref={anchorRef}>
+                            <Button onClick={toggleMarkedMenu}>Mark As</Button>
+                            <Button
+                                size="small"
+                                aria-controls={markedOpen ? 'split-button-menu' : undefined}
+                                aria-expanded={markedOpen ? 'true' : undefined}
+                                aria-label="select merge strategy"
+                                aria-haspopup="menu"
+                                onClick={toggleMarkedMenu}
+                            >
+                                <ArrowDropDownIcon />
+                            </Button>
+                        </ButtonGroup>
+                        <Popper
+                            sx={{
+                                zIndex: 1,
+                            }}
+                            open={markedOpen}
+                            anchorEl={anchorRef.current}
+                            role={undefined}
+                            transition
+                            disablePortal
+                        >
+                            {({ TransitionProps, placement }) => (
+                                <Grow
+                                    {...TransitionProps}
+                                    style={{
+                                        transformOrigin:
+                                            placement === 'bottom' ? 'center top' : 'center bottom',
+                                    }}
+                                >
+                                    <Paper>
+                                        <ClickAwayListener onClickAway={closeMarkedMenu}>
+                                            <MenuList id="split-button-menu" autoFocusItem>
+                                               { markedAsOptions()}
+                                            </MenuList>
+                                        </ClickAwayListener>
+                                    </Paper>
+                                </Grow>
+                            )}
+                        </Popper> */}
 
 
-                    {!markedRead && !markedReading &&
+                        {bookBtnOptions()}
+
+                        <Divider orientation='vertical' />
+
+                        {!markedOwned && <Button>Mark As Owned</Button>}
+
+                    </Stack>
+
+                    {/* {!markedRead && !markedReading &&
                         <React.Fragment>
                             <Button onClick={addToCurrentlyReading}>Add To Currently Reading</Button>
                             <Button onClick={addToRead}>Mark As Read</Button>
@@ -317,7 +508,7 @@ export default function UserBook() {
                             <Button onClick={moveToRead}>Mark As Read</Button>
                         </React.Fragment>
                     }
-                    <Button onClick={toggleReviewForm}>Add A Review</Button>
+                    <Button onClick={toggleReviewForm}>Add A Review</Button> */}
                 </div>)
                 }
                 <Divider />

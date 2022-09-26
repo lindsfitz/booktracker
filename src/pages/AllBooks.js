@@ -20,6 +20,15 @@ export default function AllBooks() {
     }, [])
 
 
+    // changing this entire page -- going to be more of an overview rather than a straight up list of all books
+        // eventually this will be profile page? maybe?
+
+    // Currently Reading section @ top again 
+    // 'Favorite' Shelf -- can mark one shelf as fav shelf & this is featured on this page 
+    // Read
+    // Owned
+    
+
     return (
         <React.Fragment>
 
