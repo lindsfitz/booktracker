@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
+import AddGoal from './components/AddGoal';
+import UpdateGoal from './components/UpdateGoal';
 import SwipeableViews from 'react-swipeable-views';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs'
@@ -84,14 +86,12 @@ export default function ReadingActivity() {
     const [yearlyBooks, setYearlyBooks] = useState(null);
     const [monthlyGoal, setMonthlyGoal] = useState(null);
     const [yearlyGoal, setYearlyGoal] = useState(null);
-    // const [goal, setGoal] = useState({
-    //     month: 0,
-    //     year: 0
-    // })
     const [monthProgress, setMonthProgress] = useState(null);
     const [yearProgress, setYearProgress] = useState(null);
     const [stats, setStats] = useState(null)
-    // const [progress, setProgress] = useState(null)
+    const [addGoal, setAddGoal] = useState(false)
+    const [editGoal, setEditGoal] = useState(false)
+    const [action, setAction] = useState(null)
 
 
     const handleChange = (event, newValue) => {
@@ -104,7 +104,6 @@ export default function ReadingActivity() {
 
     const nextMonth = () => {
         setMonth(month => month + 1)
-
     }
 
     const prevMonth = () => {
@@ -119,6 +118,17 @@ export default function ReadingActivity() {
         setYear(year => year - 1)
     }
 
+    const newGoal = (action) => {
+        setAction(action)
+        setAddGoal(true)
+    }
+
+    const updateGoal = (action) => {
+        console.log(action)
+        setAction(action)
+        setEditGoal(true)
+    }
+
     const readingActivity = async (month, year) => {
         const yearBooks = await API.yearlyBooks(year, context.userData.id)
         const monthBooks = await API.monthlyBooks(month, context.userData.id)
@@ -128,12 +138,11 @@ export default function ReadingActivity() {
         setMonthlyBooks(monthBooks.data)
         setYearlyBooks(yearBooks.data)
         setStats(allStats.data)
-        setMonthlyGoal(monthGoals.data.value)
-        setYearlyGoal(yearGoals.data.value)
+        monthGoals.data ? setMonthlyGoal(monthGoals.data.value) : setMonthlyGoal(null)
+        yearGoals.data ? setYearlyGoal(yearGoals.data.value) : setYearlyGoal(null)
     }
 
     const getProgress = async () => {
-        // setMonthProgress(null)
         if (stats && monthlyGoal) {
             const monthprog = ((stats.month.bookCount) / monthlyGoal);
             setMonthProgress(monthprog * 100)
@@ -148,28 +157,25 @@ export default function ReadingActivity() {
             setMonthProgress(null)
             console.log('no month goal, progress null')
         }
-        // if (!yearlyGoal) {
-        //     setYearProgress(null)
-        //     console.log('no year goal, progress null')
-        // }
+        if (!yearlyGoal) {
+            setYearProgress(null)
+            console.log('no year goal, progress null')
+        }
     }
 
 
     const monthlyStats = async (month) => {
-        setMonthlyGoal(null)
         const monthBooks = await API.monthlyBooks(month, context.userData.id)
         const monthGoals = await API.monthlyGoal(month, context.userData.id)
         setMonthlyBooks(monthBooks.data)
-        console.log(monthGoals)
-        if (monthGoals.data) { setMonthlyGoal(monthGoals.data.value) }
-
+        monthGoals.data ? setMonthlyGoal(monthGoals.data.value) : setMonthlyGoal(null)
     }
 
     const yearlyStats = async (year) => {
         const yearBooks = await API.yearlyBooks(year, context.userData.id)
         const yearGoals = await API.yearlyGoal(year, context.userData.id)
         setYearlyBooks(yearBooks.data)
-        if (yearGoals.data) { setYearlyGoal(yearGoals.data.value) }
+        yearGoals.data ? setYearlyGoal(yearGoals.data.value) : setYearlyGoal(null)
     }
 
     const loadStats = async (year, month) => {
@@ -187,17 +193,13 @@ export default function ReadingActivity() {
     }, [])
 
     useEffect(() => {
-        monthlyStats(month);
-        yearlyStats(year);
-        loadStats(year, month)
-        // readingActivity(month, year)
+        readingActivity(month, year)
         console.log('reading activity useeffect')
     }, [month, year])
 
     useEffect(() => {
         getProgress()
-        console.log('progress useeffect')
-    }, [stats, monthlyGoal, yearlyGoal])
+    }, [monthlyGoal, yearlyGoal])
 
     return (
         <React.Fragment>
@@ -233,7 +235,8 @@ export default function ReadingActivity() {
                                             {monthProgress ? (<React.Fragment>
                                                 <CircularProgressWithLabel value={monthProgress} />
                                                 <br />
-                                                <Link href="#" underline="hover" variant='caption'>
+                                                <Link onClick={() => updateGoal('month')}
+                                                    component="button" underline="hover" variant='caption'>
                                                     update activity goal
                                                 </Link>
                                                 <Typography variant='subtitle2'>You have read {stats.month.bookCount} of {monthlyGoal} books this month.</Typography>
@@ -242,7 +245,8 @@ export default function ReadingActivity() {
                                                     <CircularProgressWithLabel value={0} />
                                                     <br />
                                                     <Typography variant='caption'>No Activity Goal</Typography>
-                                                    <Link href="#" underline="hover" variant='caption'>
+                                                    <Link onClick={() => newGoal('month')}
+                                                        component="button" underline="hover" variant='caption'>
                                                         add an activity goal
                                                     </Link>
                                                     <Typography variant='subtitle2'>You have read {stats.month.bookCount} books so far this month.</Typography>
@@ -353,7 +357,8 @@ export default function ReadingActivity() {
                                                 <React.Fragment>
                                                     <CircularProgressWithLabel value={yearProgress} />
                                                     <br />
-                                                    <Link href="#" underline="hover" variant='caption'>
+                                                    <Link onClick={() => updateGoal('year')}
+                                                        component="button" underline="hover" variant='caption'>
                                                         update activity goal
                                                     </Link>
                                                     <Typography variant='subtitle2'>You have finished {stats.year.bookCount} of {yearlyGoal} books this year.</Typography>
@@ -364,7 +369,8 @@ export default function ReadingActivity() {
                                                     <CircularProgressWithLabel value={0} />
                                                     <br />
                                                     <Typography variant='caption'>No Activity Goal</Typography>
-                                                    <Link href="#" underline="hover" variant='caption'>
+                                                    <Link onClick={() => newGoal('year')}
+                                                        component="button" underline="hover" variant='caption'>
                                                         add an activity goal
                                                     </Link>
                                                     <Typography variant='subtitle2'>You have finished {stats.year.bookCount} books this year.</Typography>
@@ -458,6 +464,14 @@ export default function ReadingActivity() {
                     </Container>}
                 </TabPanel>
             </SwipeableViews>
+            <AddGoal addGoal={addGoal} setAddGoal={setAddGoal} action={action} goal={{
+                month: monthlyGoal,
+                year: yearlyGoal
+            }} />
+            <UpdateGoal editGoal={editGoal} setEditGoal={setEditGoal} action={action} goal={{
+                month: monthlyGoal,
+                year: yearlyGoal
+            }} setMonthlyGoal={setMonthlyGoal} setYearlyGoal={setYearlyGoal} />
         </React.Fragment>
     )
 }

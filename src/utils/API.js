@@ -146,6 +146,9 @@ const API = {
     newGoal:(goal)=>{
         return axios.post(`${URL_PREFIX}/activity/new`, goal)
     },
+    updateGoal:(id,goal)=>{
+        return axios.put(`${URL_PREFIX}/activity/update/${id}`, goal)
+    },
 
     // OPEN LIBRARY API 
 

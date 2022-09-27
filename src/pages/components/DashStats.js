@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AppContext from '../../AppContext';
 import dayjs from 'dayjs'
 import PropTypes from 'prop-types';
-import { Typography, Box, Rating, Tabs, Tab, Divider, Button, CircularProgress, Stack } from '@mui/material';
+import { Typography, Box, Rating, Tabs, Tab, Divider, Button, CircularProgress, Stack, Link } from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -125,8 +125,15 @@ export default function DashStats({ userStats, goals }) {
                         {userStats.month ? (
                             <div>
                                 {/* <CircularProgress variant="determinate" value={(userStats.month.bookCount / goals.month.value * 100)} /> */}
-                                <CircularProgressWithLabel value={monthProgress} />
-                                <Typography variant='subtitle2'>You have read {userStats.month.bookCount} of {goals.month.value} books this month.</Typography>
+                                {goals.month ? (
+                                    <React.Fragment>
+                                        <CircularProgressWithLabel value={monthProgress} />
+                                        <Typography variant='subtitle2'>You have read {userStats.month.bookCount} of {goals.month.value} books this month.</Typography>
+                                    </React.Fragment>
+                                ) : (
+                                    <Typography variant='subtitle2'>You have read {userStats.month.bookCount} books this month.</Typography>
+                                )}
+                                
                                 <Typography variant='subtitle2'>That adds up to {userStats.month.totalPages} pages so far.</Typography>
                                 <Typography variant='subtitle2'>On average, you gave books </Typography>
                                 <Stack direction='row' spacing={1} justifyContent='center'>
@@ -140,6 +147,13 @@ export default function DashStats({ userStats, goals }) {
                             </div>
                         )}
 
+                        {goals.month ? <Link href="#" underline="hover" variant='caption'>
+                            update activity goal
+                        </Link> : <Link href="#" underline="hover" variant='caption'>
+                            add an activity goal
+                        </Link>}
+                        <br />
+
                         <Button onClick={() => navigate('/activity')}>View All Activity</Button>
 
                     </TabPanel>
@@ -150,8 +164,14 @@ export default function DashStats({ userStats, goals }) {
                         <Typography variant='subtitle1'>Reading Activity</Typography>
                         {userStats.year ? (
                             <div>
-                                <CircularProgressWithLabel value={yearProgress} />
-                                <Typography variant='subtitle2'>You have finished {userStats.year.bookCount} of {goals.year.value} books this year.</Typography>
+                                {goals.year ? (
+                                <React.Fragment>
+                                    <CircularProgressWithLabel value={yearProgress} />
+                                    <Typography variant='subtitle2'>You have finished {userStats.year.bookCount} of {goals.year.value} books this year.</Typography>
+                                </React.Fragment>
+                                ) : (
+                                <Typography variant='subtitle2'>You have finished {userStats.year.bookCount} books this year.</Typography>
+                                )}
                                 <Typography variant='subtitle2'>That adds up to {userStats.year.totalPages} pages so far</Typography>
                                 <Typography variant='subtitle2'>On average, you gave books </Typography>
                                 <Stack direction='row' spacing={1} justifyContent='center'>
@@ -164,6 +184,13 @@ export default function DashStats({ userStats, goals }) {
                                 <Typography variant='subtitle1'>You haven't marked any books as read so far this year.</Typography>
                             </div>
                         )}
+
+                        {goals.year ? <Link href="#" underline="hover" variant='caption'>
+                            update activity goal
+                        </Link> : <Link href="#" underline="hover" variant='caption'>
+                            add an activity goal
+                        </Link>}
+                        <br />
                         <Button onClick={() => navigate('/activity')}>View All Activity</Button>
                     </TabPanel>
 

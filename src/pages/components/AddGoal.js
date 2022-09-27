@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import API from '../../utils/API';
 import AppContext from '../../AppContext';
 import PropTypes from 'prop-types';
@@ -7,7 +7,7 @@ import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
 
-const ShelfDialog = styled(Dialog)(({ theme }) => ({
+const AddGoalDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
     },
@@ -16,7 +16,7 @@ const ShelfDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-const ShelfDialogTitle = (props) => {
+const AddGoalDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
 
     return (
@@ -40,62 +40,50 @@ const ShelfDialogTitle = (props) => {
     );
 };
 
-ShelfDialogTitle.propTypes = {
+AddGoalDialogTitle.propTypes = {
     children: PropTypes.node,
     onClose: PropTypes.func.isRequired,
 };
 
 
-export default function AddShelf() {
+export default function AddGoal({addGoal, setAddGoal, action, goal}) {
     const context = useContext(AppContext);
 
-    const shelfSubmit = (e) => {
-        e.preventDefault();
-        console.log('submitted')
-        const data = new FormData(e.currentTarget)
-        let now = new Date()
-
-        const newShelf = {
-            name: data.get('name'),
-            description: data.get('description'),
-            last_update: now,
-            UserId: context.userData.id
-        }
-
-        API.newShelf(newShelf).then(async res => {
-            console.log(res)
-            const shelves = await API.getShelves(context.userData.id)
-            context.setUserShelves(shelves.data)
-            context.toggleShelfDialog();
-
-        })
-
+  
+    const addActivityGoal = () => {
+        console.log('add goal')
+        console.log(action)
     }
+    
+    useEffect(()=>{
+        console.log(goal)
 
+    },[])
 
     return (
-        <div>
-            <ShelfDialog
-                onClose={context.toggleShelfDialog}
+        <>
+            <AddGoalDialog
+                onClose={()=>setAddGoal(!addGoal)}
                 aria-labelledby="customized-dialog-title"
-                open={context.shelfDialog}
+                open={addGoal}
             >
-                <ShelfDialogTitle id="customized-dialog-title" onClose={context.toggleShelfDialog}>
-                    New Shelf
-                </ShelfDialogTitle>
-                <Box component='form' noValidate onSubmit={shelfSubmit} >
+                <AddGoalDialogTitle id="customized-dialog-title" onClose={()=>setAddGoal(!addGoal)}>
+                    Edit Your Shelf
+                </AddGoalDialogTitle>
+                <Box component='form' noValidate onSubmit={addActivityGoal} >
                     <DialogContent dividers>
                         <TextField
                             id="name"
                             name='name'
                             label="Bookshelf Name"
-                            placeholder="Name"
+                            // defaultValue={shelf.name}
                             multiline
                         /><br /><br />
                         <TextField
                             id="description"
                             name='description'
                             label="Description"
+                            // defaultValue={shelf.description}
                             multiline
                             rows={4}
 
@@ -103,11 +91,14 @@ export default function AddShelf() {
                     </DialogContent>
                     <DialogActions>
                         <Button autoFocus type='submit'>
-                            Create Shelf
+                            Set Goal
+                        </Button>
+                        <Button autoFocus onClick={addActivityGoal}>
+                            click meeeee
                         </Button>
                     </DialogActions>
                 </Box>
-            </ShelfDialog>
-        </div>
+            </AddGoalDialog>
+        </>
     );
 }

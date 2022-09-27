@@ -7,7 +7,7 @@ import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+const EditShelfDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
     },
@@ -16,7 +16,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-const BootstrapDialogTitle = (props) => {
+const EditShelfDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
 
     return (
@@ -40,7 +40,7 @@ const BootstrapDialogTitle = (props) => {
     );
 };
 
-BootstrapDialogTitle.propTypes = {
+EditShelfDialogTitle.propTypes = {
     children: PropTypes.node,
     onClose: PropTypes.func.isRequired,
 };
@@ -74,14 +74,14 @@ export default function EditShelf({shelf, setEditShelf, editShelf}) {
 
     return (
         <div>
-            <BootstrapDialog
+            <EditShelfDialog
                 onClose={()=>setEditShelf(!editShelf)}
                 aria-labelledby="customized-dialog-title"
                 open={editShelf}
             >
-                <BootstrapDialogTitle id="customized-dialog-title" onClose={()=>setEditShelf(!editShelf)}>
+                <EditShelfDialogTitle id="customized-dialog-title" onClose={()=>setEditShelf(!editShelf)}>
                     Edit Your Shelf
-                </BootstrapDialogTitle>
+                </EditShelfDialogTitle>
                 <Box component='form' noValidate onSubmit={shelfSubmit} >
                     <DialogContent dividers>
                         <TextField
@@ -107,7 +107,7 @@ export default function EditShelf({shelf, setEditShelf, editShelf}) {
                         </Button>
                     </DialogActions>
                 </Box>
-            </BootstrapDialog>
+            </EditShelfDialog>
         </div>
     );
 }
