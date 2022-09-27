@@ -194,7 +194,6 @@ export default function ReadingActivity() {
 
     useEffect(() => {
         readingActivity(month, year)
-        console.log('reading activity useeffect')
     }, [month, year])
 
     useEffect(() => {
@@ -331,6 +330,10 @@ export default function ReadingActivity() {
 
                             </React.Fragment>))}
 
+                            <Box sx={{m:3}}>
+                                <Typography variant='caption'>For a book to count towards your Reading Activity, it must be marked as Read and have a set Finished Date. <br /> You can continue to add books to this list at any point! </Typography>
+                            </Box>
+
                         </List>
                     </Container>}
                 </TabPanel>
@@ -459,6 +462,9 @@ export default function ReadingActivity() {
                                 <Divider key={`yeardivider${book.id}`} component='li' />
 
                             </React.Fragment>))}
+                            <Box sx={{m:3}}>
+                                <Typography variant='caption'>To add a book to your Reading Activity, mark it as Read and set a "Date Finished" at any point. </Typography>
+                            </Box>
 
                         </List>
                     </Container>}

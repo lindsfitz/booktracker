@@ -1,8 +1,8 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect , useState} from 'react';
 import API from '../../utils/API';
 import AppContext from '../../AppContext';
 import PropTypes from 'prop-types';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -45,20 +45,58 @@ AddGoalDialogTitle.propTypes = {
     onClose: PropTypes.func.isRequired,
 };
 
+const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
-export default function AddGoal({addGoal, setAddGoal, action, goal}) {
+export default function AddGoal({addGoal, setAddGoal, action, setMonthlyGoal, setYearlyGoal}) {
     const context = useContext(AppContext);
 
+    const [current, setCurrent] = useState(null)
+
+    const date = new Date();
+    const thismonth = date.getMonth()
+    const thisyear = date.getFullYear()
+
   
-    const addActivityGoal = () => {
-        console.log('add goal')
-        console.log(action)
+    const addActivityGoal = (e) => {
+        e.preventDefault();
+        console.log('submitted')
+        const data = new FormData(e.currentTarget)
+        const newGoal = data.get('goal')
+
+        const monthGoal = {
+            month: thismonth,
+            value: newGoal,
+            UserId: context.userData.id
+        }
+
+        const yearGoal = {
+            month:null,
+            value: newGoal,
+            UserId: context.userData.id
+        }
+
+        if (action === 'month') {
+            API.newGoal(monthGoal)
+            setMonthlyGoal(parseInt(newGoal))
+            setAddGoal(false)
+        }
+
+        if (action === 'year') {
+            API.newGoal(yearGoal)
+            setYearlyGoal(parseInt(newGoal))
+            setAddGoal(false)
+        }
     }
     
-    useEffect(()=>{
-        console.log(goal)
+    useEffect(() => {
+        if (action === 'month') {
+            setCurrent(months[thismonth]);
+        }
+        if (action === 'year') {
+            setCurrent(thisyear);
+        }
 
-    },[])
+    }, [action, thismonth, thisyear])
 
     return (
         <>
@@ -68,33 +106,24 @@ export default function AddGoal({addGoal, setAddGoal, action, goal}) {
                 open={addGoal}
             >
                 <AddGoalDialogTitle id="customized-dialog-title" onClose={()=>setAddGoal(!addGoal)}>
-                    Edit Your Shelf
+                    Reading Activity Goal
                 </AddGoalDialogTitle>
                 <Box component='form' noValidate onSubmit={addActivityGoal} >
                     <DialogContent dividers>
+                    <Typography variant='subtitle2'>Set your goal number of books <br /> you'd like to read in {current}.</Typography>
+                        <br /><br />
                         <TextField
-                            id="name"
-                            name='name'
-                            label="Bookshelf Name"
-                            // defaultValue={shelf.name}
-                            multiline
-                        /><br /><br />
-                        <TextField
-                            id="description"
-                            name='description'
-                            label="Description"
-                            // defaultValue={shelf.description}
-                            multiline
-                            rows={4}
-
+                            id={action}
+                            name="goal"
+                            label={`Goal for this ${action}`}
                         />
                     </DialogContent>
                     <DialogActions>
+                        <Button autoFocus onClick={()=>setAddGoal(!addGoal)}>
+                            Cancel
+                        </Button>
                         <Button autoFocus type='submit'>
                             Set Goal
-                        </Button>
-                        <Button autoFocus onClick={addActivityGoal}>
-                            click meeeee
                         </Button>
                     </DialogActions>
                 </Box>

@@ -87,8 +87,6 @@ export default function UpdateGoal({ editGoal, setEditGoal, action, goal, setMon
             setYearlyGoal(parseInt(newGoal))
             setEditGoal(false)
         }
-
-
     }
 
     const date = new Date();
@@ -96,7 +94,6 @@ export default function UpdateGoal({ editGoal, setEditGoal, action, goal, setMon
     const thisyear = date.getFullYear()
 
     useEffect(() => {
-        console.log(goal)
         if (action === 'month') {
             setCurrent(months[thismonth]);
             setGoalValue(goal.month)
