@@ -1,19 +1,30 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import { Link, useNavigate } from "react-router-dom";
-// import EditShelf from './components/EditShelf';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import { List, ListItem, Divider, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Card, CardMedia, CardContent, Container, ButtonGroup, IconButton, Tooltip, useMediaQuery } from '@mui/material/';
+import { ListItem, Divider, Typography, Card, CardMedia, CardContent, Container } from '@mui/material/';
 
 
 export default function OneShelf({ shelf, length }) {
     let navigate = useNavigate()
 
+    const cardStyle = {
+        maxWidth: 345,
+        backgroundColor: 'transparent',
+        boxShadow:0,
+    }
+
+    const imageStyle = {
+        boxShadow:'3px 2px 6px #888888',
+        height:140,
+        width: 92.5
+    }
+
+    
+
     return (
         <React.Fragment>
             <ListItem key={`${shelf.name}${shelf.id}lg`} id={`${shelf.name}${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                 <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Typography variant='subtitle1'>
+                    <Typography variant='subtitle2'>
                         <Link to={`/shelf/${shelf.id}`} style={{
                             textDecoration: "none",
                             color: '#5F5B71'
@@ -24,11 +35,11 @@ export default function OneShelf({ shelf, length }) {
                 </Container>
                 <div style={{ display: 'flex', width: '100%' }}>
                     {shelf.Books.slice(0, length).map((book) => (
-                        <Card sx={{ maxWidth: 345 }} key={`${shelf.name}${book.id}`} className='book-card'>
+                        <Card sx={cardStyle} key={`${shelf.name}${book.id}`} className='book-card'>
                             <CardContent>
                                 <CardMedia
                                     component="img"
-                                    height="140"
+                                    style={imageStyle}
                                     onClick={() => { navigate(`/book/${book.id}`) }}
                                     image={`${book.cover_img}`}
                                     alt={`${book.title}`}

@@ -48,7 +48,7 @@ EditGoalDialogTitle.propTypes = {
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 
-export default function UpdateGoal({ editGoal, setEditGoal, action, goal, setMonthlyGoal, setYearlyGoal }) {
+export default function EditGoal({ editGoal, setEditGoal, action, goal, setMonthlyGoal, setYearlyGoal }) {
     const context = useContext(AppContext);
 
     const [current, setCurrent] = useState(null)

@@ -12,6 +12,29 @@ export default function Carousel({ shelf }) {
 
     let navigate = useNavigate()
 
+    const cardStyle = {
+        width: { xs: 130, sm: 158 },
+        backgroundColor: 'transparent',
+        boxShadow: 0,
+        display:'flex',
+        flexDirection:'column',
+        alignItems: 'center',
+        textAlign:'center'
+    }
+
+    const imageStyle = {
+        boxShadow: '3px 2px 6px #888888',
+        height: { xs: 183, sm: 218 },
+        width: { xs: 120, sm: 148 }
+    }
+
+    const btnStyle = {
+        height: { xs: 183, sm: 218 },
+        width: { xs: 110, sm: 130 },
+        color: '#9da283',
+        border: '#939876 1px solid'
+    }
+
     return (
         <React.Fragment>
             {/* <Typography variant='subtitle2'>{shelf.name}</Typography> */}
@@ -21,16 +44,17 @@ export default function Carousel({ shelf }) {
                     rewind: false,
                     perPage: 5,
                     perMove: 5,
-                    gap: 5,
-                    padding: "3rem",
+                    gap: 2,
                     pagination: false,
                     arrows: false,
-                    fixedWidth: 200,
+                    fixedWidth: 158,
                     drag: 'free',
-                    width:'100%',
+                    width: '100%',
+                    start: 0,
                     breakpoints: {
                         600: {
                             fixedWidth: 130,
+                            gap:1,
                             perPage: 2,
                             perMove: 2
                         },
@@ -44,38 +68,34 @@ export default function Carousel({ shelf }) {
                         }
                     }
                 }}
-                onMounted={() => {
-                    console.log("mounted");
-                }}
-                onUpdated={() => {
-                    console.log("updated");
-                }}
-                onMoved={() => {
-                    console.log("moved");
-                }}
-                onVisible={(splide, slide) => {
-                    console.log("visible", slide.index);
-                }}
             >
-
 
                 {shelf.Books.map((book) => (
                     <SplideSlide key={book.title}>
-                        <Card key={`${shelf.id}${book.id}`} id={`${shelf.id}${book.id}`} sx={{ width: {xs:130, sm:200}, textAlign: 'center', bgcolor: 'transparent' }} className='book-card'>
+                        <Card key={`${shelf.id}${book.id}`} id={`${shelf.id}${book.id}`} sx={cardStyle} className='book-card'>
                             <CardContent className='book-card'>
                                 <CardMedia
                                     component="img"
-                                    sx={{ height: {xs:183,sm:218}, width: {xs:120, sm:148} }}
+                                    sx={imageStyle}
                                     onClick={() => { navigate(`/book/${book.id}`) }}
                                     image={`${book.cover_img}`}
                                     alt={`${book.title}`}
                                 />
-                                <Typography variant='subtitle2' display='block'>{book.title}</Typography>
-                                <Typography variant='caption' display='block'>{book.author}</Typography>
+                                <Typography variant='caption' display='block'>{book.title}</Typography>
+                                <Typography variant='caption' color='text.secondary' display='block'>{book.author}</Typography>
                             </CardContent>
                         </Card>
                     </SplideSlide>
                 ))}
+
+                {shelf.id !== 'CR' && <SplideSlide>
+                    <Card sx={cardStyle}>
+                        <CardContent>
+                            <Button variant='outlined' sx={btnStyle}
+                                onClick={() => navigate(`/shelf/${shelf.id}`)}>Shelf Details</Button>
+                        </CardContent>
+                    </Card>
+                </SplideSlide>}
 
             </Splide>
 

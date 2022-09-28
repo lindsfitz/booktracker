@@ -54,9 +54,9 @@ export default function Bookcase() {
 
 
         <React.Fragment>
-            <Container sx={{ mr: 'auto', ml: 'auto' }}>
-                <h1>My Bookcase</h1>
-                <Container sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Container sx={{ mr: 'auto', ml: 'auto', textAlign:'center', mt:2 }}>
+                <Typography variant='h6'>Bookcase</Typography>
+                <Container sx={{ display: 'flex', justifyContent: 'space-between', m: 5, width:'90%' }}>
                     <ButtonGroup>
                         <Button variant="outlined" onClick={() => navigate('/books/currently')}>
                             Currently Reading
@@ -69,7 +69,8 @@ export default function Bookcase() {
                         Add A Shelf
                     </Button>
                 </Container>
-                <Container sx={{ width: '100%' }}>
+                <Divider />
+                <Container sx={{ width: '100%', mt:2 }}>
                     {context.userShelves.map(shelf => (
                         <Container>
                             <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -95,10 +96,31 @@ export default function Bookcase() {
                                 </ButtonGroup>
                             </Container>
                             <Carousel shelf={shelf} />
+
+                            <Dialog
+                                open={open}
+                                onClose={handleClose}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                            >
+                                <DialogTitle id="alert-dialog-title">
+                                    {"Are you positive you want to delete this Shelf from your Bookcase?"}
+                                </DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText id="alert-dialog-description">
+                                        This action cannot be undone!
+                                        Any book on this Shelf, and its associated reviews, will still be included on your All Books page.
+                                    </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={handleClose}>Cancel</Button>
+                                    <Button id={shelf.id} onClick={handleDelete}>Delete</Button>
+                                </DialogActions>
+                            </Dialog>
                         </Container>
                     ))}
                 </Container>
-                <List sx={{ width: '100%', bgcolor: 'transparent' }}>
+                {/* <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                     {context.userShelves.map((shelf) => (
                         <React.Fragment>
                             <ListItem key={`${shelf.name}${shelf.id}`} id={`${shelf.name}${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
@@ -177,7 +199,7 @@ export default function Bookcase() {
                             </Dialog>
                         </React.Fragment>
                     ))}
-                </List>
+                </List> */}
 
                 {context.shelfDialog && <AddShelf />}
 

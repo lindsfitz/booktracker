@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import AddGoal from './components/AddGoal';
-import UpdateGoal from './components/UpdateGoal';
+import EditGoal from './components/EditGoal';
 import SwipeableViews from 'react-swipeable-views';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs'
@@ -474,7 +474,7 @@ export default function ReadingActivity() {
                 month: monthlyGoal,
                 year: yearlyGoal
             }} />
-            <UpdateGoal editGoal={editGoal} setEditGoal={setEditGoal} action={action} goal={{
+            <EditGoal editGoal={editGoal} setEditGoal={setEditGoal} action={action} goal={{
                 month: monthlyGoal,
                 year: yearlyGoal
             }} setMonthlyGoal={setMonthlyGoal} setYearlyGoal={setYearlyGoal} />

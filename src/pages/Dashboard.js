@@ -2,7 +2,7 @@
 // add book one time from this page and then can add it to as many shelves as you want 
 
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import AddShelf from './components/AddShelf'
@@ -10,7 +10,20 @@ import DashStats from './components/DashStats';
 import { useTheme } from '@mui/material/styles';
 import { List, Container, ListItem, Typography, Box, Card, CardMedia, CardContent, Divider, ListItemText, Button, Stack, useMediaQuery } from '@mui/material';
 import ReadingMobile from './components/ReadingMobile';
+import OneShelf from './components/OneShelf';
+import Carousel from './components/Carousel';
 
+const imageStyle = {
+    boxShadow:'3px 2px 6px #888888',
+    height:{ xs: 140, md: 218 },
+    width: { xs: 95, md: 148 }
+}
+
+const cardStyle = {
+    maxWidth: { xs: 120, md: 345 },
+    backgroundColor: 'transparent',
+    boxShadow:0,
+}
 
 
 export default function Dashboard(props) {
@@ -26,7 +39,7 @@ export default function Dashboard(props) {
     const [userStats, setUserStats] = useState(null);
     const [activityGoals, setActivityGoals] = useState(null)
     const [currentReads, setCurrentReads] = useState(null);
-  
+
     const renderCurrentReads = async () => {
         const reads = await API.currentlyReading(context.userData.id)
         setCurrentReads(reads.data)
@@ -79,21 +92,24 @@ export default function Dashboard(props) {
             {smxs ? (
                 <Container id='mobile-currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { xs: 'flex' }, flexDirection: 'column' }}>
                     <Typography variant='subtitle2' color='text.secondary'>Currently Reading:</Typography>
+                    <Divider />
                     {currentReads && <ReadingMobile currentReads={currentReads} />}
+                    <Divider />
                 </Container>
             ) : (
                 <Container id='currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { md: 'flex' }, flexDirection: 'column', width: 1 / 1 }}>
                     {/* spans whole width of the screen  */}
-                    <Divider />
                     <Typography variant='subtitle1'>Currently Reading:</Typography>
-                    {currentReads &&
+                    <Divider />
+                    {currentReads && <Carousel shelf={{id:'CR', Books: currentReads}} />}
+                    {/* {currentReads &&
                         <div style={{ display: 'flex', width: '100%', padding: '15px' }}>
                             {currentReads.map((book) => (
-                                <Card sx={{ maxWidth: { xs: 120, md: 345 } }} key={`${book.id}`} className='book-card'>
+                                <Card sx={cardStyle} key={`${book.id}`} className='book-card'>
                                     <CardContent>
                                         <CardMedia
                                             component="img"
-                                            sx={{ maxHeight: { xs: 140, md: 218 }, maxWidth: { xs: 95, md: 148 } }}
+                                            sx={imageStyle}
                                             onClick={() => { navigate(`/book/${book.id}`) }}
                                             image={`${book.cover_img}`}
                                             alt={`${book.title}`}
@@ -104,7 +120,7 @@ export default function Dashboard(props) {
                                 </Card>
 
                             ))}
-                        </div>}
+                        </div>} */}
                     <Divider />
                 </Container>
             )}
@@ -134,52 +150,17 @@ export default function Dashboard(props) {
                             </Stack>
                         </Box>
                         <Box id='mobile-shelves' sx={{ mr: 'auto', ml: 'auto' }}>
+                            <Typography variant='subtitle2'>Bookcase Preview</Typography>
+                            <Divider />
                             <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                                 {context.userShelves.slice(0, 3).map((shelf) => (
                                     <React.Fragment>
-                                        <ListItem key={`${shelf.name}${shelf.id}mobile`} id={`${shelf.name}${shelf.id}mobile`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                                            <ListItemText
-                                                primary={`${shelf.name}`}
-                                                sx={{ maxWidth: '30%' }}
-                                            />
-                                            {xs ? (
-                                                <div style={{ display: 'flex', width: '100%' }}>
+                                        {xs ? (
+                                            <OneShelf shelf={shelf} length={2} />
+                                        ) : (
+                                            <OneShelf shelf={shelf} length={3} />
+                                        )}
 
-                                                    {shelf.Books.slice(0, 2).map((book) => (
-                                                        <Card sx={{ maxWidth: 345 }} key={`${book.id}`} className='book-card'>
-                                                            <CardContent>
-                                                                <CardMedia
-                                                                    component="img"
-                                                                    height="140"
-                                                                    onClick={() => { navigate(`/book/${book.id}`) }}
-                                                                    image={`${book.cover_img}`}
-                                                                    alt={`${book.title}`}
-                                                                />
-                                                            </CardContent>
-                                                        </Card>
-
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <div style={{ display: 'flex', width: '100%' }}>
-
-                                                    {shelf.Books.slice(0, 3).map((book) => (
-                                                        <Card sx={{ maxWidth: 345 }} key={`${book.id}`} className='book-card'>
-                                                            <CardContent>
-                                                                <CardMedia
-                                                                    component="img"
-                                                                    height="140"
-                                                                    onClick={() => { navigate(`/book/${book.id}`) }}
-                                                                    image={`${book.cover_img}`}
-                                                                    alt={`${book.title}`}
-                                                                />
-                                                            </CardContent>
-                                                        </Card>
-
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </ListItem>
                                         <Divider key={`${shelf.id}dividersm`} />
 
                                     </React.Fragment>
@@ -254,55 +235,20 @@ export default function Dashboard(props) {
                     <Box id='left-column' sx={{ mr: 3 }}>
                         {/* TO DO ON THIS PAGE -- add styling to the shelves; pick a font, add some shadowing to the book cover images, etc.  */}
                         <div id='shelves'>
+                            <Typography variant='subtitle2'>Bookcase Preview</Typography>
+                            <Divider />
                             <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                                 {context.userShelves.slice(0, 3).map((shelf) => (
                                     <React.Fragment>
-                                        <ListItem key={`${shelf.name}${shelf.id}lg`} id={`${shelf.name}${shelf.id}`} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                                            <ListItemText
-                                                primary={`${shelf.name}`}
-                                                sx={{ maxWidth: '10%' }}
-                                            />
-                                            {middle ? (
-                                                <div style={{ display: 'flex', width: '100%' }}>
-                                                    {shelf.Books.slice(0, 3).map((book) => (
-                                                        <Card sx={{ maxWidth: 345 }} key={`${shelf.name}${book.id}`} className='book-card'>
-                                                            <CardContent>
-                                                                <CardMedia
-                                                                    component="img"
-                                                                    height="140"
-                                                                    onClick={() => { navigate(`/book/${book.id}`) }}
-                                                                    image={`${book.cover_img}`}
-                                                                    alt={`${book.title}`}
-                                                                />
-                                                            </CardContent>
-                                                        </Card>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <div style={{ display: 'flex', width: '100%' }}>
-                                                    {shelf.Books.slice(0, 5).map((book) => (
-                                                        <Card sx={{ maxWidth: 345 }} key={`${shelf.name}${book.id}`} className='book-card'>
-                                                            <CardContent>
-                                                                <CardMedia
-                                                                    component="img"
-                                                                    height="140"
-                                                                    onClick={() => { navigate(`/book/${book.id}`) }}
-                                                                    image={`${book.cover_img}`}
-                                                                    alt={`${book.title}`}
-                                                                />
-                                                            </CardContent>
-                                                        </Card>
-                                                    ))}
-                                                </div>)}
-                                        </ListItem>
+                                        {middle ? (
+                                            <OneShelf shelf={shelf} length={3} />
+                                        ) : (
+                                            <OneShelf shelf={shelf} length={5} />
+                                        )}
                                         <Divider key={`${shelf.id}dividerlg`} />
                                     </React.Fragment>
                                 ))}
                             </List>
-                        </div>
-
-                        <div id='read-books'>
-                            {/* shelf for all books marked as read */}
                         </div>
                     </Box>
                 </Container>
