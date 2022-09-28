@@ -17,12 +17,19 @@ const API = {
     signup:(userData)=> {
         return axios.post(`${URL_PREFIX}/user/signup`,userData)
     },
-    updateUser:(userData)=> {
-        return axios.put(`${URL_PREFIX}/user/update`,userData)
+    updateAccount:(userData)=> {
+        return axios.put(`${URL_PREFIX}/user/update/account`,userData)
     },
     deleteUser:(id)=>{
         return axios.delete(`${URL_PREFIX}/user/delete/${id}`)
     },
+    getProfile:(id)=>{
+        return axios.get(`${URL_PREFIX}/user/profile/${id}`)
+    },
+    updateProfile:(id, profile)=> {
+        return axios.put(`${URL_PREFIX}/user/update/profile/${id}`,profile)
+    },
+
 
     // SHELF ROUTES
 

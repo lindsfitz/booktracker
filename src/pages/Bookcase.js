@@ -10,6 +10,7 @@ import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@mui/material/styles';
 import { List, ListItem, Divider, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Card, CardMedia, CardContent, Container, ButtonGroup, IconButton, Tooltip, useMediaQuery } from '@mui/material/';
 import BCMobile from './components/BCMobile';
+import Carousel from './components/Carousel';
 
 
 
@@ -68,6 +69,35 @@ export default function Bookcase() {
                         Add A Shelf
                     </Button>
                 </Container>
+                <Container sx={{ width: '100%' }}>
+                    {context.userShelves.map(shelf => (
+                        <Container>
+                            <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <Typography variant='subtitle1'>
+                                    <Link to={`/shelf/${shelf.id}`} style={{
+                                        textDecoration: "none",
+                                        color: '#5F5B71'
+                                    }}>
+                                        {shelf.name}
+                                    </Link>
+                                </Typography>
+                                <ButtonGroup variant="outlined" aria-label="text button group">
+                                    <Tooltip title="Edit">
+                                        <IconButton size='small' onClick={() => handleShelfEdit(shelf)}>
+                                            <EditIcon fontSize="inherit" />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Delete">
+                                        <IconButton size='small' onClick={handleClickOpen}>
+                                            <DeleteIcon fontSize="inherit" />
+                                        </IconButton>
+                                    </Tooltip>
+                                </ButtonGroup>
+                            </Container>
+                            <Carousel shelf={shelf} />
+                        </Container>
+                    ))}
+                </Container>
                 <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                     {context.userShelves.map((shelf) => (
                         <React.Fragment>
@@ -97,11 +127,11 @@ export default function Bookcase() {
 
                                 {md ? (
                                     <div
-                                        style={{ display: 'flex', width: '100%', justifyContent:'center' }}
+                                        style={{ display: 'flex', width: '100%', justifyContent: 'center' }}
                                     >
                                         <BCMobile shelfId={shelf.id} books={shelf.Books} />
-                                        
-                                     </div>
+
+                                    </div>
                                 ) : (
                                     <div style={{ display: 'flex', width: '100%' }}>
                                         {shelf.Books.slice(0, 5).map((book) => (

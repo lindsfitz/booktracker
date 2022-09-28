@@ -7,9 +7,9 @@ import API from '../utils/API';
 import AppContext from '../AppContext';
 import AddShelf from './components/AddShelf'
 import DashStats from './components/DashStats';
-import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@mui/material/styles';
-import { List, Container, ListItem, Typography, Box, Card, CardMedia, CardContent, Divider, ListItemText, Button, Stack, MobileStepper, useMediaQuery } from '@mui/material';
+import { List, Container, ListItem, Typography, Box, Card, CardMedia, CardContent, Divider, ListItemText, Button, Stack, useMediaQuery } from '@mui/material';
+import ReadingMobile from './components/ReadingMobile';
 
 
 
@@ -26,24 +26,16 @@ export default function Dashboard(props) {
     const [userStats, setUserStats] = useState(null);
     const [activityGoals, setActivityGoals] = useState(null)
     const [currentReads, setCurrentReads] = useState(null);
-    const [activeStep, setActiveStep] = useState(0)
-
-    const handleChangeIndex = (index) => {
-        setActiveStep(index)
-    }
-
-
+  
     const renderCurrentReads = async () => {
         const reads = await API.currentlyReading(context.userData.id)
         setCurrentReads(reads.data)
     }
 
-
     const renderShelves = async () => {
         const shelves = await API.getShelves(context.userData.id)
         context.setUserShelves(shelves.data)
     }
-
 
     const renderStats = async () => {
         const date = new Date();
@@ -87,40 +79,7 @@ export default function Dashboard(props) {
             {smxs ? (
                 <Container id='mobile-currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { xs: 'flex' }, flexDirection: 'column' }}>
                     <Typography variant='subtitle2' color='text.secondary'>Currently Reading:</Typography>
-                    {currentReads && <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', borderRadius: 10 }}>
-                        <SwipeableViews
-                            index={activeStep}
-                            onChangeIndex={handleChangeIndex}
-                            enableMouseEvents>
-                            {currentReads.map((book) => (
-                                <Card key={`${book.id}`} className='book-card'>
-                                    <CardContent sx={{ display: 'flex' }}>
-                                        <CardMedia
-                                            component="img"
-                                            sx={{ maxHeight: { xs: 190, md: 218 }, maxWidth: { xs: 125, md: 148 } }}
-                                            onClick={() => { navigate(`/book/${book.id}`) }}
-                                            image={`${book.cover_img}`}
-                                            alt={`${book.title}`}
-                                        />
-                                        <Box sx={{ m: 'auto', alignItems: 'center' }}>
-                                            <Typography variant='subtitle2' display='block'>{book.title}</Typography>
-                                            <Typography variant='caption' display='block'>{book.author}</Typography>
-                                        </Box>
-                                    </CardContent>
-                                </Card>
-
-                            ))}
-                        </SwipeableViews>
-                        <MobileStepper
-                            variant="dots"
-                            steps={currentReads.length}
-                            position="static"
-                            activeStep={activeStep}
-                            sx={{ flexGrow: 1, bgcolor: 'transparent' }}
-                        />
-                    </Box>
-                    }
-
+                    {currentReads && <ReadingMobile currentReads={currentReads} />}
                 </Container>
             ) : (
                 <Container id='currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { md: 'flex' }, flexDirection: 'column', width: 1 / 1 }}>
