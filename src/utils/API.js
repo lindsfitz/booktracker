@@ -175,7 +175,10 @@ const API = {
         return axios.get(`https://openlibrary.org/authors/${key}/works.json`)
     },
     getBook:(key) => {
-        return axios.get(`https://openlibrary.org/works/${key}.json`)
+        return axios.get(`https://openlibrary.org${key}.json`)
+    },
+    getOneBook:(key) => {
+        return axios.get(`https://openlibrary.org/books/${key}.json`)
     },
     getBookISBN:(isbn)=>{
         return axios.get(`https://openlibrary.org/isbn/${isbn}.json`)

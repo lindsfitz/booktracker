@@ -20,6 +20,7 @@ import ReadingActivity from './pages/ReadingActivity';
 // import './app.css'
 import { themeOptions } from './utils/Theme';
 import Booklist from './pages/Booklist';
+// import Book from './pages/Book';
 
 function App() {
 
@@ -57,9 +58,11 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/login" element={<Login />} />
               <Route path="/search" element={<Search />} />
-              <Route path="works/:id" element={<ResultBook />} />
+              {/* <Route path="works/:id" element={<ResultBook />} /> */}
               <Route path="/books" element={<AllBooks />} />
+              <Route path="books/:id" element={<ResultBook />} />
               <Route path="/book/:id" element={<UserBook />} />
+              {/* <Route path="/book/:type/:id" element={<Book />} /> */}
               <Route path="/books/:list" element={<Booklist />} />
               <Route path="/shelves" element={<Bookcase />} />
               <Route path="/shelf/:id" element={<Shelf />} />

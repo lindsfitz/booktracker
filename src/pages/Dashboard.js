@@ -1,29 +1,27 @@
-//  once logged in -- this is the homepage. Lets you view existing shelves/add new shelves and you can click one to view details about the shelf 
-// add book one time from this page and then can add it to as many shelves as you want 
 
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import AddShelf from './components/AddShelf'
 import DashStats from './components/DashStats';
 import { useTheme } from '@mui/material/styles';
-import { List, Container, ListItem, Typography, Box, Card, CardMedia, CardContent, Divider, ListItemText, Button, Stack, useMediaQuery } from '@mui/material';
+import { List, Container, Typography, Box, Divider, Button, Stack, useMediaQuery } from '@mui/material';
 import ReadingMobile from './components/ReadingMobile';
 import OneShelf from './components/OneShelf';
 import Carousel from './components/Carousel';
 
-const imageStyle = {
-    boxShadow:'3px 2px 6px #888888',
-    height:{ xs: 140, md: 218 },
-    width: { xs: 95, md: 148 }
-}
+// const imageStyle = {
+//     boxShadow:'3px 2px 6px #888888',
+//     height:{ xs: 140, md: 218 },
+//     width: { xs: 95, md: 148 }
+// }
 
-const cardStyle = {
-    maxWidth: { xs: 120, md: 345 },
-    backgroundColor: 'transparent',
-    boxShadow:0,
-}
+// const cardStyle = {
+//     maxWidth: { xs: 120, md: 345 },
+//     backgroundColor: 'transparent',
+//     boxShadow:0,
+// }
 
 
 export default function Dashboard(props) {
@@ -40,28 +38,29 @@ export default function Dashboard(props) {
     const [activityGoals, setActivityGoals] = useState(null)
     const [currentReads, setCurrentReads] = useState(null);
 
-    const renderCurrentReads = async () => {
-        const reads = await API.currentlyReading(context.userData.id)
-        setCurrentReads(reads.data)
-    }
-
-    const renderShelves = async () => {
-        const shelves = await API.getShelves(context.userData.id)
-        context.setUserShelves(shelves.data)
-    }
-
-    const renderStats = async () => {
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const allStats = await API.allStats(context.userData.id, year, month)
-        const activity = await API.currentGoals(context.userData.id)
-        setActivityGoals(activity.data)
-        setUserStats(allStats.data)
-    }
 
     // on page load, check for token (aka logged in user) and render shelves if logged in. If no token (not logged in) or token can't be verified (user doesn't exist) then redirect to the login page
     useEffect(() => {
+        const renderCurrentReads = async () => {
+            const reads = await API.currentlyReading(context.userData.id)
+            setCurrentReads(reads.data)
+        }
+
+        const renderShelves = async () => {
+            const shelves = await API.getShelves(context.userData.id)
+            context.setUserShelves(shelves.data)
+        }
+
+        const renderStats = async () => {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const allStats = await API.allStats(context.userData.id, year, month)
+            const activity = await API.currentGoals(context.userData.id)
+            setActivityGoals(activity.data)
+            setUserStats(allStats.data)
+        }
+        
         const myToken = localStorage.getItem("token");
         if (myToken) {
             API.verify(myToken).then(async res => {
@@ -83,7 +82,7 @@ export default function Dashboard(props) {
         if (!myToken) {
             navigate('/login')
         }
-    }, [])
+    }, [context.token])
 
 
     return (
@@ -101,7 +100,7 @@ export default function Dashboard(props) {
                     {/* spans whole width of the screen  */}
                     <Typography variant='subtitle1'>Currently Reading:</Typography>
                     <Divider />
-                    {currentReads && <Carousel shelf={{id:'CR', Books: currentReads}} />}
+                    {currentReads && <Carousel shelf={{ id: 'CR', Books: currentReads }} />}
                     {/* {currentReads &&
                         <div style={{ display: 'flex', width: '100%', padding: '15px' }}>
                             {currentReads.map((book) => (

@@ -6,10 +6,9 @@ import AppContext from '../AppContext';
 import EditShelf from './components/EditShelf';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import SwipeableViews from 'react-swipeable-views';
-import { useTheme } from '@mui/material/styles';
-import { List, ListItem, Divider, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Card, CardMedia, CardContent, Container, ButtonGroup, IconButton, Tooltip, useMediaQuery } from '@mui/material/';
-import BCMobile from './components/BCMobile';
+// import { useTheme } from '@mui/material/styles';
+import { Divider, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Container, ButtonGroup, IconButton, Tooltip } from '@mui/material/';
+// import BCMobile from './components/BCMobile';
 import Carousel from './components/Carousel';
 
 
@@ -17,8 +16,8 @@ import Carousel from './components/Carousel';
 export default function Bookcase() {
     const context = useContext(AppContext);
     let navigate = useNavigate()
-    const theme = useTheme();
-    const md = useMediaQuery(theme.breakpoints.down('md'))
+    // const theme = useTheme();
+    // const md = useMediaQuery(theme.breakpoints.down('md'))
 
     const [open, setOpen] = useState(false);
     const [editShelf, setEditShelf] = useState(false)
@@ -51,8 +50,6 @@ export default function Bookcase() {
     }
 
     return (
-
-
         <React.Fragment>
             <Container sx={{ mr: 'auto', ml: 'auto', textAlign:'center', mt:2 }}>
                 <Typography variant='h6'>Bookcase</Typography>
@@ -72,7 +69,7 @@ export default function Bookcase() {
                 <Divider />
                 <Container sx={{ width: '100%', mt:2 }}>
                     {context.userShelves.map(shelf => (
-                        <Container>
+                        <Container key={`${shelf.name}${shelf.id}bc`}>
                             <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <Typography variant='subtitle1'>
                                     <Link to={`/shelf/${shelf.id}`} style={{

@@ -87,9 +87,9 @@ export default function DashStats({ userStats, goals }) {
         const date = new Date();
         setYear(date.getFullYear())
         setMonth(date.getMonth())
-        setMonthProgress((userStats.month.bookCount / goals.month.value * 100))
-        setYearProgress((userStats.year.bookCount / goals.year.value * 100))
-    }, [])
+        if (userStats.month) { setMonthProgress((userStats.month.bookCount / goals.month.value * 100)) }
+        if (userStats.year) { setYearProgress((userStats.year.bookCount / goals.year.value * 100)) }
+    }, [userStats, goals])
 
     return (
         <React.Fragment>
@@ -124,7 +124,6 @@ export default function DashStats({ userStats, goals }) {
 
                         {userStats.month ? (
                             <div>
-                                {/* <CircularProgress variant="determinate" value={(userStats.month.bookCount / goals.month.value * 100)} /> */}
                                 {goals.month ? (
                                     <React.Fragment>
                                         <CircularProgressWithLabel value={monthProgress} />
@@ -133,7 +132,7 @@ export default function DashStats({ userStats, goals }) {
                                 ) : (
                                     <Typography variant='subtitle2'>You have read {userStats.month.bookCount} books this month.</Typography>
                                 )}
-                                
+
                                 <Typography variant='subtitle2'>That adds up to {userStats.month.totalPages} pages so far.</Typography>
                                 <Typography variant='subtitle2'>On average, you gave books </Typography>
                                 <Stack direction='row' spacing={1} justifyContent='center'>
@@ -165,12 +164,12 @@ export default function DashStats({ userStats, goals }) {
                         {userStats.year ? (
                             <div>
                                 {goals.year ? (
-                                <React.Fragment>
-                                    <CircularProgressWithLabel value={yearProgress} />
-                                    <Typography variant='subtitle2'>You have finished {userStats.year.bookCount} of {goals.year.value} books this year.</Typography>
-                                </React.Fragment>
+                                    <React.Fragment>
+                                        <CircularProgressWithLabel value={yearProgress} />
+                                        <Typography variant='subtitle2'>You have finished {userStats.year.bookCount} of {goals.year.value} books this year.</Typography>
+                                    </React.Fragment>
                                 ) : (
-                                <Typography variant='subtitle2'>You have finished {userStats.year.bookCount} books this year.</Typography>
+                                    <Typography variant='subtitle2'>You have finished {userStats.year.bookCount} books this year.</Typography>
                                 )}
                                 <Typography variant='subtitle2'>That adds up to {userStats.year.totalPages} pages so far</Typography>
                                 <Typography variant='subtitle2'>On average, you gave books </Typography>

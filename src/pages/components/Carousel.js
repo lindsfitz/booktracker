@@ -37,8 +37,6 @@ export default function Carousel({ shelf }) {
 
     return (
         <React.Fragment>
-            {/* <Typography variant='subtitle2'>{shelf.name}</Typography> */}
-
             <Splide
                 options={{
                     rewind: false,

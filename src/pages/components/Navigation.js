@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
-import { Link, useNavigate, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AppContext from '../../AppContext';
-import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Button, Tooltip, MenuItem, ListItemIcon, Divider } from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Button, Tooltip, MenuItem, ListItemIcon, Divider, ClickAwayListener } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
 import PersonAdd from '@mui/icons-material/PersonAdd';
@@ -13,18 +13,6 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 const Navigation = () => {
     const context = useContext(AppContext);
     let navigate = useNavigate();
-
-    let activeStyle = {
-        textDecoration: "underline",
-        cursor: 'default',
-        pointeEvents: 'none',
-        color: '#5F5B71'
-    };
-
-    let inactiveStyle = {
-        textDecoration: 'none',
-        color: '#5F5B71'
-    }
 
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
@@ -104,26 +92,26 @@ const Navigation = () => {
                             }}
 
                         >
-
-                            <MenuItem>
+                            <MenuItem onClick={handleCloseNavMenu}>
                                 <Button variant="text" color="custom"
                                     onClick={() => navigate('/')}
                                 >
                                     Home
                                 </Button>
                             </MenuItem>
-                            <MenuItem>
+                            <MenuItem onClick={handleCloseNavMenu}>
                                 <Button variant="text" color="custom"
                                     onClick={() => navigate('/shelves')}>
                                     Bookcase
                                 </Button>
                             </MenuItem>
-                            <MenuItem>
+                            <MenuItem onClick={handleCloseNavMenu}>
                                 <Button variant="text" color="custom"
                                     onClick={() => navigate('/search')}>
                                     Browse
                                 </Button>
                             </MenuItem>
+
 
                         </Menu>
                     </Box>
@@ -184,36 +172,46 @@ const Navigation = () => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            <MenuItem>
-                                <ListItemIcon>
-                                    <PersonIcon fontSize="small" />
-                                </ListItemIcon>
-                                Profile
+                            <MenuItem onClick={handleCloseUserMenu}>
+                                <Button variant="text" color="custom">
+                                    <ListItemIcon>
+                                        <PersonIcon fontSize="small" />
+                                    </ListItemIcon>
+                                    Profile
+                                </Button>
                             </MenuItem>
-                            <MenuItem>
-                                <ListItemIcon>
-                                    <PersonAdd fontSize="small" />
-                                </ListItemIcon>
-                                Friends
+                            <MenuItem onClick={handleCloseUserMenu}>
+                                <Button variant="text" color="custom">
+                                    <ListItemIcon>
+                                        <PersonAdd fontSize="small" />
+                                    </ListItemIcon>
+                                    Friends
+                                </Button>
                             </MenuItem>
-                            <MenuItem onClick={() => navigate('/books')}>
-                                <ListItemIcon>
-                                    <MenuBookIcon fontSize='small' />
-                                </ListItemIcon>
-                                My Books
+                            <MenuItem onClick={handleCloseUserMenu}>
+                                <Button variant="text" color="custom" onClick={() => navigate('/books')}>
+                                    <ListItemIcon>
+                                        <MenuBookIcon fontSize='small' />
+                                    </ListItemIcon>
+                                    My Books
+                                </Button>
                             </MenuItem>
                             <Divider />
-                            <MenuItem>
-                                <ListItemIcon>
-                                    <Settings fontSize="small" />
-                                </ListItemIcon>
-                                Settings
+                            <MenuItem onClick={handleCloseUserMenu}>
+                                <Button variant="text" color="custom">
+                                    <ListItemIcon>
+                                        <Settings fontSize="small" />
+                                    </ListItemIcon>
+                                    Settings
+                                </Button>
                             </MenuItem>
-                            <MenuItem onClick={logout}>
-                                <ListItemIcon>
-                                    <Logout fontSize="small" />
-                                </ListItemIcon>
-                                Logout
+                            <MenuItem onClick={handleCloseUserMenu}>
+                                <Button variant="text" color="custom" onClick={logout}>
+                                    <ListItemIcon>
+                                        <Logout fontSize="small" />
+                                    </ListItemIcon>
+                                    Logout
+                                </Button>
                             </MenuItem>
                         </Menu>
                     </Box>

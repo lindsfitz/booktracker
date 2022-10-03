@@ -12,6 +12,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AddReview from './components/AddReview';
 import EditReview from './components/EditReview';
+import BookInfo from './components/BookInfo';
 
 
 // single book page - top section of the page has lots of details about the book (maybe one template for super detailed results from open library, one template for user added books w a bit less detail included)
@@ -19,6 +20,18 @@ import EditReview from './components/EditReview';
 // Add Review Button for if no review already exists, otherwise render review
 // Maybe this bottom section is conditionally rendered? Aka if no review, render add review button; if review, render review; if button is clicked (or edit btn) render the review form? Not sure exactly what would be best here 
 // toggle for Read vs unread books goes here and the rating also goes here 
+
+const cardStyle = {
+    maxWidth: { xs: 250, md: 345 },
+    minWidth: { xs: 240 },
+    alignSelf: 'center',
+    backgroundColor: 'transparent',
+    boxShadow: 0,
+}
+
+const imageStyle = {
+    boxShadow: '3px 2px 6px #888888',
+}
 
 
 
@@ -310,143 +323,107 @@ export default function UserBook() {
 
     return (
         <React.Fragment>
-            {bookData && <div>
-                {/* ----BOOK DETAILS @ TOP---- */}
-                <Container
-                    sx={{
-                        display: "flex", flexDirection: { xs: 'column', md: 'row' },
-                        m: { xs: 1, md: 3 }, p: { xs: 0, md: 2 }
-                    }}>
-                    <Card sx={{ maxWidth: { xs: 250, md: 345 }, minWidth: { xs: 240 }, alignSelf: 'center' }} >
-                        <CardContent>
-                            <CardMedia
-                                component="img"
-                                // height="194"
-                                image={`${bookData.cover_img}`}
-                                alt={`${bookData.title}`}
-                            />
-                        </CardContent>
-                    </Card>
-                    <Box sx={{ maxWidth: { xs: 1 / 1, md: 3 / 5 }, p: 4 }}>
-                        <Typography gutterBottom variant="h5" component="div">
-                            {bookData.title}
-                        </Typography>
-                        <Typography variant="subtitle2" color="text.secondary">
-                            by {bookData.author}
-                        </Typography>
-                        <Divider />
-                        <Typography variant="caption" color="text.secondary">
-                            Pages: {bookData.pages}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                            Published: {bookData.published}
-                        </Typography>
-                        <Divider />
-                        <Typography variant='body2'>
-                            {bookData.description}
-                        </Typography>
+            {bookData &&
+                <Container sx={{ mt: 5 }}>
+                    {/* ----BOOK DETAILS @ TOP---- */}
+                    <BookInfo book={bookData} />
 
-                    </Box>
-
-                </Container>
-
-
-                {/* ----CONDITIONALS FOR READ/READING & SHELVES---- */}
-                {bookData.Shelves &&
-                    <Stack direction="row" spacing={2} sx={{ mb: 3, ml: 5 }}>
-                        {markedRead &&
+                    {/* ----CONDITIONALS FOR READ/READING & SHELVES---- */}
+                    {bookData.Shelves &&
+                        <Stack direction="row" spacing={2} sx={{ mb: 3, ml: 5 }}>
+                            {markedRead &&
+                                <Stack spacing={0}>
+                                    <Typography variant='caption'>Marked As:</Typography>
+                                    <Chip label='Read' />
+                                </Stack>
+                            }
+                            {markedReading &&
+                                <Stack spacing={0}>
+                                    <Typography variant='caption'>Marked As:</Typography>
+                                    <Chip label='Currently Reading' />
+                                </Stack>
+                            }
+                            {markedDNF &&
+                                <Stack spacing={0}>
+                                    <Typography variant='caption'>Marked As:</Typography>
+                                    <Chip label='DNF' />
+                                </Stack>
+                            }
                             <Stack spacing={0}>
-                                <Typography variant='caption'>Marked As:</Typography>
-                                <Chip label='Read' />
+                                <Typography variant='caption'>On Shelves:</Typography>
+                                <Stack direction={{ xs: 'column', md: 'row' }}>
+                                    {bookData.Shelves.map((shelf) => (
+                                        <Chip key={`${shelf.name}${shelf.id}`} id={shelf.id} label={shelf.name} variant="outlined" onDelete={(event) => removeFromShelf(shelf.name, shelf.id)} />
+                                    ))}
+                                </Stack>
                             </Stack>
-                        }
-                        {markedReading &&
-                            <Stack spacing={0}>
-                                <Typography variant='caption'>Marked As:</Typography>
-                                <Chip label='Currently Reading' />
-                            </Stack>
-                        }
-                        {markedDNF &&
-                            <Stack spacing={0}>
-                                <Typography variant='caption'>Marked As:</Typography>
-                                <Chip label='DNF' />
-                            </Stack>
-                        }
-                        <Stack spacing={0}>
-                            <Typography variant='caption'>On Shelves:</Typography>
-                            <Stack direction={{ xs: 'column', md: 'row' }}>
-                                {bookData.Shelves.map((shelf) => (
-                                    <Chip key={`${shelf.name}${shelf.id}`} id={shelf.id} label={shelf.name} variant="outlined" onDelete={(event) => removeFromShelf(shelf.name, shelf.id)} />
-                                ))}
-                            </Stack>
-                        </Stack>
-                    </Stack>}
+                        </Stack>}
 
 
 
-                <Divider />
+                    <Divider />
 
-                {/* ---- ADD NEW REVIEW FORM COMPONENT ---- */}
-                {reviewForm ? (<div>
-                    <AddReview reviewInfo={reviewInfo} toggleReviewForm={toggleReviewForm} />
-                    <Button onClick={toggleReviewForm}>Cancel</Button>
-                </div>) : (<div>
-                    <Stack direction='row' spacing={1}>
+                    {/* ---- ADD NEW REVIEW FORM COMPONENT ---- */}
+                    {reviewForm ? (<div>
+                        <AddReview reviewInfo={reviewInfo} toggleReviewForm={toggleReviewForm} />
+                        <Button onClick={toggleReviewForm}>Cancel</Button>
+                    </div>) : (<div>
+                        <Stack direction='row' spacing={1}>
 
 
-                        <ButtonGroup variant="text" aria-label="text button group" ref={anchorRef}>
-                            <Button onClick={toggleShelfMenu}>Add to Shelf</Button>
-                            <Button
-                                size="small"
-                                aria-controls={shelfOpen ? 'split-button-menu' : undefined}
-                                aria-expanded={shelfOpen ? 'true' : undefined}
-                                aria-label="select merge strategy"
-                                aria-haspopup="menu"
-                                onClick={toggleShelfMenu}
-                            >
-                                <ArrowDropDownIcon />
-                            </Button>
-                        </ButtonGroup>
-                        <Popper
-                            sx={{
-                                zIndex: 1,
-                            }}
-                            open={shelfOpen}
-                            anchorEl={anchorRef.current}
-                            role={undefined}
-                            transition
-                            disablePortal
-                        >
-                            {({ TransitionProps, placement }) => (
-                                <Grow
-                                    {...TransitionProps}
-                                    style={{
-                                        transformOrigin:
-                                            placement === 'bottom' ? 'center top' : 'center bottom',
-                                    }}
+                            <ButtonGroup variant="contained" aria-label="text button group" ref={anchorRef}>
+                                <Button onClick={toggleShelfMenu}>Add to Shelf</Button>
+                                <Button
+                                    size="small"
+                                    aria-controls={shelfOpen ? 'split-button-menu' : undefined}
+                                    aria-expanded={shelfOpen ? 'true' : undefined}
+                                    aria-label="select merge strategy"
+                                    aria-haspopup="menu"
+                                    onClick={toggleShelfMenu}
                                 >
-                                    <Paper>
-                                        <ClickAwayListener onClickAway={closeShelfMenu}>
-                                            <MenuList id="split-button-menu" autoFocusItem>
-                                                {shelfChoices.map((shelf, index) => (
-                                                    <MenuItem
-                                                        key={shelf.name}
-                                                        id={shelf.id}
-                                                        selected={index === selectedIndex}
-                                                        onClick={(event) => addToShelf(event)}
-                                                    >
-                                                        {shelf.name}
-                                                    </MenuItem>
-                                                ))}
-                                            </MenuList>
-                                        </ClickAwayListener>
-                                    </Paper>
-                                </Grow>
-                            )}
-                        </Popper>
+                                    <ArrowDropDownIcon />
+                                </Button>
+                            </ButtonGroup>
+                            <Popper
+                                sx={{
+                                    zIndex: 1,
+                                }}
+                                open={shelfOpen}
+                                anchorEl={anchorRef.current}
+                                role={undefined}
+                                transition
+                                disablePortal
+                            >
+                                {({ TransitionProps, placement }) => (
+                                    <Grow
+                                        {...TransitionProps}
+                                        style={{
+                                            transformOrigin:
+                                                placement === 'bottom' ? 'center top' : 'center bottom',
+                                        }}
+                                    >
+                                        <Paper>
+                                            <ClickAwayListener onClickAway={closeShelfMenu}>
+                                                <MenuList id="split-button-menu" autoFocusItem>
+                                                    {shelfChoices.map((shelf, index) => (
+                                                        <MenuItem
+                                                            key={shelf.name}
+                                                            id={shelf.id}
+                                                            selected={index === selectedIndex}
+                                                            onClick={(event) => addToShelf(event)}
+                                                        >
+                                                            {shelf.name}
+                                                        </MenuItem>
+                                                    ))}
+                                                </MenuList>
+                                            </ClickAwayListener>
+                                        </Paper>
+                                    </Grow>
+                                )}
+                            </Popper>
 
 
-                        {/* <ButtonGroup variant="text" aria-label="text button group" ref={anchorRef}>
+                            {/* <ButtonGroup variant="text" aria-label="text button group" ref={anchorRef}>
                             <Button onClick={toggleMarkedMenu}>Mark As</Button>
                             <Button
                                 size="small"
@@ -489,15 +466,15 @@ export default function UserBook() {
                         </Popper> */}
 
 
-                        {bookBtnOptions()}
+                            {bookBtnOptions()}
 
-                        <Divider orientation='vertical' />
+                            <Divider orientation='vertical' />
 
-                        {!markedOwned && <Button>Mark As Owned</Button>}
+                            {!markedOwned && <Button>Mark As Owned</Button>}
 
-                    </Stack>
+                        </Stack>
 
-                    {/* {!markedRead && !markedReading &&
+                        {/* {!markedRead && !markedReading &&
                         <React.Fragment>
                             <Button onClick={addToCurrentlyReading}>Add To Currently Reading</Button>
                             <Button onClick={addToRead}>Mark As Read</Button>
@@ -509,84 +486,84 @@ export default function UserBook() {
                         </React.Fragment>
                     }
                     <Button onClick={toggleReviewForm}>Add A Review</Button> */}
-                </div>)
-                }
-                <Divider />
+                    </div>)
+                    }
+                    <Divider />
 
 
-                {/* ---- REVIEWS SECTION ---- */}
-                <Container>
-                    {!reviewData && !reviewForm && <div style={{ margin: '30px auto 0 auto', textAlign: 'center' }}>
-                        <Typography variant='subtitle2'>
-                            It looks like you haven't reviewed this book yet.
-                        </Typography>
+                    {/* ---- REVIEWS SECTION ---- */}
+                    <Container>
+                        {!reviewData && !reviewForm && <div style={{ margin: '30px auto 0 auto', textAlign: 'center' }}>
+                            <Typography variant='subtitle2'>
+                                It looks like you haven't reviewed this book yet.
+                            </Typography>
 
-                        <Link variant='subtitle2' onClick={toggleReviewForm}>Add Your Thoughts</Link>
-                    </div>}
+                            <Link variant='subtitle2' onClick={toggleReviewForm}>Add Your Thoughts</Link>
+                        </div>}
 
 
-                    {reviewData && <Container>
-                        <Typography variant='subtitle1'>
-                            Your Reviews:
-                        </Typography>
-                        {reviewData.map((review) => (
-                            <Paper key={`${review.id}${review.UserId}`} elevation={6} sx={{ width: { xs: 3 / 4, md: 3 / 5 }, p: 2 }}>
-                                {editId !== review.id && <Container>
-                                    <Stack direction='row' justifyContent="space-between">
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                            <Typography variant='caption'>Unread</Typography>
-                                            <Switch name='read'
-                                                id='read'
-                                                checked={review.read}
-                                                size='small'
-                                                disabled />
-                                            <Typography variant='caption'>Read</Typography>
+                        {reviewData && <Container>
+                            <Typography variant='subtitle1'>
+                                Your Reviews:
+                            </Typography>
+                            {reviewData.map((review) => (
+                                <Paper key={`${review.id}${review.UserId}`} elevation={6} sx={{ width: { xs: 3 / 4, md: 3 / 5 }, p: 2 }}>
+                                    {editId !== review.id && <Container>
+                                        <Stack direction='row' justifyContent="space-between">
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant='caption'>Unread</Typography>
+                                                <Switch name='read'
+                                                    id='read'
+                                                    checked={review.read}
+                                                    size='small'
+                                                    disabled />
+                                                <Typography variant='caption'>Read</Typography>
+                                            </Stack>
+
+                                            <Stack spacing={0.5} direction="row" alignItems="center">
+                                                <IconButton onClick={() => toggleEditForm(review.id)} aria-label="delete" size="small">
+                                                    <EditIcon fontSize="inherit" />
+                                                </IconButton>
+                                                <IconButton onClick={() => deleteReview(review.id)} aria-label="delete" size="small">
+                                                    <DeleteIcon fontSize="inherit" />
+                                                </IconButton>
+                                            </Stack>
                                         </Stack>
 
-                                        <Stack spacing={0.5} direction="row" alignItems="center">
-                                            <IconButton onClick={() => toggleEditForm(review.id)} aria-label="delete" size="small">
-                                                <EditIcon fontSize="inherit" />
-                                            </IconButton>
-                                            <IconButton onClick={() => deleteReview(review.id)} aria-label="delete" size="small">
-                                                <DeleteIcon fontSize="inherit" />
-                                            </IconButton>
-                                        </Stack>
-                                    </Stack>
-
-                                    <Box sx={{ p: 2, mt: 1 }}>
-                                        <Box sx={{ textAlign: 'center' }}>
-                                            <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }} alignItems='center' justifyContent="center">
-                                                <Stack direction="row" spacing={0} alignItems="center">
-                                                    <Typography component="legend" variant='caption'>Rated It:</Typography>
-                                                    <Rating name="half-rating-read" defaultValue={review.rating} precision={0.5} readOnly />
+                                        <Box sx={{ p: 2, mt: 1 }}>
+                                            <Box sx={{ textAlign: 'center' }}>
+                                                <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }} alignItems='center' justifyContent="center">
+                                                    <Stack direction="row" spacing={0} alignItems="center">
+                                                        <Typography component="legend" variant='caption'>Rated It:</Typography>
+                                                        <Rating name="half-rating-read" defaultValue={review.rating} precision={0.5} readOnly />
+                                                    </Stack>
+                                                    <Typography variant='caption'>On {dayjs(review.last_update).format('MMMM D, YYYY')}</Typography>
                                                 </Stack>
-                                                <Typography variant='caption'>On {dayjs(review.last_update).format('MMMM D, YYYY')}</Typography>
-                                            </Stack>
 
-                                            <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }} justifyContent='center' sx={{ m: 1, p: 1 }}>
-                                                {review.format && <Chip label={`Format: ${review.format}`} variant='outlined' />}
-                                                {review.series && <Chip label={`Series: ${review.series}`} variant='outlined' />}
-                                            </Stack>
-                                            {review.date_started && review.date_finished &&
-                                                <Typography variant='caption'>Read From: {dayjs(review.date_started).format('MMM D, YYYY')} - {dayjs(review.date_finished).format('MMM D, YYYY')}</Typography>}
+                                                <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }} justifyContent='center' sx={{ m: 1, p: 1 }}>
+                                                    {review.format && <Chip label={`Format: ${review.format}`} variant='outlined' />}
+                                                    {review.series && <Chip label={`Series: ${review.series}`} variant='outlined' />}
+                                                </Stack>
+                                                {review.date_started && review.date_finished &&
+                                                    <Typography variant='caption'>Read From: {dayjs(review.date_started).format('MMM D, YYYY')} - {dayjs(review.date_finished).format('MMM D, YYYY')}</Typography>}
+                                            </Box>
+
+                                            {review.review && <Typography variant="subtitle1" color="text.secondary">
+                                                {review.review}
+                                            </Typography>}
                                         </Box>
 
-                                        {review.review && <Typography variant="subtitle1" color="text.secondary">
-                                            {review.review}
-                                        </Typography>}
-                                    </Box>
+                                    </Container>}
 
-                                </Container>}
+                                    {editId === review.id &&
+                                        <EditReview reviewData={review} setEditReview={setEditReview} reviewInfo={reviewInfo} setEditId={setEditId} />
+                                    }
+                                </Paper>
+                            ))}
+                        </Container>}
+                    </Container>
 
-                                {editId === review.id &&
-                                    <EditReview reviewData={review} setEditReview={setEditReview} reviewInfo={reviewInfo} setEditId={setEditId} />
-                                }
-                            </Paper>
-                        ))}
-                    </Container>}
-                </Container>
-
-            </div>}
+                </Container>}
 
             <Snackbar
                 anchorOrigin={{

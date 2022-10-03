@@ -6,6 +6,7 @@ import { Container, Paper, Box, Typography, Stack, Chip, Divider, Button, Button
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AddReview from './components/AddReview';
 import { data } from 'uikit';
+import BookInfo from './components/BookInfo';
 
 // const options = ['Add to List'];
 
@@ -131,14 +132,40 @@ export default function ResultBook() {
         // this api call gives us title, description, subjects, author key
         const book = await API.getBook(params.id)
         const details = await API.searchByTitle(book.data.title)
+        const testerbook = await API.getOneBook(params.id)
+        // setBookData({
+        //     title: book.data.title,
+        //     cover_img:`https://covers.openlibrary.org/b/olid/${details.data.docs[0].cover_edition_key}-M.jpg`,
+        //     author:details.data.docs[0].author_name[0],
+        //     published:details.data.docs[0].first_publish_year,
+        //     pages:details.data.docs[0].number_of_pages_median,
+        //     description: book.data.description.value || book.data.description
+        // })
         setBookData({
-            book: book.data,
-            details: details.data.docs[0]
+            title: testerbook.title,
+            cover_img:`https://covers.openlibrary.org/b/olid/${details.data.docs[0].cover_edition_key}-M.jpg`,
+            author:details.data.docs[0].author_name[0],
+            published:testerbook.publish_date,
+            pages:testerbook.number_of_pages,
+            description: book.data.description || book.data.description.value || null
         })
-        if (book.data.description.value) {
-            setDescription(book.data.description.value)
-        } else {
-            setDescription(book.data.description)
+        // setBookData({
+        //     book: book.data,
+        //     details: details.data.docs[0]
+        // })
+        // if (book.data.description.value) {
+        //     setDescription(book.data.description.value)
+        // } else {
+        //     setDescription(book.data.description)
+        // }
+
+        const allBookData = {
+            title: book.data.title,
+            cover_img:`https://covers.openlibrary.org/b/olid/${details.data.docs[0].cover_edition_key}-M.jpg`,
+            author:details.data.docs[0].author_name[0],
+            published:details.data.docs[0].first_publish_year,
+            pages:details.data.docs[0].number_of_pages_median,
+            description: book.data.description.value || book.data.description
         }
     }
 
@@ -158,42 +185,8 @@ export default function ResultBook() {
 
     return (
         <React.Fragment>
-            <Container sx={{ mt: 10 }}>
-                {bookData &&
-                    <Paper elevation={3} sx={{
-                        display: "flex", flexDirection: { xs: 'column', md: 'row' },
-                        m: { xs: 1, md: 3 }, p: { xs: 0, md: 2 }
-                    }}>
-                        <Card sx={{ maxWidth: { xs: 250, md: 345 }, minWidth: { xs: 240 }, alignSelf: 'center' }} >
-                            <CardContent>
-                                <CardMedia
-                                    component="img"
-                                    image={`https://covers.openlibrary.org/b/olid/${bookData.details.cover_edition_key}-M.jpg`}
-                                    alt={`${bookData.book.title}-Cover`}
-                                />
-                            </CardContent>
-                        </Card>
-
-
-                        <Box sx={{ maxWidth: { xs: 1 / 1, md: 3 / 5 }, p: 4 }}>
-                            <Typography variant='h5' gutterBottom>
-                                {bookData.book.title}
-                            </Typography>
-                            <Typography variant='subtitle2' gutterBottom>
-                                by {bookData.details.author_name[0]}
-                            </Typography>
-                            <Divider />
-                            <Stack direction="row" spacing={1}>
-                                <Chip label={`Published: ${bookData.details.first_publish_year}`} variant="outlined" />
-                                <Chip label={`Pages: ${bookData.details.number_of_pages_median}`} variant="outlined" />
-                            </Stack>
-                            <Divider />
-                            <Typography variant='body2'>
-                                {description}
-                            </Typography>
-                        </Box>
-                    </Paper>
-                }
+            <Container sx={{ mt: 5 }}>
+                {bookData && <BookInfo book={bookData} /> }
 
                 <Divider />
 
