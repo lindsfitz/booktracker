@@ -51,6 +51,7 @@ export default function Search() {
                 setNoResults(true)
             }
             setSearchResults(books.data.docs)
+            console.log(books.data.docs)
         }).catch(err => {
             console.log(err)
         })
@@ -170,7 +171,8 @@ export default function Search() {
                                     book.author_name[0] &&
                                     <ListItemText primary={book.title} secondary={book.author_name[0]} />
                                 }
-                                <Button onClick={() => { navigate(`${book.key}`) }}>VIEW DETAILS</Button>
+                                {/* <Button onClick={() => { navigate(`${book.key}`) }}>VIEW DETAILS</Button> */}
+                                <Button onClick={() => { navigate(`/testbook/${book.edition_key[0]}`) }}>VIEW DETAILS</Button>
                             </ListItem>
                         ))}
                     </List>

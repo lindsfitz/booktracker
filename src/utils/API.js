@@ -177,11 +177,14 @@ const API = {
     getBook:(key) => {
         return axios.get(`https://openlibrary.org${key}.json`)
     },
-    getOneBook:(key) => {
+    getBookbyBooks:(key) => {
         return axios.get(`https://openlibrary.org/books/${key}.json`)
     },
     getBookISBN:(isbn)=>{
         return axios.get(`https://openlibrary.org/isbn/${isbn}.json`)
+    },
+    getBookbyBibKeys:(key)=>{
+        return axios.get(`https://openlibrary.org/api/books?bibkeys=OLID:${key}&format=json&jscmd=data`)
     },
 
 
