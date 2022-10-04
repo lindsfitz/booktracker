@@ -60,10 +60,10 @@ function App() {
               <Route path="/search" element={<Search />} />
               {/* <Route path="works/:id" element={<ResultBook />} /> */}
               <Route path="/books" element={<AllBooks />} />
-              <Route path="books/:id" element={<ResultBook />} />
-              <Route path="/book/:id" element={<UserBook />} />
-              <Route path="/testbook/:id" element={<Book />} />
               <Route path="/books/:list" element={<Booklist />} />
+              <Route path="/book/:id" element={<Book />} />
+              {/* <Route path="books/:id" element={<ResultBook />} /> */}
+              {/* <Route path="/book/:id" element={<UserBook />} /> */}
               <Route path="/shelves" element={<Bookcase />} />
               <Route path="/shelf/:id" element={<Shelf />} />
               <Route path="/activity" element={<ReadingActivity />} />

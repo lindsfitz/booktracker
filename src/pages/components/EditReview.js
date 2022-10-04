@@ -73,11 +73,10 @@ export default function EditReview({reviewData, setEditReview, reviewInfo, setEd
     }
 
     return (
-
         <React.Fragment>
             <Box
                 component="form"
-                sx={{ m: 1, width: '50%' }}
+                // sx={{ m: 1, width: '50%' }}
                 noValidate
                 autoComplete="off"
                 onSubmit={reviewSubmit}
@@ -171,6 +170,7 @@ export default function EditReview({reviewData, setEditReview, reviewInfo, setEd
                 </FormControl>
 
                 <Button type='submit'>Update Review</Button>
+                <Button onClick={()=>setEditId(null)}>Cancel</Button>
 
             </Box>
 

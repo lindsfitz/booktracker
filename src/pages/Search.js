@@ -107,11 +107,12 @@ export default function Search() {
 
     const nytSearch = async (isbn) => {
         const bookFind = await API.getBookISBN(isbn)
-        console.log(bookFind)
+        // console.log(bookFind)
         if (bookFind.data) {
-            const OLkey = bookFind.data.works[0].key
-            console.log(OLkey)
-            navigate(`${OLkey}`)
+            console.log(bookFind.data.key)
+            const key = bookFind.data.key.split('/')
+            console.log(key)
+            navigate(`/book/${key[2]}`)
         }
 
         if (bookFind.code) {
@@ -171,8 +172,13 @@ export default function Search() {
                                     book.author_name[0] &&
                                     <ListItemText primary={book.title} secondary={book.author_name[0]} />
                                 }
-                                {/* <Button onClick={() => { navigate(`${book.key}`) }}>VIEW DETAILS</Button> */}
-                                <Button onClick={() => { navigate(`/testbook/${book.edition_key[0]}`) }}>VIEW DETAILS</Button>
+                                <Button onClick={() => { navigate(`/book/${book.edition_key[0]}`,{
+                                    state:{
+                                        published:book.first_publish_year,
+                                        pages:book.number_of_pages_median,
+                                        cover: book.cover_i
+                                    }
+                                }) }}>VIEW DETAILS</Button>
                             </ListItem>
                         ))}
                     </List>

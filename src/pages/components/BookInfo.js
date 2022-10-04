@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React from 'react';
 import {
     Card,
-    Button, ButtonGroup, Grow, Popper, MenuItem, MenuList, Rating, CardContent, CardMedia, Typography, Box, Container, Paper, Divider, Switch, Stack, Chip, Link, IconButton, ClickAwayListener, Snackbar
+    CardContent, CardMedia, Typography, Box, Paper, Divider, Stack
 } from '@mui/material';
 
 const cardStyle = {
