@@ -209,20 +209,19 @@ export default function Book() {
                         <Button onClick={moveToRead}>Mark As Read</Button>
                         <Button onClick={moveToDNF}>Mark As DNF</Button>
                         <Button onClick={toggleReviewForm}>Add A Review</Button>
-                        <Button>Remove From Currently Reading</Button>
+                        {/* <Button>Remove From Currently Reading</Button> */}
                     </React.Fragment>
                 );
             case 'DNF':
                 return (
                     <React.Fragment>
-                        <Button>Remove From DNF</Button>
+                        {/* <Button>Remove From DNF</Button> */}
                         <Button onClick={toggleReviewForm}>Add A Review</Button>
                     </React.Fragment>
                 );
             case 'Read':
                 return (
                     <React.Fragment>
-                        <Button>Remove From DNF</Button>
                         <Button onClick={toggleReviewForm}>Add A Review</Button>
                     </React.Fragment>
                 );
@@ -285,6 +284,8 @@ export default function Book() {
         let bookId;
         if (dbBook) {
             bookId = bookData.id
+            await API.removeCurrentlyReading(context.userData.id, bookId)
+            await API.removeFromDNF(context.userData.id, bookId)
         } else {
             const book = await addBook();
             bookId = book.data.id
@@ -312,6 +313,26 @@ export default function Book() {
 
     const moveToDNF = async () => {
         console.log('hi')
+    }
+
+    const addOwned = async () => {
+        let bookId;
+        if (dbBook) {
+            bookId = bookData.id
+        } else {
+            const book = await addBook();
+            bookId = book.data.id
+        }
+        await API.addOwnedBook({
+            userId: context.userData.id,
+            bookId: bookId
+        })
+        openSnackbar('Added to Owned List')
+    }
+
+    const removeOwned = async () => {
+        await API.removeFromOwned(context.userData.id, bookData.id)
+        openSnackbar('Removed from Owned List')
     }
 
 
@@ -401,16 +422,21 @@ export default function Book() {
                 <Container sx={{ mt: 5 }}>
                     <BookInfo book={bookData} />
 
-                    {bookData.Shelves && <Stack direction="row" spacing={2} sx={{ mb: 3, ml: 5 }}>
+                    {bookData.Shelves && <Stack direction="row" spacing={2} sx={{ mb: 3, ml: 5 }} alignItems='center'>
                         {chipOptions()}
-                        <Stack spacing={0}>
+                       {bookData.Shelves.length > 0 && <Stack spacing={0}>
                             <Typography variant='caption'>On Shelves:</Typography>
                             <Stack direction={{ xs: 'column', md: 'row' }}>
                                 {bookData.Shelves.map((shelf) => (
                                     <Chip key={`${shelf.name}${shelf.id}`} id={shelf.id} label={shelf.name} variant="outlined" onDelete={(event) => removeFromShelf(shelf.name, shelf.id)} />
                                 ))}
                             </Stack>
-                        </Stack>
+                        </Stack>}
+                        {markedOwned && 
+                        <Stack spacing={0}>
+                        <Typography variant='caption'>Status:</Typography>
+                        <Chip label='Owned' onDelete={removeOwned} />
+                        </Stack>}
                     </Stack>}
 
                     <Divider />
@@ -474,7 +500,7 @@ export default function Book() {
 
                             <Divider orientation='vertical' />
 
-                            {!markedOwned && <Button>Mark As Owned</Button>}
+                            {!markedOwned && <Button onClick={addOwned}>Mark As Owned</Button>}
                         </Stack>
                     )}
 
