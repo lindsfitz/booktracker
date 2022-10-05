@@ -43,8 +43,8 @@ export default function UserBook() {
     const [reviewData, setReviewData] = useState(false)
     const [reviewForm, setReviewForm] = useState(false)
     const [editReview, setEditReview] = useState(false);
-    const [shelfChoices, setShelfChoices] = useState([])
     const [editId, setEditId] = useState(null);
+    const [shelfChoices, setShelfChoices] = useState([])
     const [markedRead, setMarkedRead] = useState(false);
     const [markedReading, setMarkedReading] = useState(false)
     const [markedDNF, setMarkedDNF] = useState(false);

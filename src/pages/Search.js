@@ -86,6 +86,7 @@ export default function Search() {
     const nytBestSellers = async () => {
         let testlist = 'combined-print-and-e-book-fiction'
         const best = await API.nytList(testlist)
+        // console.log(best)
         setBestSellers(best.data.results.books)
         setBestListInfo({
             date: best.data.results.bestsellers_date,
@@ -105,14 +106,21 @@ export default function Search() {
 
     }
 
-    const nytSearch = async (isbn) => {
+    const nytSearch = async (isbn, title, author) => {
         const bookFind = await API.getBookISBN(isbn)
+        const formattedTitle = title.toLowerCase().split(' ')
+            .map((s) => s.charAt(0).toUpperCase() + s.substring(1)).join(' ');
         // console.log(bookFind)
         if (bookFind.data) {
             console.log(bookFind.data.key)
             const key = bookFind.data.key.split('/')
             console.log(key)
-            navigate(`/book/${key[2]}`)
+            navigate(`/book/${key[2]}`, {
+                state: {
+                    author: author,
+                    title: formattedTitle
+                }
+            })
         }
 
         if (bookFind.code) {
@@ -158,8 +166,8 @@ export default function Search() {
             </Box>
 
             {noResults && <Container sx={{ m: '20px auto 20px auto', textAlign: 'center' }}>
-                    <Typography variant='subtitle2'>No Results Found</Typography>
-                </Container>}
+                <Typography variant='subtitle2'>No Results Found</Typography>
+            </Container>}
 
             {searchResults ? (
                 <Container>
@@ -169,16 +177,20 @@ export default function Search() {
                             >
                                 <img src={`https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-M.jpg`} alt={`${book.title}-cover`} />
                                 {
-                                    book.author_name[0] &&
+                                    book.author_name &&
                                     <ListItemText primary={book.title} secondary={book.author_name[0]} />
                                 }
-                                <Button onClick={() => { navigate(`/book/${book.edition_key[0]}`,{
-                                    state:{
-                                        published:book.first_publish_year,
-                                        pages:book.number_of_pages_median,
-                                        cover: book.cover_i
-                                    }
-                                }) }}>VIEW DETAILS</Button>
+                                <Button onClick={() => {
+                                    navigate(`/book/${book.edition_key[0]}`, {
+                                        state: {
+                                            published: book.first_publish_year,
+                                            pages: book.number_of_pages_median,
+                                            cover: book.cover_i,
+                                            author: book.author_name[0],
+                                            title: book.title
+                                        }
+                                    })
+                                }}>VIEW DETAILS</Button>
                             </ListItem>
                         ))}
                     </List>
@@ -213,7 +225,7 @@ export default function Search() {
                                             badgeContent={book.rank} color="primary">
                                             <CardMedia
                                                 component="img"
-                                                onClick={() => nytSearch(book.primary_isbn13)}
+                                                onClick={() => nytSearch(book.primary_isbn13, book.title, book.author)}
                                                 // sx={{ maxHeight: { xs: 190, md: 218 }, maxWidth: { xs: 125, md: 148 } }}
                                                 height='140'
                                                 image={`${book.book_image}`}

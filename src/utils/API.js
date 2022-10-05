@@ -56,6 +56,9 @@ const API = {
     getOneBook:(id)=> {
         return axios.get(`${URL_PREFIX}/book/one/${id}`)
     },
+    bookCheck:(id, book)=> {
+        return axios.put(`${URL_PREFIX}/book/bookcheck/${id}`, book)
+    },
     // this route gets book info & includes the shelf data 
     getBookandShelves:(bookid,userid)=>{
         return axios.get(`${URL_PREFIX}/book/one/${bookid}/${userid}`)

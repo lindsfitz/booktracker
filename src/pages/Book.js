@@ -2,19 +2,20 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useLocation } from "react-router-dom";
 import AppContext from '../AppContext';
 import API from '../utils/API'
-import dayjs from 'dayjs'
+import AddShelf from './components/AddShelf'
+// import dayjs from 'dayjs'
 import {
     Card,
-    Button, ButtonGroup, Grow, Popper, MenuItem, MenuList, Rating, CardContent, CardMedia, Typography, Box, Container, Paper, Divider, Switch, Stack, Chip, Link, IconButton, ClickAwayListener, Snackbar
+    Button, ButtonGroup, Grow, Popper, MenuItem, MenuList, CardContent, Typography, Box, Container, Paper, Divider, Stack, Chip, Link, IconButton, ClickAwayListener, Snackbar
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+// import DeleteIcon from '@mui/icons-material/Delete';
+// import EditIcon from '@mui/icons-material/Edit';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AddReview from './components/AddReview';
 import Review from './components/Review';
-import EditReview from './components/EditReview';
+// import EditReview from './components/EditReview';
 import BookInfo from './components/BookInfo';
-import { WorkSharp } from '@mui/icons-material';
+// import { WorkSharp } from '@mui/icons-material';
 
 
 export default function Book() {
@@ -48,8 +49,8 @@ export default function Book() {
     /* --------------------------USERBOOK-------------------- */
 
 
-    const dbBookInfo = async () => {
-        const book = await API.getBookandShelves(params.id, context.userData.id);
+    const dbBookInfo = async (id) => {
+        const book = await API.getBookandShelves(id, context.userData.id);
         setBookData(book.data)
         console.log(book.data)
         if (book.data.CurrentBooks.length) {
@@ -215,7 +216,7 @@ export default function Book() {
             case 'DNF':
                 return (
                     <React.Fragment>
-                        {/* <Button>Remove From DNF</Button> */}
+                        <Button onClick={removeDNF}>Remove From DNF</Button>
                         <Button onClick={toggleReviewForm}>Add A Review</Button>
                     </React.Fragment>
                 );
@@ -230,7 +231,7 @@ export default function Book() {
                     <React.Fragment>
                         <Button onClick={markCurrentlyReading}>Add To Currently Reading</Button>
                         <Button onClick={markRead}>Mark As Read</Button>
-                        <Button onClick={moveToDNF}>Mark As DNF</Button>
+                        <Button onClick={markDNF}>Mark As DNF</Button>
                         <Button onClick={toggleReviewForm}>Add A Review</Button>
                     </React.Fragment>
                 )
@@ -278,6 +279,7 @@ export default function Book() {
             bookId: bookId
         })
         openSnackbar('Marked As Currently Reading')
+        pageLoad()
     }
 
     const markRead = async () => {
@@ -293,12 +295,14 @@ export default function Book() {
         // post request to add review but just setting read to true
         const reviewData = {
             read: true,
+            public: false,
             last_update: new Date(),
             UserId: context.userData.id,
             BookId: bookId
         }
         await API.newReview(reviewData)
         openSnackbar('Marked As Read')
+        pageLoad()
     }
 
     const moveToRead = async () => {
@@ -311,8 +315,35 @@ export default function Book() {
         // bookInfo()
     }
 
+    const markDNF = async () => {
+        let bookId;
+        if (dbBook) {
+            bookId = bookData.id
+        } else {
+            const book = await addBook();
+            bookId = book.data.id
+        }
+        await API.addToDNF({
+            userId: context.userData.id,
+            bookId: bookId
+        })
+        openSnackbar('Marked As DNF')
+    }
+
     const moveToDNF = async () => {
         console.log('hi')
+        await API.didNotFinish({
+            userId: context.userData.id,
+            bookId: bookData.id
+        })
+        openSnackbar('Marked As DNF')
+
+    }
+
+    const removeDNF = async () => {
+        await API.removeFromDNF(context.userData.id, bookData.id)
+        openSnackbar('Removed From DNF List')
+
     }
 
     const addOwned = async () => {
@@ -334,6 +365,7 @@ export default function Book() {
         await API.removeFromOwned(context.userData.id, bookData.id)
         openSnackbar('Removed from Owned List')
     }
+
 
 
 
@@ -388,18 +420,66 @@ export default function Book() {
         return bookcheck;
     }
 
+    const fullbookcheck = async () => {
+        const bookcheck = await API.bookCheck(params.id, {
+            title: location.state.title,
+            author: location.state.author
+        })
+        return bookcheck;
+    }
+
+    // const pageLoad = async () => {
+    //     console.log(location.state)
+    //     const check = await bookCheck()
+    //     if (check.data) {
+    //         console.log('yup book exists')
+    //         setdbBook(true)
+    //         dbBookInfo()
+    //     } else {
+    //         console.log('nope, book not in db')
+    //         olBookInfo()
+    //     }
+
+    // }
     const pageLoad = async () => {
+
         const check = await bookCheck()
         if (check.data) {
             console.log('yup book exists')
             setdbBook(true)
-            dbBookInfo()
+            dbBookInfo(params.id)
         } else {
-            console.log('nope, book not in db')
-            olBookInfo()
+            // console.log('nope, book not in db')
+            const book = await fullbookcheck()
+            // console.log(book)
+            console.log(location.state)
+            if (book.data.id) {
+                console.log(book.data.id)
+                setdbBook(true)
+                dbBookInfo(book.data.id)
+            } else { olBookInfo() }
         }
 
+
+
+
+        // if (location.state) {
+        //     // console.log(location.state)
+        //     const book = await fullbookcheck()
+        //     console.log(book)
+        //     if (book.data.id) {
+        //         console.log(book)
+        //         setdbBook(true)
+        //         // dbBookInfo(book.data.id)
+        //     }
+
+
     }
+
+    // useEffect(() => {
+    //     shelfOptions()
+    // }, [context.userShelves])
+
 
     useEffect(() => {
         // very first, check if book exists in db 
@@ -424,7 +504,7 @@ export default function Book() {
 
                     {bookData.Shelves && <Stack direction="row" spacing={2} sx={{ mb: 3, ml: 5 }} alignItems='center'>
                         {chipOptions()}
-                       {bookData.Shelves.length > 0 && <Stack spacing={0}>
+                        {bookData.Shelves.length > 0 && <Stack spacing={0}>
                             <Typography variant='caption'>On Shelves:</Typography>
                             <Stack direction={{ xs: 'column', md: 'row' }}>
                                 {bookData.Shelves.map((shelf) => (
@@ -432,11 +512,11 @@ export default function Book() {
                                 ))}
                             </Stack>
                         </Stack>}
-                        {markedOwned && 
-                        <Stack spacing={0}>
-                        <Typography variant='caption'>Status:</Typography>
-                        <Chip label='Owned' onDelete={removeOwned} />
-                        </Stack>}
+                        {markedOwned &&
+                            <Stack spacing={0}>
+                                <Typography variant='caption'>Status:</Typography>
+                                <Chip label='Owned' onDelete={removeOwned} />
+                            </Stack>}
                     </Stack>}
 
                     <Divider />
@@ -489,6 +569,12 @@ export default function Book() {
                                                             {shelf.name}
                                                         </MenuItem>
                                                     ))}
+                                                    <MenuItem onClick={context.toggleShelfDialog}>
+                                                        <Typography variant='caption'>
+
+                                                            ADD NEW SHELF
+                                                        </Typography>
+                                                    </MenuItem>
                                                 </MenuList>
                                             </ClickAwayListener>
                                         </Paper>
@@ -531,6 +617,8 @@ export default function Book() {
 
                     </Container>
                 </Container>}
+
+            {context.shelfDialog && <AddShelf />}
 
             <Snackbar
                 anchorOrigin={{
