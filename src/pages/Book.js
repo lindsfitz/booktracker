@@ -5,17 +5,13 @@ import API from '../utils/API'
 import AddShelf from './components/AddShelf'
 // import dayjs from 'dayjs'
 import {
-    Card,
-    Button, ButtonGroup, Grow, Popper, MenuItem, MenuList, CardContent, Typography, Box, Container, Paper, Divider, Stack, Chip, Link, IconButton, ClickAwayListener, Snackbar
+    // Card,Box,CardContent, IconButton,
+    Button, ButtonGroup, Grow, Popper, MenuItem, MenuList, Typography, Container, Paper, Divider, Stack, Chip, Link, ClickAwayListener, Snackbar
 } from '@mui/material';
-// import DeleteIcon from '@mui/icons-material/Delete';
-// import EditIcon from '@mui/icons-material/Edit';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AddReview from './components/AddReview';
 import Review from './components/Review';
-// import EditReview from './components/EditReview';
 import BookInfo from './components/BookInfo';
-// import { WorkSharp } from '@mui/icons-material';
 
 
 export default function Book() {
@@ -34,12 +30,11 @@ export default function Book() {
     const [reviewData, setReviewData] = useState(false)
     const [markedAs, setMarkedAs] = useState(null)
     const [markedOwned, setMarkOwned] = useState(false)
-    const [editReview, setEditReview] = useState(false);
-    const [editId, setEditId] = useState(null);
 
 
     /* component states -- for snackbar/popups on page */
     const [shelfOpen, setShelfOpen] = useState(false);
+    const [markOpen, setMarkOpen] = useState(false);
     const anchorRef = useRef(null);
     const [snack, setSnack] = useState(false);
     const [snackMessage, setSnackMessage] = useState(null)
@@ -201,6 +196,45 @@ export default function Book() {
 
 
     /* --------------------------BTN FUNCTIONS-------------------- */
+
+    const markedMenuOptions = () => {
+        switch (markedAs) {
+            case 'Currently Reading':
+                return (
+                    <React.Fragment>
+                        <MenuItem onClick={moveToRead}>Read</MenuItem>
+                        <MenuItem onClick={moveToDNF}>DNF</MenuItem>
+                       <MenuItem>Remove</MenuItem>
+                    </React.Fragment>
+                );
+            case 'DNF':
+                return (
+                    <React.Fragment>
+                        <MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>
+                        <MenuItem onClick={markRead}>Read</MenuItem>
+                        <MenuItem onClick={removeDNF}>Remove</MenuItem>
+                        
+                    </React.Fragment>
+                );
+            case 'Read':
+                return (
+                    <React.Fragment>
+                        <MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>
+                        <MenuItem onClick={markDNF}>DNF</MenuItem>
+                        <MenuItem>Remove</MenuItem>
+                    </React.Fragment>
+                );
+            default:
+                return (
+                    <React.Fragment>
+                        <MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>
+                        <MenuItem onClick={markRead}>Read</MenuItem>
+                        <MenuItem onClick={markDNF}>DNF</MenuItem>
+                    </React.Fragment>
+                )
+
+        }
+    }
 
     const bookBtnOptions = () => {
         switch (markedAs) {
@@ -387,6 +421,17 @@ export default function Book() {
         setShelfOpen(false);
     };
 
+    const toggleMarkMenu = () => {
+        setMarkOpen((prev) => !prev)
+    }
+
+    const closeMarkMenu = (event) => {
+        if (anchorRef.current && anchorRef.current.contains(event.target)) {
+            return;
+        }
+        setMarkOpen(false);
+    }
+
     const openSnackbar = (message) => {
         setSnackMessage(message)
         setSnack(true)
@@ -554,11 +599,61 @@ export default function Book() {
                                 )}
                             </Popper>
 
-                            {bookBtnOptions()}
+                            {/* {bookBtnOptions()} */}
+                            <ButtonGroup  aria-label="text button group" ref={anchorRef}>
+                                <Button onClick={toggleMarkMenu}>Mark As</Button>
+                                <Button
+                                    size="small"
+                                    aria-controls={markOpen ? 'split-button-menu' : undefined}
+                                    aria-expanded={markOpen ? 'true' : undefined}
+                                    aria-label="select merge strategy"
+                                    aria-haspopup="menu"
+                                    onClick={toggleMarkMenu}
+                                >
+                                    <ArrowDropDownIcon />
+                                </Button>
+                            </ButtonGroup>
+                            <Popper
+                                sx={{
+                                    zIndex: 1,
+                                }}
+                                open={markOpen}
+                                anchorEl={anchorRef.current}
+                                role={undefined}
+                                transition
+                                disablePortal
+                            >
+                                {({ TransitionProps, placement }) => (
+                                    <Grow
+                                        {...TransitionProps}
+                                        style={{
+                                            transformOrigin:
+                                                placement === 'bottom' ? 'center top' : 'center bottom',
+                                        }}
+                                    >
+                                        <Paper>
+                                            <ClickAwayListener onClickAway={closeMarkMenu}>
+                                                <MenuList id="split-button-menu" autoFocusItem>
+                                                  { markedMenuOptions()}
+                                                </MenuList>
+                                            </ClickAwayListener>
+                                        </Paper>
+                                    </Grow>
+                                )}
+                            </Popper>
 
                             <Divider orientation='vertical' />
 
+                            <Button onClick={toggleReviewForm}>Add A Review</Button>
+
                             {!markedOwned && <Button onClick={addOwned}>Mark As Owned</Button>}
+
+
+
+
+                           
+
+
                         </Stack>
                     )}
 

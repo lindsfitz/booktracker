@@ -4,7 +4,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import { ThemeProvider, styled } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import AppContext from "./AppContext";
 import Login from './pages/Login';
 import Navigation from "./pages/components/Navigation";

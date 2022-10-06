@@ -39,6 +39,9 @@ const API = {
     getOneShelf:(id)=>{
         return axios.get(`${URL_PREFIX}/shelf/one/${id}`)
     },
+    oneUserShelf:(shelfId,userId)=> {
+        return axios.get(`${URL_PREFIX}/shelf/userone/${shelfId}/${userId}`)
+    },
     newShelf:(shelfData)=> {
         return axios.post(`${URL_PREFIX}/shelf/new`,shelfData)
     },

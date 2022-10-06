@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import dayjs from 'dayjs'
-import { List, ListItem, Divider, ListItemText, Typography, Button, Box, Stack, Rating } from '@mui/material';
+import { List, ListItem, Divider, Typography, Button, Box, Stack, Rating } from '@mui/material';
 
 
 export default function Booklist() {

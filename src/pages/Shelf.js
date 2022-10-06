@@ -7,9 +7,16 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import API from '../utils/API';
+import dayjs from 'dayjs'
 import AppContext from '../AppContext';
 import EditShelf from './components/EditShelf';
-import { List, ListItem, Divider, ListItemText, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Container, List, ListItem, Divider, Stack, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, Chip } from '@mui/material';
+
+const imageStyle = {
+    boxShadow: '3px 2px 6px #888888',
+    width: 148,
+    height: 218
+}
 
 
 export default function Shelf() {
@@ -39,17 +46,28 @@ export default function Shelf() {
     }
 
     const removeBook = async (bookId) => {
-        const removed = await API.removefromShelf(params.id,bookId)
+        const removed = await API.removefromShelf(params.id, bookId)
         console.log(removed)
         shelfData();
     }
 
-    const shelfData = () => {
-        API.getOneShelf(params.id).then(res => {
-            setShelf(res.data)
-        }).catch(err => {
-            console.log(err)
+    const shelfData = async () => {
+        const shelf = await API.oneUserShelf(params.id, context.userData.id)
+        console.log(shelf)
+        setShelf(shelf.data)
+
+
+    }
+
+    const getChips = (shelves) => {
+        const chips = []
+        shelves.forEach(item => {
+            if (item.name !== shelf.name) { 
+                console.log(item.name) 
+                chips.push(<Chip label={item.name} variant="outlined" />)
+            }
         })
+        return chips;
     }
 
 
@@ -60,44 +78,70 @@ export default function Shelf() {
 
     return (
         <React.Fragment>
-            {shelf && <div>
-                <h1>{shelf.name}</h1>
-                <h4>{shelf.description}</h4>
-                <Button>Add Books</Button>
-                <Button onClick={()=> setEditDialog(true)}>Edit</Button>
-                <Button onClick={handleClickOpen}>Delete</Button>
+            {shelf && <Container>
+                <Box sx={{ p: 3, textAlign: 'center', maxWidth: { xs: 3 / 4, sm: 1 / 2 } }}>
+                    <Typography variant='h5'>{shelf.name}</Typography>
+                    <Typography variant='subtitle2'>{shelf.description}</Typography>
+                    <Typography variant='caption' color='text.secondary'>Last Updated: {dayjs(shelf.last_update).format('MMM D, YYYY')}</Typography>
+                    <Stack direction='row'>
+                        <Button>Add Books</Button>
+                        <Button onClick={() => setEditDialog(true)}>Edit</Button>
+                        <Button onClick={handleClickOpen}>Delete</Button>
+                    </Stack>
+                </Box>
 
                 <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
 
                     {shelf.Books.map((book) => (
 
                         <React.Fragment>
-                            <ListItem key={`${book.title}${shelf.name}shelf`} id={`${book.title}${shelf.name}shelf`} alignItems="flex-start">
+                            <ListItem key={`${book.title}${shelf.name}shelf`} id={`${book.title}${shelf.name}shelf`} alignItems="center">
+                                <Box sx={{ display: 'flex', justifyContent: 'center', mr: 'auto', ml: 'auto' }}>
                                     <img
                                         src={`${book.cover_img}`}
                                         srcSet={`${book.cover_img}`}
                                         alt={`${book.title}`}
+                                        style={imageStyle}
                                         loading="lazy"
                                         onClick={() => { navigate(`/book/${book.id}`) }}
                                     />
-                                <ListItemText
-                                    primary={book.title}
-                                    secondary={
-                                        <React.Fragment>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', ml: 2 }}>
+                                        <Stack sx={{ alignSelf: 'center', ml: 1, p:1 }}>
+                                            <Typography variant='subtitle1'>{book.title}</Typography>
                                             <Typography
-                                                sx={{ display: 'inline' }}
                                                 component="span"
                                                 variant="body2"
                                                 color="text.primary"
                                             >
                                                 {book.author}
                                             </Typography>
-                                        </React.Fragment>
-                                    }
-                                />
+                                        </Stack>
 
-                                <Button onClick={()=> {navigate(`/book/${book.id}`)}}>View More</Button>
-                                <Button onClick={()=>removeBook(book.id)}>Remove From Shelf</Button>
+                                        <Divider />
+
+                                        <Stack sx={{ alignSelf: 'center', ml: 1, p:1 }} direction={{ xs: 'column', md: 'row' }}>
+                                            {book.CurrentBooks.length > 0 && <Chip label='Currently Reading' />}
+                                            {book.DNFBooks.length > 0 && <Chip label='DNF' />}
+                                            {book.Reviews.length > 0 && <Chip label='Read' />}
+
+                                            {book.Shelves.length > 1 && getChips(book.Shelves)}
+                                           
+                                        </Stack>
+                                        <Divider />
+                                        <Stack sx={{p:1}}>
+                                            <Typography variant='caption' color='text.secondary'>Added to Shelf:</Typography>
+                                            <Typography variant='caption' color='text.secondary'>{dayjs(book.bookshelf.createdAt).format('MMM D, YYYY')}</Typography>
+                                        </Stack>
+                                    </Box>
+
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                        <Button onClick={() => removeBook(book.id)}>X</Button>
+
+                                        <Button onClick={() => { navigate(`/book/${book.id}`) }}>Details</Button>
+                                    </Box>
+
+                                </Box>
+
 
 
                             </ListItem>
@@ -106,7 +150,7 @@ export default function Shelf() {
                         </React.Fragment>
                     ))}
                 </List>
-            </div>}
+            </Container>}
 
             <Dialog
                 open={open}
@@ -130,7 +174,7 @@ export default function Shelf() {
             </Dialog>
 
 
-            {editDialog && <EditShelf shelf={shelf} setEditShelf={setEditDialog} editShelf={editDialog}/>}
+            {editDialog && <EditShelf shelf={shelf} setEditShelf={setEditDialog} editShelf={editDialog} />}
 
         </React.Fragment>
     )
