@@ -13,10 +13,7 @@ import Bookcase from "./pages/Bookcase";
 import Shelf from "./pages/Shelf";
 import Search from './pages/Search';
 import AllBooks from "./pages/AllBooks";
-import UserBook from './pages/UserBook';
-import ResultBook from './pages/ResultBook';
 import ReadingActivity from './pages/ReadingActivity';
-// import AddReview from './pages/AddReview';
 // import './app.css'
 import { themeOptions } from './utils/Theme';
 import Booklist from './pages/Booklist';
@@ -58,12 +55,9 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/login" element={<Login />} />
               <Route path="/search" element={<Search />} />
-              {/* <Route path="works/:id" element={<ResultBook />} /> */}
               <Route path="/books" element={<AllBooks />} />
               <Route path="/books/:list" element={<Booklist />} />
               <Route path="/book/:id" element={<Book />} />
-              {/* <Route path="books/:id" element={<ResultBook />} /> */}
-              {/* <Route path="/book/:id" element={<UserBook />} /> */}
               <Route path="/shelves" element={<Bookcase />} />
               <Route path="/shelf/:id" element={<Shelf />} />
               <Route path="/activity" element={<ReadingActivity />} />

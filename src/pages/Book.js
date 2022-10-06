@@ -428,21 +428,8 @@ export default function Book() {
         return bookcheck;
     }
 
-    // const pageLoad = async () => {
-    //     console.log(location.state)
-    //     const check = await bookCheck()
-    //     if (check.data) {
-    //         console.log('yup book exists')
-    //         setdbBook(true)
-    //         dbBookInfo()
-    //     } else {
-    //         console.log('nope, book not in db')
-    //         olBookInfo()
-    //     }
-
-    // }
+ 
     const pageLoad = async () => {
-
         const check = await bookCheck()
         if (check.data) {
             console.log('yup book exists')
@@ -459,21 +446,6 @@ export default function Book() {
                 dbBookInfo(book.data.id)
             } else { olBookInfo() }
         }
-
-
-
-
-        // if (location.state) {
-        //     // console.log(location.state)
-        //     const book = await fullbookcheck()
-        //     console.log(book)
-        //     if (book.data.id) {
-        //         console.log(book)
-        //         setdbBook(true)
-        //         // dbBookInfo(book.data.id)
-        //     }
-
-
     }
 
     // useEffect(() => {

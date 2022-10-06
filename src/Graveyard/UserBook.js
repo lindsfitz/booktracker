@@ -10,9 +10,9 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import AddReview from './components/AddReview';
-import EditReview from './components/EditReview';
-import BookInfo from './components/BookInfo';
+import AddReview from '../pages/components/AddReview';
+import EditReview from '../pages/components/EditReview';
+import BookInfo from '../pages/components/BookInfo';
 
 
 // single book page - top section of the page has lots of details about the book (maybe one template for super detailed results from open library, one template for user added books w a bit less detail included)

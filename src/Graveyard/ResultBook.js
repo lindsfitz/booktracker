@@ -4,9 +4,9 @@ import AppContext from '../AppContext';
 import API from '../utils/API';
 import { Container, Paper, Box, Typography, Stack, Chip, Divider, Button, ButtonGroup, ClickAwayListener, Grow, Popper, MenuItem, MenuList, Grid, Snackbar, Card, CardContent, CardMedia } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import AddReview from './components/AddReview';
+import AddReview from '../pages/components/AddReview';
 import { data } from 'uikit';
-import BookInfo from './components/BookInfo';
+import BookInfo from '../pages/components/BookInfo';
 
 // const options = ['Add to List'];
 
