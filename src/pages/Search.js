@@ -46,7 +46,7 @@ export default function Search() {
     };
 
     const searchByTitle = async () => {
-        API.searchByTitle(searchTerm).then(books => {
+        API.olSearchTitle(searchTerm).then(books => {
             if (!books.data.docs.length) {
                 setNoResults(true)
             }
@@ -58,7 +58,7 @@ export default function Search() {
     }
 
     const searchByAuthor = async () => {
-        const authorResults = await API.searchByAuthor(searchTerm)
+        const authorResults = await API.olSearchAuthor(searchTerm)
         if (!authorResults.data.docs.length) {
             setNoResults(true)
         }
@@ -97,7 +97,7 @@ export default function Search() {
     const subjectSearch = async () => {
         let subject = 'fantasy romance'
 
-        const OLsearch = await API.searchBySubject(subject)
+        const OLsearch = await API.olSearchSubject(subject)
         const gbSearch = await API.gbBySubject(subject)
 
         console.log(OLsearch)
@@ -107,7 +107,7 @@ export default function Search() {
     }
 
     const nytSearch = async (isbn, title, author) => {
-        const bookFind = await API.getBookISBN(isbn)
+        const bookFind = await API.olBookISBN(isbn)
         const formattedTitle = title.toLowerCase().split(' ')
             .map((s) => s.charAt(0).toUpperCase() + s.substring(1)).join(' ');
         // console.log(bookFind)

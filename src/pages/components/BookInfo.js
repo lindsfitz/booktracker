@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     Card,
-    CardContent, CardMedia, Typography, Box, Paper, Divider, Stack
+    CardContent, CardMedia, Typography, Box, Paper, Divider, Stack, Link
 } from '@mui/material';
 
 const cardStyle = {
@@ -35,7 +35,7 @@ export default function BookInfo({ book }) {
                 </CardContent>
             </Card>
             <Box sx={{ maxWidth: { xs: 1 / 1, md: 3 / 5 }, p: 4 }}>
-                <Box sx={{textAlign:'center'}}>
+                <Box sx={{ textAlign: 'center' }}>
                     <Typography gutterBottom variant="h5" component="div">
                         {book.title}
                     </Typography>
@@ -43,7 +43,7 @@ export default function BookInfo({ book }) {
                         by {book.author}
                     </Typography>
                     <Divider />
-                    <Stack direction='row' spacing={3} sx={{justifyContent:'center'}} >
+                    <Stack direction='row' spacing={3} sx={{ justifyContent: 'center' }} >
                         <Typography variant="caption" color="text.secondary">
                             Pages: {book.pages}
                         </Typography>
@@ -53,9 +53,13 @@ export default function BookInfo({ book }) {
                     </Stack>
                     <Divider />
                 </Box>
-                <Typography variant='body2'>
-                    {book.description}
-                </Typography>
+                <Box>
+                    {/* Add in 'clamp' here for description -- if content is longer that max height of the box, 'clamp' and add read more link to expand  */}
+                    <Typography variant='body2'>
+                        {book.description}
+                    </Typography>
+                    <Link>Read More</Link>
+                </Box>
             </Box>
 
         </Paper>

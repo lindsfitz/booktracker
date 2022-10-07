@@ -149,7 +149,7 @@ export default function Book() {
         let description = null;
         // bibkeys -- title, authors name, isbn13, publish date, publisher name at least 
         // CAN also include number of pages, subjects, cover
-        const bibkeys = await API.getBookbyBibKeys(params.id)
+        const bibkeys = await API.olBookBibKeys(params.id)
         const OLID = Object.keys(bibkeys.data)
         const bibkeyData = bibkeys.data[OLID[0]]
         console.log(bibkeyData)
@@ -158,12 +158,12 @@ export default function Book() {
         }
         // books -- includes series, works key
         // CAN also include -- covers [0] for cover id 
-        const book = await API.getBookbyBooks(params.id)
+        const book = await API.olBookBooks(params.id)
         console.log(book.data)
 
         // literally just to pull the description 
         // can also include covers[0]
-        const works = await API.getBook(book.data.works[0].key)
+        const works = await API.olBookWorks(book.data.works[0].key)
         console.log(works.data)
         if (!bibkeyData.cover && works.data.covers) {
             cover = `https://covers.openlibrary.org/b/id/${works.data.covers[0]}-M.jpg`
@@ -177,7 +177,6 @@ export default function Book() {
             }
         }
 
-        // const details = await API.searchByTitle(book.data.title)
         setBookData({
             title: works.data.title,
             cover_img: cover,
@@ -357,7 +356,7 @@ export default function Book() {
             const book = await addBook();
             bookId = book.data.id
         }
-        await API.addToDNF({
+        await API.addDNF({
             userId: context.userData.id,
             bookId: bookId
         })
@@ -388,7 +387,7 @@ export default function Book() {
             const book = await addBook();
             bookId = book.data.id
         }
-        await API.addOwnedBook({
+        await API.addOwned({
             userId: context.userData.id,
             bookId: bookId
         })
@@ -460,13 +459,13 @@ export default function Book() {
         return postBook
     }
 
-    const bookCheck = async () => {
-        const bookcheck = await API.getOneBook(params.id)
+    const bookCheckById = async () => {
+        const bookcheck = await API.oneBookById(params.id)
         return bookcheck;
     }
 
-    const fullbookcheck = async () => {
-        const bookcheck = await API.bookCheck(params.id, {
+    const bookCheckByInfo = async () => {
+        const bookcheck = await API.oneBookByInfo(params.id, {
             title: location.state.title,
             author: location.state.author
         })
@@ -475,14 +474,14 @@ export default function Book() {
 
  
     const pageLoad = async () => {
-        const check = await bookCheck()
+        const check = await bookCheckById()
         if (check.data) {
             console.log('yup book exists')
             setdbBook(true)
             dbBookInfo(params.id)
         } else {
             // console.log('nope, book not in db')
-            const book = await fullbookcheck()
+            const book = await bookCheckByInfo()
             // console.log(book)
             console.log(location.state)
             if (book.data.id) {

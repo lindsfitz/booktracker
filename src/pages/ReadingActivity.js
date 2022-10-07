@@ -39,12 +39,6 @@ TabPanel.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-// function a11yProps(index) {
-//     return {
-//         id: `full-width-tab-${index}`,
-//         'aria-controls': `full-width-tabpanel-${index}`,
-//     };
-// }
 
 function CircularProgressWithLabel(props) {
     return (

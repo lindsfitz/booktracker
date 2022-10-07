@@ -5,7 +5,7 @@ const URL_PREFIX = "http://localhost:3005/api"
 
 const API = {
 
-    // USER ROUTES 
+    // /* ----- USER ROUTES  ----- */
     verify: (tkn)=>{
         return axios.get(`${URL_PREFIX}/user/verify`,{headers:{
         "Authorization": `Bearer ${tkn}`
@@ -17,27 +17,24 @@ const API = {
     signup:(userData)=> {
         return axios.post(`${URL_PREFIX}/user/signup`,userData)
     },
-    updateAccount:(userData)=> {
-        return axios.put(`${URL_PREFIX}/user/update/account`,userData)
-    },
-    deleteUser:(id)=>{
-        return axios.delete(`${URL_PREFIX}/user/delete/${id}`)
-    },
     getProfile:(id)=>{
         return axios.get(`${URL_PREFIX}/user/profile/${id}`)
+    },
+    updateAccount:(userData)=> {
+        return axios.put(`${URL_PREFIX}/user/update/account`,userData)
     },
     updateProfile:(id, profile)=> {
         return axios.put(`${URL_PREFIX}/user/update/profile/${id}`,profile)
     },
+    deleteUser:(id)=>{
+        return axios.delete(`${URL_PREFIX}/user/delete/${id}`)
+    },
 
 
-    // SHELF ROUTES
+    // /* ----- SHELF ROUTES ----- */
 
     getShelves:(id)=> {
         return axios.get(`${URL_PREFIX}/shelf/all/${id}`)
-    },
-    getOneShelf:(id)=>{
-        return axios.get(`${URL_PREFIX}/shelf/one/${id}`)
     },
     oneUserShelf:(shelfId,userId)=> {
         return axios.get(`${URL_PREFIX}/shelf/userone/${shelfId}/${userId}`)
@@ -53,13 +50,14 @@ const API = {
     },
 
 
-    // BOOK ROUTES
+     /*------ BOOK ROUTES -----*/
     
-    // this route returns just the book data from the db based on book id
-    getOneBook:(id)=> {
+    /* used as initial check on Book (is redirect coming from search or a shelf basically) */
+    oneBookById:(id)=> {
         return axios.get(`${URL_PREFIX}/book/one/${id}`)
     },
-    bookCheck:(id, book)=> {
+    /* second book check based on title & author of book */
+    oneBookByInfo:(id, book)=> {
         return axios.put(`${URL_PREFIX}/book/bookcheck/${id}`, book)
     },
     // this route gets book info & includes the shelf data 
@@ -75,20 +73,33 @@ const API = {
     removefromShelf:(shelfId,bookId) => {
         return axios.delete(`${URL_PREFIX}/book/remove/${shelfId}/${bookId}`)
     },
-    // allUserBooks:(id)=>{
-    //     return axios.get(`${URL_PREFIX}/book/user/${id}`)
-    // },
     allUserBooks:(id)=>{
         return axios.get(`${URL_PREFIX}/book/allbooks/${id}`)
     },
-    allReadBooks:(id)=>{
+
+
+
+    /* ---- USER BOOK MIX IN ROUTES ---- */
+    getReadList:(id)=>{
         return axios.get(`${URL_PREFIX}/book/read/${id}`)
     },
-    currentlyReading:(id)=> {
+    getReadingList:(id)=> {
         return axios.get(`${URL_PREFIX}/userbooks/currentreads/${id}`)
+    },
+    getDNFList:(id)=> {
+        return axios.get(`${URL_PREFIX}/userbooks/dnf/${id}`)
+    },
+    getOwnedList:(id)=>{
+        return axios.get(`${URL_PREFIX}/userbooks/owned/${id}`)
     },
     addCurrentRead:(book)=> {
         return axios.post(`${URL_PREFIX}/userbooks/add/currentread`, book)
+    },
+    addDNF:(book)=> {
+        return axios.post(`${URL_PREFIX}/userbooks/add/dnf`,book)
+    },
+    addOwned:(book)=>{
+        return axios.post(`${URL_PREFIX}/userbooks/add/owned`,book)
     },
     finishedReading:(review)=> {
         return axios.post(`${URL_PREFIX}/userbooks/finishedreading`, review)
@@ -99,30 +110,18 @@ const API = {
     removeCurrentlyReading:(userId,bookId)=>{
         return axios.delete(`${URL_PREFIX}/userbooks/delcurrentread/${userId}/${bookId}`)
     },
-    getDNFList:(id)=> {
-        return axios.get(`${URL_PREFIX}/userbooks/dnf/${id}`)
-    },
-    addToDNF:(book)=> {
-        return axios.post(`${URL_PREFIX}/userbooks/add/dnf`,book)
-    },
     removeFromDNF:(userId,bookId) => {
         return axios.delete(`${URL_PREFIX}/userbooks/deldnf/${userId}/${bookId}`)
-    },
-    allOwnedBooks:(id)=>{
-        return axios.get(`${URL_PREFIX}/userbooks/owned/${id}`)
-    },
-    addOwnedBook:(book)=>{
-        return axios.post(`${URL_PREFIX}/userbooks/add/owned`,book)
     },
     removeFromOwned:(userId,bookId)=> {
         return axios.delete(`${URL_PREFIX}/userbooks/delowned/${userId}/${bookId}`)
     },
 
-    // REVIEW ROUTES
+     /* ---- REVIEW ROUTES ---- */
 
-    getOneReview:(userid,bookid)=> {
-        return axios.get(`${URL_PREFIX}/review/${userid}/${bookid}`)
-    },
+    // getOneReview:(userid,bookid)=> {
+    //     return axios.get(`${URL_PREFIX}/review/${userid}/${bookid}`)
+    // },
     newReview:(reviewData) => {
         return axios.post(`${URL_PREFIX}/review/new`,reviewData)
     },
@@ -134,7 +133,7 @@ const API = {
     },
 
 
-    // STATS ROUTES 
+     /* ---- STATS ROUTES ---- */ 
 
     yearlyBooks:(year,id)=> {
         return axios.get(`${URL_PREFIX}/stats/yearly/${year}/${id}`)
@@ -146,7 +145,7 @@ const API = {
         return axios.get(`${URL_PREFIX}/stats/all/${id}/${year}/${month}`)
     },
 
-    // ACTIVITY GOAL ROUTES 
+     /* ---- ACTIVITY GOAL ROUTES  ---- */
     currentGoals:(id)=> {
         return axios.get(`${URL_PREFIX}/activity/current/${id}`)
     },
@@ -163,33 +162,30 @@ const API = {
         return axios.put(`${URL_PREFIX}/activity/update/${id}`, goal)
     },
 
-    // OPEN LIBRARY API 
+    /* ------- OPEN LIBRARY API  ------ */
 
-    searchByTitle:(title)=>{
+    olSearchTitle:(title)=>{
         return axios.get(`http://openlibrary.org/search.json?title=${title}&limit=10&language=eng`)
     },
-    // searchByAuthor:(author)=>{
-    //     return axios.get(`https://openlibrary.org/search/authors.json?q=${author}`)
-    // },
-    searchByAuthor:(author)=>{
+    olSearchAuthor:(author)=>{
         return axios.get(`https://openlibrary.org/search.json?author=${author}&limit=10`)
     },
-    searchBySubject:(subject)=>{
+    olSearchBySubject:(subject)=>{
         return axios.get(`http://openlibrary.org/subjects/${subject}.json?details=true&ebooks=true`)
     },
-    getAuthor:(key) => {
+    olAuthor:(key) => {
         return axios.get(`https://openlibrary.org/authors/${key}/works.json`)
     },
-    getBook:(key) => {
+    olBookWorks:(key) => {
         return axios.get(`https://openlibrary.org${key}.json`)
     },
-    getBookbyBooks:(key) => {
+    olBookBooks:(key) => {
         return axios.get(`https://openlibrary.org/books/${key}.json`)
     },
-    getBookISBN:(isbn)=>{
+    olBookISBN:(isbn)=>{
         return axios.get(`https://openlibrary.org/isbn/${isbn}.json`)
     },
-    getBookbyBibKeys:(key)=>{
+    olBookBibKeys:(key)=>{
         return axios.get(`https://openlibrary.org/api/books?bibkeys=OLID:${key}&format=json&jscmd=data`)
     },
 
@@ -213,7 +209,7 @@ const API = {
         return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${isbn}+isbn`)
     },
 
-    // NYT
+     /* ----- NYT ----- */
 
     nytList:(list)=>{
         return axios.get(`${URL_PREFIX}/nyt/list/${list}`)

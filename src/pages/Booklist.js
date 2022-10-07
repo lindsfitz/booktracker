@@ -15,12 +15,12 @@ export default function Booklist() {
     const [title, setTitle] = useState('')
 
     const renderReadShelf = async () => {
-        const books = await API.allReadBooks(context.userData.id)
+        const books = await API.getReadList(context.userData.id)
         setBookData(books.data)
     }
 
     const renderCurrentlyReading = async () => {
-        const books = await API.currentlyReading(context.userData.id)
+        const books = await API.getReadingList(context.userData.id)
         setBookData(books.data)
     }
 
@@ -30,7 +30,7 @@ export default function Booklist() {
     }
 
     const renderOwned = async () => {
-        const books = await API.allOwnedBooks(context.userData.id)
+        const books = await API.getOwnedList(context.userData.id)
         setBookData(books.data)
     }
 
@@ -57,15 +57,6 @@ export default function Booklist() {
                 break;
 
         }
-        // if (params.list === 'read') {
-        //     renderReadShelf()
-        //     setTitle('Read')
-        // }
-
-        // if (params.list === 'currently') {
-        //     renderCurrentlyReading()
-        //     setTitle('Currently Reading')
-        // }
     }, [])
 
     return (
