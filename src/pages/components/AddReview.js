@@ -60,6 +60,8 @@ export default function AddReview({ reviewInfo, toggleReviewForm }) {
                 UserId: context.userData.id,
                 BookId: params.id
             }
+            await API.removeCurrentlyReading(context.userData.id,params.id)
+            await API.removeFromDNF(context.userData.id,params.id)
             const reviewData = await API.newReview(newReview)
             console.log(reviewData)
 

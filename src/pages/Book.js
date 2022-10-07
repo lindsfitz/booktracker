@@ -49,15 +49,16 @@ export default function Book() {
         setBookData(book.data)
         console.log(book.data)
         if (book.data.CurrentBooks.length) {
-            // setMarkedReading(true)
             setMarkedAs('Currently Reading')
+        }
+        if (book.data.ReadBooks.length) {
+            setMarkedAs('Read')
         }
         if (book.data.Reviews.length) {
             setReviewData(book.data.Reviews)
             for (let i = 0; i < book.data.Reviews.length; i++) {
                 if (book.data.Reviews[i].read === true) {
-                    // setMarkedRead(true)
-                    setMarkedAs('Read')
+                    setMarkedAs('Read & Reviewed')
                 }
             }
         }
@@ -65,10 +66,11 @@ export default function Book() {
             setMarkOwned(true)
         }
         if (book.data.DNFBooks.length) {
-            // setMarkedDNF(true)
             setMarkedAs('DNF')
+
         }
         shelfOptions(book.data)
+
 
     }
 
@@ -110,6 +112,13 @@ export default function Book() {
                         <Chip label='Read' />
                     </Stack>
                 );
+            case 'Read & Reviewed':
+                return (
+                    <Stack spacing={0}>
+                        <Typography variant='caption'>Marked As:</Typography>
+                        <Chip label='Read' />
+                    </Stack>
+                );
             default:
                 return (
                     <React.Fragment>
@@ -118,6 +127,7 @@ export default function Book() {
         }
     }
 
+    /* JUST being defined here to pass into Add Review & Review components */
     const reviewInfo = async () => {
         let bookId;
         if (dbBook) {
@@ -189,6 +199,7 @@ export default function Book() {
             isbn: bibkeyData.identifiers.isbn_13[0]
         })
         setShelfChoices(context.userShelves)
+
     }
 
     /* ------------------------------------------------------------ */
@@ -199,38 +210,33 @@ export default function Book() {
     const markedMenuOptions = () => {
         switch (markedAs) {
             case 'Currently Reading':
-                return (
-                    <React.Fragment>
-                        <MenuItem onClick={moveToRead}>Read</MenuItem>
-                        <MenuItem onClick={moveToDNF}>DNF</MenuItem>
-                       <MenuItem>Remove</MenuItem>
-                    </React.Fragment>
-                );
+                return ([<MenuItem onClick={moveToRead}>Read</MenuItem>,
+                <MenuItem onClick={moveToDNF}>DNF</MenuItem>,
+                <MenuItem onClick={removeBook}>Remove</MenuItem>])
+
             case 'DNF':
-                return (
-                    <React.Fragment>
-                        <MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>
-                        <MenuItem onClick={markRead}>Read</MenuItem>
-                        <MenuItem onClick={removeDNF}>Remove</MenuItem>
-                        
-                    </React.Fragment>
-                );
+                return ([<MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>,
+                <MenuItem onClick={markRead}>Read</MenuItem>,
+                <MenuItem onClick={removeBook}>Remove</MenuItem>])
+
+
             case 'Read':
-                return (
-                    <React.Fragment>
-                        <MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>
-                        <MenuItem onClick={markDNF}>DNF</MenuItem>
-                        <MenuItem>Remove</MenuItem>
-                    </React.Fragment>
-                );
+                return ([<MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>,
+                <MenuItem onClick={markDNF}>DNF</MenuItem>,
+                <MenuItem onClick={removeRead}>Remove</MenuItem>])
+
+            case 'Read & Reviewed':
+                return ([<MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>,
+                <MenuItem onClick={markDNF}>DNF</MenuItem>,
+                <MenuItem onClick={removeRead}>Remove</MenuItem>])
+
+
             default:
-                return (
-                    <React.Fragment>
-                        <MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>
-                        <MenuItem onClick={markRead}>Read</MenuItem>
-                        <MenuItem onClick={markDNF}>DNF</MenuItem>
-                    </React.Fragment>
-                )
+
+                return ([<MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>,
+                <MenuItem onClick={markRead}>Read</MenuItem>,
+                <MenuItem onClick={markDNF}>DNF</MenuItem>])
+
 
         }
     }
@@ -307,6 +313,15 @@ export default function Book() {
             const book = await addBook();
             bookId = book.data.id
         }
+
+        if (markedAs === 'DNF') {
+            removeDNF()
+        }
+
+        if (markedAs === 'Read') {
+            removeRead()
+        }
+
         await API.addCurrentRead({
             userId: context.userData.id,
             bookId: bookId
@@ -319,21 +334,24 @@ export default function Book() {
         let bookId;
         if (dbBook) {
             bookId = bookData.id
-            await API.removeCurrentlyReading(context.userData.id, bookId)
-            await API.removeFromDNF(context.userData.id, bookId)
         } else {
             const book = await addBook();
             bookId = book.data.id
         }
-        // post request to add review but just setting read to true
-        const reviewData = {
-            read: true,
-            public: false,
-            last_update: new Date(),
-            UserId: context.userData.id,
-            BookId: bookId
+
+        if (markedAs === 'DNF') {
+            removeDNF()
         }
-        await API.newReview(reviewData)
+
+        if (markedAs === 'Currently Reading') {
+            removeReading()
+        }
+
+        await API.addRead({
+            userId: context.userData.id,
+            bookId: bookId
+        })
+
         openSnackbar('Marked As Read')
         pageLoad()
     }
@@ -356,6 +374,15 @@ export default function Book() {
             const book = await addBook();
             bookId = book.data.id
         }
+
+        if (markedAs === 'Read') {
+            removeRead()
+        }
+
+        if (markedAs === 'Currently Reading') {
+            removeReading()
+        }
+
         await API.addDNF({
             userId: context.userData.id,
             bookId: bookId
@@ -375,7 +402,44 @@ export default function Book() {
 
     const removeDNF = async () => {
         await API.removeFromDNF(context.userData.id, bookData.id)
-        openSnackbar('Removed From DNF List')
+    }
+
+    const removeReading = async () => {
+        await API.removeCurrentlyReading(context.userData.id, bookData.id)
+
+    }
+
+    const removeRead = async () => {
+        console.log('remove from read')
+        if (reviewData) {
+            const reviews = reviewData.filter(review => review.read === true)
+            console.log(reviews)
+
+            reviews.forEach(async review => {
+                await API.editReview({ read: false }, review.id)
+            })
+        }
+
+        await API.removeRead(context.userData.id, bookData.id)
+    }
+
+    const removeBook = async () => {
+        switch (markedAs) {
+            case 'Currently Reading':
+                removeReading()
+                openSnackbar('Book Removed')
+
+            case 'DNF':
+                removeDNF()
+                openSnackbar('Book Removed')
+
+            case 'Read':
+                removeRead()
+                openSnackbar('Book Removed')
+
+            default:
+                return;
+        }
 
     }
 
@@ -472,7 +536,7 @@ export default function Book() {
         return bookcheck;
     }
 
- 
+
     const pageLoad = async () => {
         const check = await bookCheckById()
         if (check.data) {
@@ -599,7 +663,7 @@ export default function Book() {
                             </Popper>
 
                             {/* {bookBtnOptions()} */}
-                            <ButtonGroup  aria-label="text button group" ref={anchorRef}>
+                            <ButtonGroup aria-label="text button group" ref={anchorRef}>
                                 <Button onClick={toggleMarkMenu}>Mark As</Button>
                                 <Button
                                     size="small"
@@ -633,7 +697,9 @@ export default function Book() {
                                         <Paper>
                                             <ClickAwayListener onClickAway={closeMarkMenu}>
                                                 <MenuList id="split-button-menu" autoFocusItem>
-                                                  { markedMenuOptions()}
+                                                    {markedMenuOptions().map(btn => btn
+                                                    )}
+                                                    {/* {markedMenuOptions()} */}
                                                 </MenuList>
                                             </ClickAwayListener>
                                         </Paper>
@@ -645,12 +711,17 @@ export default function Book() {
 
                             <Button onClick={toggleReviewForm}>Add A Review</Button>
 
+                            {markedAs === 'Read' &&
+                                <Button onClick={toggleReviewForm}>Add Read Dates</Button>
+
+                            }
+
                             {!markedOwned && <Button onClick={addOwned}>Mark As Owned</Button>}
 
 
 
 
-                           
+
 
 
                         </Stack>

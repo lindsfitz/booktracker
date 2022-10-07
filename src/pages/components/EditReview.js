@@ -57,6 +57,8 @@ export default function EditReview({reviewData, setEditReview, reviewInfo, setEd
                 format: data.get('format'),
                 series: data.get('series'),
             }
+            await API.removeCurrentlyReading(context.userData.id, params.id)
+            await API.removeFromDNF(context.userData.id, params.id)
         }
         if (!readSwitch) {
             updatedReview = {

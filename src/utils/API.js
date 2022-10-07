@@ -128,9 +128,9 @@ const API = {
 
      /* ---- REVIEW ROUTES ---- */
 
-    // getOneReview:(userid,bookid)=> {
-    //     return axios.get(`${URL_PREFIX}/review/${userid}/${bookid}`)
-    // },
+    getOneReview:(userid,bookid)=> {
+        return axios.get(`${URL_PREFIX}/review/${userid}/${bookid}`)
+    },
     newNote:(reviewData)=> {
         return axios.post(`${URL_PREFIX}/review/new/note`,reviewData)
     },
