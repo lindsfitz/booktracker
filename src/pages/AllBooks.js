@@ -18,7 +18,7 @@ export default function AllBooks() {
     const [previewShelves, setPreviewShelves] = useState(null)
 
     const renderCurrentReads = async () => {
-        const reads = await API.currentlyReading(context.userData.id)
+        const reads = await API.getReadingList(context.userData.id)
         setCurrentReads(reads.data)
     }
 

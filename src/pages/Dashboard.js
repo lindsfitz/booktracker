@@ -42,7 +42,7 @@ export default function Dashboard(props) {
     // on page load, check for token (aka logged in user) and render shelves if logged in. If no token (not logged in) or token can't be verified (user doesn't exist) then redirect to the login page
     useEffect(() => {
         const renderCurrentReads = async () => {
-            const reads = await API.currentlyReading(context.userData.id)
+            const reads = await API.getReadingList(context.userData.id)
             setCurrentReads(reads.data)
         }
 

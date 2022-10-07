@@ -83,6 +83,9 @@ const API = {
     getReadList:(id)=>{
         return axios.get(`${URL_PREFIX}/book/read/${id}`)
     },
+    newReadList:(id)=>{
+        return axios.get(`${URL_PREFIX}/userbooks/read/${id}`)
+    },
     getReadingList:(id)=> {
         return axios.get(`${URL_PREFIX}/userbooks/currentreads/${id}`)
     },
@@ -94,6 +97,9 @@ const API = {
     },
     addCurrentRead:(book)=> {
         return axios.post(`${URL_PREFIX}/userbooks/add/currentread`, book)
+    },
+    addRead:(book)=> {
+        return axios.post(`${URL_PREFIX}/userbooks/add/read`, book)
     },
     addDNF:(book)=> {
         return axios.post(`${URL_PREFIX}/userbooks/add/dnf`,book)
@@ -110,6 +116,9 @@ const API = {
     removeCurrentlyReading:(userId,bookId)=>{
         return axios.delete(`${URL_PREFIX}/userbooks/delcurrentread/${userId}/${bookId}`)
     },
+    removeRead:(userId,bookId)=> {
+        return axios.delete(`${URL_PREFIX}/userbooks/delread/${userId}/${bookId}`)
+    },
     removeFromDNF:(userId,bookId) => {
         return axios.delete(`${URL_PREFIX}/userbooks/deldnf/${userId}/${bookId}`)
     },
@@ -122,8 +131,11 @@ const API = {
     // getOneReview:(userid,bookid)=> {
     //     return axios.get(`${URL_PREFIX}/review/${userid}/${bookid}`)
     // },
+    newNote:(reviewData)=> {
+        return axios.post(`${URL_PREFIX}/review/new/note`,reviewData)
+    },
     newReview:(reviewData) => {
-        return axios.post(`${URL_PREFIX}/review/new`,reviewData)
+        return axios.post(`${URL_PREFIX}/review/new/review`,reviewData)
     },
     editReview:(reviewData,id)=>{
         return axios.put(`${URL_PREFIX}/review/update/${id}`,reviewData)

@@ -10,7 +10,15 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 
-export default function AddReview({reviewInfo, toggleReviewForm}) {
+/* ----- HERE IN ADD REVIEW - two different post or 'handle submit' functions 
+
+    ** If 'Read' is set to false -- addNote() and post to newNote route (do not need to include read: false as that's been added to the back end route - in this function body object should have public: false, review text, and user & book id)
+
+    ** If 'Read' is set to true -- addReview() and post to newReview route (do not need to include read: true, in back end route. Body object should have all of the filled in info from the form. 
+         ** ALSO: make sure that fields default to null if they haven't been changed from their original values (placeholders?) currently submitting the starting value if not changed at all )
+*/
+
+export default function AddReview({ reviewInfo, toggleReviewForm }) {
 
     const context = useContext(AppContext);
     const params = useParams();
@@ -36,18 +44,15 @@ export default function AddReview({reviewInfo, toggleReviewForm}) {
     const reviewSubmit = async (e) => {
         e.preventDefault();
         console.log('submitted')
-        let newReview;
         const data = new FormData(e.currentTarget)
         let startDate = dayjs(startValue)
         let finishDate = dayjs(endValue)
         if (readSwitch) {
-            newReview = {
-                read: readSwitch,
+            const newReview = {
                 date_started: startDate.format('YYYY/MM/DD'),
                 date_finished: finishDate.format('YYYY/MM/DD'),
                 year_finished: finishDate.year(),
                 month_finished: finishDate.month(),
-                last_update: new Date(),
                 rating: data.get('rating'),
                 review: data.get('review'),
                 format: data.get('format'),
@@ -55,20 +60,22 @@ export default function AddReview({reviewInfo, toggleReviewForm}) {
                 UserId: context.userData.id,
                 BookId: params.id
             }
+            const reviewData = await API.newReview(newReview)
+            console.log(reviewData)
+
+
         }
         if (!readSwitch) {
-            newReview = {
-                read: readSwitch,
-                last_update: new Date(),
+            const newReview = {
                 review: data.get('review'),
                 UserId: context.userData.id,
                 BookId: params.id
             }
+            const reviewData = await API.newNote(newReview)
+            console.log(reviewData)
         }
-        console.log(newReview)
+        // console.log(newReview)
 
-        const reviewData = await API.newReview(newReview)
-        console.log(reviewData)
         reviewInfo()
         toggleReviewForm();
     }
