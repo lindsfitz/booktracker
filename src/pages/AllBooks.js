@@ -4,7 +4,7 @@ import API from '../utils/API'
 import { Book } from '@mui/icons-material';
 import { List, Container, ListItem, Divider, ListItemText, ImageListItem, Typography } from '@mui/material';
 import { render } from '@testing-library/react';
-import ReadingMobile from './components/ReadingMobile';
+import ReadingMobile from './components/mobile/ReadingMobile';
 import OneShelf from './components/OneShelf';
 import Carousel from './components/Carousel';
 

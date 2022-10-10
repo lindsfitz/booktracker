@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import AddShelf from './components/AddShelf'
+import AddShelf from './components/modals/AddShelf'
 import API from '../utils/API';
 import AppContext from '../AppContext';
-import EditShelf from './components/EditShelf';
+import EditShelf from './components/modals/EditShelf';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 // import { useTheme } from '@mui/material/styles';

@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
-import API from '../../utils/API';
-import AppContext from '../../AppContext';
+import API from '../../../utils/API';
+import AppContext from '../../../AppContext';
 import PropTypes from 'prop-types';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
 
-const EditShelfDialog = styled(Dialog)(({ theme }) => ({
+const ShelfDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
     },
@@ -16,7 +16,7 @@ const EditShelfDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-const EditShelfDialogTitle = (props) => {
+const ShelfDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
 
     return (
@@ -40,62 +40,62 @@ const EditShelfDialogTitle = (props) => {
     );
 };
 
-EditShelfDialogTitle.propTypes = {
+ShelfDialogTitle.propTypes = {
     children: PropTypes.node,
     onClose: PropTypes.func.isRequired,
 };
 
 
-export default function EditShelf({shelf, setEditShelf, editShelf}) {
+export default function AddShelf() {
     const context = useContext(AppContext);
 
-    const shelfSubmit = async (e) => {
+    const shelfSubmit = (e) => {
         e.preventDefault();
         console.log('submitted')
         const data = new FormData(e.currentTarget)
         let now = new Date()
 
-        const updatedShelf = {
+        const newShelf = {
             name: data.get('name'),
             description: data.get('description'),
             last_update: now,
+            UserId: context.userData.id
         }
 
-        console.log(updatedShelf)
+        API.newShelf(newShelf).then(async res => {
+            console.log(res)
+            const shelves = await API.getShelves(context.userData.id)
+            context.setUserShelves(shelves.data)
+            context.toggleShelfDialog();
 
-        const updated = await API.editShelf(updatedShelf, shelf.id)
-        const shelves = await API.getShelves(context.userData.id)
-        context.setUserShelves(shelves.data)
-        console.log(updated)
-        setEditShelf(false)
+        })
 
     }
 
 
     return (
         <div>
-            <EditShelfDialog
-                onClose={()=>setEditShelf(!editShelf)}
+            <ShelfDialog
+                onClose={context.toggleShelfDialog}
                 aria-labelledby="customized-dialog-title"
-                open={editShelf}
+                open={context.shelfDialog}
             >
-                <EditShelfDialogTitle id="customized-dialog-title" onClose={()=>setEditShelf(!editShelf)}>
-                    Edit Your Shelf
-                </EditShelfDialogTitle>
+                <ShelfDialogTitle id="customized-dialog-title" onClose={context.toggleShelfDialog}>
+                    New Shelf
+                </ShelfDialogTitle>
                 <Box component='form' noValidate onSubmit={shelfSubmit} >
                     <DialogContent dividers>
                         <TextField
                             id="name"
                             name='name'
                             label="Bookshelf Name"
-                            defaultValue={shelf.name}
+                            placeholder="Name"
                             multiline
                         /><br /><br />
                         <TextField
                             id="description"
                             name='description'
                             label="Description"
-                            defaultValue={shelf.description}
                             multiline
                             rows={4}
 
@@ -103,11 +103,11 @@ export default function EditShelf({shelf, setEditShelf, editShelf}) {
                     </DialogContent>
                     <DialogActions>
                         <Button autoFocus type='submit'>
-                            Update Shelf
+                            Create Shelf
                         </Button>
                     </DialogActions>
                 </Box>
-            </EditShelfDialog>
+            </ShelfDialog>
         </div>
     );
 }

@@ -9,7 +9,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import dayjs from 'dayjs'
 import AppContext from '../AppContext';
-import EditShelf from './components/EditShelf';
+import EditShelf from './components/modals/EditShelf';
 import { Container, List, ListItem, Divider, Stack, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, Chip } from '@mui/material';
 
 const imageStyle = {

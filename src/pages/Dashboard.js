@@ -3,11 +3,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
-import AddShelf from './components/AddShelf'
+import AddShelf from './components/modals/AddShelf'
 import DashStats from './components/DashStats';
 import { useTheme } from '@mui/material/styles';
 import { List, Container, Typography, Box, Divider, Button, Stack, useMediaQuery } from '@mui/material';
-import ReadingMobile from './components/ReadingMobile';
+import ReadingMobile from './components/mobile/ReadingMobile';
 import OneShelf from './components/OneShelf';
 import Carousel from './components/Carousel';
 
@@ -101,25 +101,7 @@ export default function Dashboard(props) {
                     <Typography variant='subtitle1'>Currently Reading:</Typography>
                     <Divider />
                     {currentReads && <Carousel shelf={{ id: 'CR', Books: currentReads }} />}
-                    {/* {currentReads &&
-                        <div style={{ display: 'flex', width: '100%', padding: '15px' }}>
-                            {currentReads.map((book) => (
-                                <Card sx={cardStyle} key={`${book.id}`} className='book-card'>
-                                    <CardContent>
-                                        <CardMedia
-                                            component="img"
-                                            sx={imageStyle}
-                                            onClick={() => { navigate(`/book/${book.id}`) }}
-                                            image={`${book.cover_img}`}
-                                            alt={`${book.title}`}
-                                        />
-                                        <Typography variant='subtitle2' display='block'>{book.title}</Typography>
-                                        <Typography variant='caption' display='block'>{book.author}</Typography>
-                                    </CardContent>
-                                </Card>
-
-                            ))}
-                        </div>} */}
+                    
                     <Divider />
                 </Container>
             )}
@@ -166,8 +148,16 @@ export default function Dashboard(props) {
                                 ))}
                             </List>
                         </Box>
+                        <Box sx={{ textAlign: 'center' }}>
+                                <Button variant='outlined'
+                                onClick={() => navigate('/bookcase')}>
+                                    <Typography variant='caption'>
+                                        See All Shelves
+                                    </Typography>
+                                </Button>
+                            </Box>
 
-                        <Box id='mobile-quicknav' sx={{ m: '5px auto 5px auto', display: 'flex' }}>
+                        {/* <Box id='mobile-quicknav' sx={{ m: '5px auto 5px auto', display: 'flex' }}>
                             <Typography variant='h6'>Your Bookcase:</Typography>
                             <Stack spacing={0.5}
                                 alignItems="flex-start"
@@ -181,7 +171,7 @@ export default function Dashboard(props) {
                                         {shelf.name}</Button>
                                 ))}
                             </Stack>
-                        </Box>
+                        </Box> */}
                     </Container>
                 </Container>
             ) : (

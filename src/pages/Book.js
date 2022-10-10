@@ -2,14 +2,14 @@ import React, { useState, useEffect, useContext, useRef, useCallback } from 'rea
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import AppContext from '../AppContext';
 import API from '../utils/API'
-import AddShelf from './components/AddShelf'
+import AddShelf from './components/modals/AddShelf'
 // import dayjs from 'dayjs'
 import {
     // Card,Box,CardContent, IconButton,
     Button, ButtonGroup, Grow, Popper, MenuItem, MenuList, Typography, Container, Paper, Divider, Stack, Chip, Link, ClickAwayListener, Snackbar
 } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import AddReview from './components/AddReview';
+import AddReview from './components/modals/AddReview';
 import Review from './components/Review';
 import BookInfo from './components/BookInfo';
 

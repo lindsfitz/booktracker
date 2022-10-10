@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
-import API from '../../utils/API';
-import AppContext from '../../AppContext';
+import React, { useContext, useEffect , useState} from 'react';
+import API from '../../../utils/API';
+import AppContext from '../../../AppContext';
 import PropTypes from 'prop-types';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
 
-const EditGoalDialog = styled(Dialog)(({ theme }) => ({
+const AddGoalDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
         padding: theme.spacing(2),
     },
@@ -16,11 +16,11 @@ const EditGoalDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-const EditGoalDialogTitle = (props) => {
+const AddGoalDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
 
     return (
-        <DialogTitle variant='subtitle1' sx={{ m: 0, p: 2 }} {...other}>
+        <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
             {children}
             {onClose ? (
                 <IconButton
@@ -40,22 +40,24 @@ const EditGoalDialogTitle = (props) => {
     );
 };
 
-EditGoalDialogTitle.propTypes = {
+AddGoalDialogTitle.propTypes = {
     children: PropTypes.node,
     onClose: PropTypes.func.isRequired,
 };
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
-
-export default function EditGoal({ editGoal, setEditGoal, action, goal, setMonthlyGoal, setYearlyGoal }) {
+export default function AddGoal({addGoal, setAddGoal, action, setMonthlyGoal, setYearlyGoal}) {
     const context = useContext(AppContext);
 
     const [current, setCurrent] = useState(null)
-    const [goalValue, setGoalValue] = useState(null)
 
+    const date = new Date();
+    const thismonth = date.getMonth()
+    const thisyear = date.getFullYear()
 
-    const updateActivityGoal = (e) => {
+  
+    const addActivityGoal = (e) => {
         e.preventDefault();
         console.log('submitted')
         const data = new FormData(e.currentTarget)
@@ -63,79 +65,69 @@ export default function EditGoal({ editGoal, setEditGoal, action, goal, setMonth
 
         const monthGoal = {
             month: thismonth,
-            value: newGoal
+            value: newGoal,
+            UserId: context.userData.id
         }
 
         const yearGoal = {
             month:null,
-            value: newGoal
-        }
-
-        if (goalValue === newGoal) {
-            console.log('same goal value')
-            return;
+            value: newGoal,
+            UserId: context.userData.id
         }
 
         if (action === 'month') {
-            API.updateGoal(context.userData.id, monthGoal)
+            API.newGoal(monthGoal)
             setMonthlyGoal(parseInt(newGoal))
-            setEditGoal(false)
+            setAddGoal(false)
         }
 
         if (action === 'year') {
-            API.updateGoal(context.userData.id, yearGoal)
+            API.newGoal(yearGoal)
             setYearlyGoal(parseInt(newGoal))
-            setEditGoal(false)
+            setAddGoal(false)
         }
     }
-
-    const date = new Date();
-    const thismonth = date.getMonth()
-    const thisyear = date.getFullYear()
-
+    
     useEffect(() => {
         if (action === 'month') {
             setCurrent(months[thismonth]);
-            setGoalValue(goal.month)
         }
         if (action === 'year') {
             setCurrent(thisyear);
-            setGoalValue(goal.year)
         }
 
-    }, [action, goal, thismonth, thisyear])
+    }, [action, thismonth, thisyear])
 
     return (
         <>
-            <EditGoalDialog
-                onClose={() => setEditGoal(!editGoal)}
+            <AddGoalDialog
+                onClose={()=>setAddGoal(!addGoal)}
                 aria-labelledby="customized-dialog-title"
-                open={editGoal}
+                open={addGoal}
             >
-                <EditGoalDialogTitle id="customized-dialog-title" onClose={() => setEditGoal(!editGoal)}>
-                    Update Reading Activity
-                </EditGoalDialogTitle>
-                <Box component='form' noValidate onSubmit={updateActivityGoal} >
+                <AddGoalDialogTitle id="customized-dialog-title" onClose={()=>setAddGoal(!addGoal)}>
+                    Reading Activity Goal
+                </AddGoalDialogTitle>
+                <Box component='form' noValidate onSubmit={addActivityGoal} >
                     <DialogContent dividers>
-                        <Typography variant='subtitle2'>Change the number of books <br /> you'd like to read in {current}.</Typography>
+                    <Typography variant='subtitle2'>Set your goal number of books <br /> you'd like to read in {current}.</Typography>
                         <br /><br />
                         <TextField
                             id={action}
                             name="goal"
                             label={`Goal for this ${action}`}
-                            defaultValue={goalValue}
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button autoFocus onClick={() => setEditGoal(!editGoal)}>
+                        <Button autoFocus onClick={()=>setAddGoal(!addGoal)}>
                             Cancel
                         </Button>
                         <Button autoFocus type='submit'>
-                            Update
+                            Set Goal
                         </Button>
                     </DialogActions>
                 </Box>
-            </EditGoalDialog>
+            </AddGoalDialog>
         </>
     );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useParams } from "react-router-dom";
-import AppContext from '../../AppContext';
-import API from '../../utils/API'
+import AppContext from '../../../AppContext';
+import API from '../../../utils/API'
 import { Typography, FormControl, Rating, Stack, Switch, Box, TextField, Button } from '@mui/material/';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs'

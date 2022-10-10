@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
-import AddGoal from './components/AddGoal';
-import EditGoal from './components/EditGoal';
+import AddGoal from './components/modals/AddGoal';
+import EditGoal from './components/modals/EditGoal';
 import SwipeableViews from 'react-swipeable-views';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs'

@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useParams } from "react-router-dom";
-import AppContext from '../../AppContext';
-import API from '../../utils/API'
+import AppContext from '../../../AppContext';
+import API from '../../../utils/API'
 import { Typography, FormControl, Rating, Stack, Switch, Box, TextField, Button } from '@mui/material/';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs'
@@ -63,6 +63,10 @@ export default function AddReview({ reviewInfo, toggleReviewForm }) {
             }
             await API.removeCurrentlyReading(context.userData.id,params.id)
             await API.removeFromDNF(context.userData.id,params.id)
+            await API.addRead({
+                userId: context.userData.id,
+                bookId: params.id
+            })
             const reviewData = await API.newReview(newReview)
             console.log(reviewData)
 

@@ -5,7 +5,7 @@ import API from '../utils/API';
 // import AppContext from '../AppContext';
 import { useTheme } from '@mui/material/styles';
 import { Box, TextField, InputLabel, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography, Badge, Card, CardMedia, CardContent, useMediaQuery } from '@mui/material';
-import NYTMobile from './components/NYTMobile';
+import NYTMobile from './components/mobile/NYTMobile';
 
 
 // const NYTweekly = [
