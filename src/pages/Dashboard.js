@@ -60,7 +60,7 @@ export default function Dashboard(props) {
             setActivityGoals(activity.data)
             setUserStats(allStats.data)
         }
-        
+
         const myToken = localStorage.getItem("token");
         if (myToken) {
             API.verify(myToken).then(async res => {
@@ -144,7 +144,7 @@ export default function Dashboard(props) {
                                 <Button onClick={() => navigate('/books/read')}>Read</Button>
                                 {/* <Button onClick={() => navigate('/search')}>Find Books</Button> */}
                                 <Button onClick={() => navigate('/books')}>All Books</Button>
-                                <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
+                                <Button onClick={() => navigate('/bookcase')}>My Bookcase</Button>
 
                             </Stack>
                         </Box>
@@ -192,8 +192,8 @@ export default function Dashboard(props) {
                         </div>}
 
                         <div id='quicknav' style={{ display: 'flex', margin: '5px auto 5px auto', justifyContent: 'center' }}>
-                            <div id='bookshelf'>
-                                {/* List of links to all existing shelves directly */}
+                            {/* <div id='bookshelf'>
+                               
                                 <Typography variant='h6'>Your Bookcase:</Typography>
                                 <Stack spacing={0.5}
                                     alignItems="flex-start"
@@ -208,7 +208,7 @@ export default function Dashboard(props) {
                                             {shelf.name}</Button>
                                     ))}
                                 </Stack>
-                            </div>
+                            </div> */}
 
                             <Divider orientation='vertical' />
 
@@ -219,7 +219,7 @@ export default function Dashboard(props) {
                                     {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
                                     <Button onClick={() => navigate('/books/read')}>Read</Button>
                                     <Button onClick={() => navigate('/books')}>All Books</Button>
-                                    <Button onClick={() => navigate('/shelves')}>My Bookcase</Button>
+                                    <Button onClick={() => navigate('/bookcase')}>My Bookcase</Button>
                                     <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
                                     <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
                                     <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
@@ -248,6 +248,14 @@ export default function Dashboard(props) {
                                     </React.Fragment>
                                 ))}
                             </List>
+                            <Box sx={{ textAlign: 'center' }}>
+                                <Button variant='outlined'
+                                onClick={() => navigate('/bookcase')}>
+                                    <Typography variant='caption'>
+                                        See All Shelves
+                                    </Typography>
+                                </Button>
+                            </Box>
                         </div>
                     </Box>
                 </Container>

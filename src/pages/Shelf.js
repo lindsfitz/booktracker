@@ -55,15 +55,13 @@ export default function Shelf() {
         const shelf = await API.oneUserShelf(params.id, context.userData.id)
         console.log(shelf)
         setShelf(shelf.data)
-
-
     }
 
     const getChips = (shelves) => {
         const chips = []
         shelves.forEach(item => {
-            if (item.name !== shelf.name) { 
-                console.log(item.name) 
+            if (item.name !== shelf.name) {
+                console.log(item.name)
                 chips.push(<Chip label={item.name} variant="outlined" />)
             }
         })
@@ -72,8 +70,14 @@ export default function Shelf() {
 
 
     useEffect(() => {
-        shelfData()
-    }, [context.userShelves])
+        const loadShelf = async (shelfId, userId) => {
+            const shelf = await API.oneUserShelf(shelfId, userId)
+            console.log(shelf)
+            setShelf(shelf.data)
+        }
+        // shelfData()
+        loadShelf(params.id, context.userData.id)
+    }, [context.userShelves, params.id, context.userData])
 
 
     return (
@@ -95,7 +99,7 @@ export default function Shelf() {
                     {shelf.Books.map((book) => (
 
                         <React.Fragment>
-                            <ListItem key={`${book.title}${shelf.name}shelf`} id={`${book.title}${shelf.name}shelf`} alignItems="center">
+                            <ListItem key={book.id} id={`${book.title}${shelf.name}shelf`} alignItems="center">
                                 <Box sx={{ display: 'flex', justifyContent: 'center', mr: 'auto', ml: 'auto' }}>
                                     <img
                                         src={`${book.cover_img}`}
@@ -106,7 +110,7 @@ export default function Shelf() {
                                         onClick={() => { navigate(`/book/${book.id}`) }}
                                     />
                                     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', ml: 2 }}>
-                                        <Stack sx={{ alignSelf: 'center', ml: 1, p:1 }}>
+                                        <Stack sx={{ alignSelf: 'center', ml: 1, p: 1 }}>
                                             <Typography variant='subtitle1'>{book.title}</Typography>
                                             <Typography
                                                 component="span"
@@ -119,16 +123,16 @@ export default function Shelf() {
 
                                         <Divider />
 
-                                        <Stack sx={{ alignSelf: 'center', ml: 1, p:1 }} direction={{ xs: 'column', md: 'row' }}>
+                                        <Stack sx={{ alignSelf: 'center', ml: 1, p: 1 }} direction={{ xs: 'column', md: 'row' }}>
                                             {book.CurrentBooks.length > 0 && <Chip label='Currently Reading' />}
                                             {book.DNFBooks.length > 0 && <Chip label='DNF' />}
                                             {book.Reviews.length > 0 && <Chip label='Read' />}
 
                                             {book.Shelves.length > 1 && getChips(book.Shelves)}
-                                           
+
                                         </Stack>
                                         <Divider />
-                                        <Stack sx={{p:1}}>
+                                        <Stack sx={{ p: 1 }}>
                                             <Typography variant='caption' color='text.secondary'>Added to Shelf:</Typography>
                                             <Typography variant='caption' color='text.secondary'>{dayjs(book.bookshelf.createdAt).format('MMM D, YYYY')}</Typography>
                                         </Stack>
@@ -145,7 +149,7 @@ export default function Shelf() {
 
 
                             </ListItem>
-                            <Divider variant="inset" component="li" />
+                            <Divider key={`${book.id}-divider`} variant="inset" component="li" />
 
                         </React.Fragment>
                     ))}

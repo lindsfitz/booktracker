@@ -7,7 +7,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+// import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 
 /* ----- HERE IN ADD REVIEW - two different post or 'handle submit' functions 
@@ -53,6 +53,7 @@ export default function AddReview({ reviewInfo, toggleReviewForm }) {
                 date_finished: finishDate.format('YYYY/MM/DD'),
                 year_finished: finishDate.year(),
                 month_finished: finishDate.month(),
+                public:false,
                 rating: data.get('rating'),
                 review: data.get('review'),
                 format: data.get('format'),
@@ -69,6 +70,7 @@ export default function AddReview({ reviewInfo, toggleReviewForm }) {
         }
         if (!readSwitch) {
             const newReview = {
+                public:false,
                 review: data.get('review'),
                 UserId: context.userData.id,
                 BookId: params.id

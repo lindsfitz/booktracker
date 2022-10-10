@@ -54,11 +54,11 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/search" element={<Search />} />
+              <Route path="/browse" element={<Search />} />
               <Route path="/books" element={<AllBooks />} />
               <Route path="/books/:list" element={<Booklist />} />
               <Route path="/book/:id" element={<Book />} />
-              <Route path="/shelves" element={<Bookcase />} />
+              <Route path="/bookcase" element={<Bookcase />} />
               <Route path="/shelf/:id" element={<Shelf />} />
               <Route path="/activity" element={<ReadingActivity />} />
             </Routes>

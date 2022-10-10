@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
-import { useParams, useLocation } from "react-router-dom";
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import AppContext from '../AppContext';
 import API from '../utils/API'
 import AddShelf from './components/AddShelf'
@@ -18,6 +18,8 @@ export default function Book() {
     const context = useContext(AppContext);
     const params = useParams();
     const location = useLocation()
+    let navigate = useNavigate();
+
 
     /* data states used for both */
     const [bookData, setBookData] = useState(null)
@@ -44,9 +46,10 @@ export default function Book() {
     /* --------------------------USERBOOK-------------------- */
 
 
-    const dbBookInfo = async (id) => {
+    const dbBookInfo = useCallback(async (id) => {
         const book = await API.getBookandShelves(id, context.userData.id);
         setBookData(book.data)
+        setShelfChoices([])
         console.log(book.data)
         if (book.data.CurrentBooks.length) {
             setMarkedAs('Currently Reading')
@@ -67,27 +70,35 @@ export default function Book() {
         }
         if (book.data.DNFBooks.length) {
             setMarkedAs('DNF')
-
         }
-        shelfOptions(book.data)
 
-
-    }
-
-    const shelfOptions = (data) => {
-        setShelfChoices([])
-        if (!data.Shelves.length) {
+        if (!book.data.Shelves.length) {
             setShelfChoices(context.userShelves)
             return;
+        } else {
+            context.userShelves.forEach(shelf => {
+                const found = book.data.Shelves.find(element => element.name === shelf.name)
+                if (!found) {
+                    setShelfChoices(current => [...current, shelf])
+                }
+            })
         }
 
-        context.userShelves.forEach(shelf => {
-            const found = data.Shelves.find(element => element.name === shelf.name)
-            if (!found) {
-                setShelfChoices(current => [...current, shelf])
-            }
-        })
-    }
+        // shelfOptions(book.data)
+    },[context.userData.id, context.userShelves])
+
+    // const shelfOptions = (data) => {
+    //     if (!data.Shelves.length) {
+    //         setShelfChoices(context.userShelves)
+    //         return;
+    //     }
+    //     context.userShelves.forEach(shelf => {
+    //         const found = data.Shelves.find(element => element.name === shelf.name)
+    //         if (!found) {
+    //             setShelfChoices(current => [...current, shelf])
+    //         }
+    //     })
+    // }
 
     const chipOptions = () => {
         switch (markedAs) {
@@ -153,54 +164,7 @@ export default function Book() {
 
     /* --------------------------RESULTBOOK-------------------- */
 
-    const olBookInfo = async () => {
-        // params.id will be the OL 'books' key -- edition_key[0]
-        let cover = null;
-        let description = null;
-        // bibkeys -- title, authors name, isbn13, publish date, publisher name at least 
-        // CAN also include number of pages, subjects, cover
-        const bibkeys = await API.olBookBibKeys(params.id)
-        const OLID = Object.keys(bibkeys.data)
-        const bibkeyData = bibkeys.data[OLID[0]]
-        console.log(bibkeyData)
-        if (bibkeyData.cover) {
-            cover = bibkeyData.cover.medium
-        }
-        // books -- includes series, works key
-        // CAN also include -- covers [0] for cover id 
-        const book = await API.olBookBooks(params.id)
-        console.log(book.data)
 
-        // literally just to pull the description 
-        // can also include covers[0]
-        const works = await API.olBookWorks(book.data.works[0].key)
-        console.log(works.data)
-        if (!bibkeyData.cover && works.data.covers) {
-            cover = `https://covers.openlibrary.org/b/id/${works.data.covers[0]}-M.jpg`
-        }
-
-        if (works.data.description) {
-            if (works.data.description.value) {
-                description = works.data.description.value
-            } else {
-                description = works.data.description
-            }
-        }
-
-        setBookData({
-            title: works.data.title,
-            cover_img: cover,
-            author: bibkeyData.authors[0].name,
-            author_key: bibkeyData.authors[0].key,
-            published: bibkeyData.publish_date || location.state.published,
-            pages: bibkeyData.number_of_pages || location.state.pages,
-            description: description,
-            ol_key: bibkeyData.key,
-            isbn: bibkeyData.identifiers.isbn_13[0]
-        })
-        setShelfChoices(context.userShelves)
-
-    }
 
     /* ------------------------------------------------------------ */
 
@@ -210,73 +174,33 @@ export default function Book() {
     const markedMenuOptions = () => {
         switch (markedAs) {
             case 'Currently Reading':
-                return ([<MenuItem onClick={moveToRead}>Read</MenuItem>,
-                <MenuItem onClick={moveToDNF}>DNF</MenuItem>,
-                <MenuItem onClick={removeBook}>Remove</MenuItem>])
+                return ([<MenuItem key={'read'} onClick={markRead}>Read</MenuItem>,
+                <MenuItem key={'dnf'} onClick={markDNF}>DNF</MenuItem>,
+                <MenuItem key={'remove'} onClick={removeBook}>Remove</MenuItem>])
 
             case 'DNF':
                 return ([<MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>,
-                <MenuItem onClick={markRead}>Read</MenuItem>,
-                <MenuItem onClick={removeBook}>Remove</MenuItem>])
+                <MenuItem key={'read'} onClick={markRead}>Read</MenuItem>,
+                <MenuItem key={'remove'} onClick={removeBook}>Remove</MenuItem>])
 
 
             case 'Read':
-                return ([<MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>,
-                <MenuItem onClick={markDNF}>DNF</MenuItem>,
-                <MenuItem onClick={removeRead}>Remove</MenuItem>])
+                return ([<MenuItem key={'reading'} onClick={markCurrentlyReading}>Reading</MenuItem>,
+                <MenuItem key={'dnf'} onClick={markDNF}>DNF</MenuItem>,
+                <MenuItem key={'remove'} onClick={removeRead}>Remove</MenuItem>])
 
             case 'Read & Reviewed':
-                return ([<MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>,
-                <MenuItem onClick={markDNF}>DNF</MenuItem>,
-                <MenuItem onClick={removeRead}>Remove</MenuItem>])
+                return ([<MenuItem key={'reading'} onClick={markCurrentlyReading}>Reading</MenuItem>,
+                <MenuItem key={'dnf'} onClick={markDNF}>DNF</MenuItem>,
+                <MenuItem key={'remove'} onClick={removeRead}>Remove</MenuItem>])
 
 
             default:
 
-                return ([<MenuItem onClick={markCurrentlyReading}>Reading</MenuItem>,
-                <MenuItem onClick={markRead}>Read</MenuItem>,
-                <MenuItem onClick={markDNF}>DNF</MenuItem>])
-
-
+                return ([<MenuItem key={'reading'} onClick={markCurrentlyReading}>Reading</MenuItem>,
+                <MenuItem key={'read'} onClick={markRead}>Read</MenuItem>,
+                <MenuItem key={'dnf'} onClick={markDNF}>DNF</MenuItem>])
         }
-    }
-
-    const bookBtnOptions = () => {
-        switch (markedAs) {
-            case 'Currently Reading':
-                return (
-                    <React.Fragment>
-                        <Button onClick={moveToRead}>Mark As Read</Button>
-                        <Button onClick={moveToDNF}>Mark As DNF</Button>
-                        <Button onClick={toggleReviewForm}>Add A Review</Button>
-                        {/* <Button>Remove From Currently Reading</Button> */}
-                    </React.Fragment>
-                );
-            case 'DNF':
-                return (
-                    <React.Fragment>
-                        <Button onClick={removeDNF}>Remove From DNF</Button>
-                        <Button onClick={toggleReviewForm}>Add A Review</Button>
-                    </React.Fragment>
-                );
-            case 'Read':
-                return (
-                    <React.Fragment>
-                        <Button onClick={toggleReviewForm}>Add A Review</Button>
-                    </React.Fragment>
-                );
-            default:
-                return (
-                    <React.Fragment>
-                        <Button onClick={markCurrentlyReading}>Add To Currently Reading</Button>
-                        <Button onClick={markRead}>Mark As Read</Button>
-                        <Button onClick={markDNF}>Mark As DNF</Button>
-                        <Button onClick={toggleReviewForm}>Add A Review</Button>
-                    </React.Fragment>
-                )
-
-        }
-
     }
 
     const addToShelf = async (e) => {
@@ -296,13 +220,15 @@ export default function Book() {
         if (shelfAdd.data.name === "SequelizeUniqueConstraintError") {
             openSnackbar(`Already Shelved on ${e.target.textContent}`)
         }
-        // bookInfo()
+        dbBookInfo(bookId)
     }
 
     const removeFromShelf = async (shelfName, shelfId) => {
         await API.removefromShelf(shelfId, bookData.id)
         openSnackbar(`Removed from ${shelfName}`)
         // bookInfo()
+        dbBookInfo(bookData.id)
+
     }
 
     const markCurrentlyReading = async () => {
@@ -327,7 +253,8 @@ export default function Book() {
             bookId: bookId
         })
         openSnackbar('Marked As Currently Reading')
-        pageLoad()
+        setMarkedAs('Currently Reading')
+        dbBookInfo(bookId)
     }
 
     const markRead = async () => {
@@ -353,18 +280,9 @@ export default function Book() {
         })
 
         openSnackbar('Marked As Read')
-        pageLoad()
+        dbBookInfo(bookId)
     }
 
-    const moveToRead = async () => {
-        await API.finishedReading({
-            UserId: context.userData.id,
-            BookId: bookData.id,
-            last_update: new Date()
-        })
-        openSnackbar('Marked As Read')
-        // bookInfo()
-    }
 
     const markDNF = async () => {
         let bookId;
@@ -387,26 +305,21 @@ export default function Book() {
             userId: context.userData.id,
             bookId: bookId
         })
+        .catch(console.error)
+
         openSnackbar('Marked As DNF')
+        dbBookInfo(bookId)
     }
 
-    const moveToDNF = async () => {
-        console.log('hi')
-        await API.didNotFinish({
-            userId: context.userData.id,
-            bookId: bookData.id
-        })
-        openSnackbar('Marked As DNF')
-
-    }
 
     const removeDNF = async () => {
         await API.removeFromDNF(context.userData.id, bookData.id)
+        .catch(console.error)
     }
 
     const removeReading = async () => {
         await API.removeCurrentlyReading(context.userData.id, bookData.id)
-
+        .catch(console.error)
     }
 
     const removeRead = async () => {
@@ -421,6 +334,7 @@ export default function Book() {
         }
 
         await API.removeRead(context.userData.id, bookData.id)
+        .catch(console.error)
     }
 
     const removeBook = async () => {
@@ -428,15 +342,15 @@ export default function Book() {
             case 'Currently Reading':
                 removeReading()
                 openSnackbar('Book Removed')
-
+                break;
             case 'DNF':
                 removeDNF()
                 openSnackbar('Book Removed')
-
+                break;
             case 'Read':
                 removeRead()
                 openSnackbar('Book Removed')
-
+                break;
             default:
                 return;
         }
@@ -455,15 +369,17 @@ export default function Book() {
             userId: context.userData.id,
             bookId: bookId
         })
+        .catch(console.error)
         openSnackbar('Added to Owned List')
+        setMarkOwned(true)
     }
 
     const removeOwned = async () => {
         await API.removeFromOwned(context.userData.id, bookData.id)
+        .catch(console.error)
+        setMarkOwned(false)
         openSnackbar('Removed from Owned List')
     }
-
-
 
 
     /* ------------------------------------------------------------ */
@@ -523,48 +439,89 @@ export default function Book() {
         return postBook
     }
 
-    const bookCheckById = async () => {
-        const bookcheck = await API.oneBookById(params.id)
+    const bookCheckById = async (id) => {
+        const bookcheck = await API.oneBookById(id)
         return bookcheck;
     }
 
-    const bookCheckByInfo = async () => {
-        const bookcheck = await API.oneBookByInfo(params.id, {
-            title: location.state.title,
-            author: location.state.author
+    const bookCheckByInfo = async (id, title, author) => {
+        const bookcheck = await API.oneBookByInfo(id, {
+            title: title,
+            author: author
         })
         return bookcheck;
     }
 
-
-    const pageLoad = async () => {
-        const check = await bookCheckById()
-        if (check.data) {
-            console.log('yup book exists')
-            setdbBook(true)
-            dbBookInfo(params.id)
-        } else {
-            // console.log('nope, book not in db')
-            const book = await bookCheckByInfo()
-            // console.log(book)
-            console.log(location.state)
-            if (book.data.id) {
-                console.log(book.data.id)
-                setdbBook(true)
-                dbBookInfo(book.data.id)
-            } else { olBookInfo() }
-        }
-    }
-
-    // useEffect(() => {
-    //     shelfOptions()
-    // }, [context.userShelves])
-
-
     useEffect(() => {
+
+        const olBookInfo = async (id) => {
+            // params.id will be the OL 'books' key -- edition_key[0]
+            let cover = null;
+            let description = null;
+            // bibkeys -- title, authors name, isbn13, publish date, publisher name at least 
+            // CAN also include number of pages, subjects, cover
+            const bibkeys = await API.olBookBibKeys(id)
+            const OLID = Object.keys(bibkeys.data)
+            const bibkeyData = bibkeys.data[OLID[0]]
+            console.log(bibkeyData)
+            if (bibkeyData.cover) {
+                cover = bibkeyData.cover.medium
+            }
+            // books -- includes series, works key
+            // CAN also include -- covers [0] for cover id 
+            const book = await API.olBookBooks(id)
+            console.log(book.data)
+    
+            // literally just to pull the description 
+            // can also include covers[0]
+            const works = await API.olBookWorks(book.data.works[0].key)
+            console.log(works.data)
+            if (!bibkeyData.cover && works.data.covers) {
+                cover = `https://covers.openlibrary.org/b/id/${works.data.covers[0]}-M.jpg`
+            }
+    
+            if (works.data.description) {
+                if (works.data.description.value) {
+                    description = works.data.description.value
+                } else {
+                    description = works.data.description
+                }
+            }
+    
+            setBookData({
+                title: works.data.title,
+                cover_img: cover,
+                author: bibkeyData.authors[0].name,
+                author_key: bibkeyData.authors[0].key,
+                published: bibkeyData.publish_date || location.state.published,
+                pages: bibkeyData.number_of_pages || location.state.pages,
+                description: description,
+                ol_key: bibkeyData.key,
+                isbn: bibkeyData.identifiers.isbn_13[0]
+            })
+            setShelfChoices(context.userShelves)
+    
+        }
+
+        const pageLoad = async () => {
+            const check = await bookCheckById(params.id)
+            if (check.data) {
+                setdbBook(true)
+                dbBookInfo(params.id)
+            } else {
+                const book = await bookCheckByInfo(params.id, location.state.title, location.state.author)
+                // console.log(location.state)
+                if (book.data.id) {
+                    console.log(book.data.id)
+                    navigate(`/book/${book.data.id}`)
+                    setdbBook(true)
+                    dbBookInfo(book.data.id)
+                } else { olBookInfo(params.id) }
+            }
+        }
         // very first, check if book exists in db 
         pageLoad()
-    }, [params.id])
+    }, [params.id, location.state, context.userShelves, dbBookInfo])
 
 
     // runs when snack state changes, timer to remove snackbar after 1sec
@@ -588,7 +545,7 @@ export default function Book() {
                             <Typography variant='caption'>On Shelves:</Typography>
                             <Stack direction={{ xs: 'column', md: 'row' }}>
                                 {bookData.Shelves.map((shelf) => (
-                                    <Chip key={`${shelf.name}${shelf.id}`} id={shelf.id} label={shelf.name} variant="outlined" onDelete={(event) => removeFromShelf(shelf.name, shelf.id)} />
+                                    <Chip key={shelf.id} id={shelf.id} label={shelf.name} variant="outlined" onDelete={(event) => removeFromShelf(shelf.name, shelf.id)} />
                                 ))}
                             </Stack>
                         </Stack>}

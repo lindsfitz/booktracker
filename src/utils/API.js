@@ -80,9 +80,9 @@ const API = {
 
 
     /* ---- USER BOOK MIX IN ROUTES ---- */
-    getReadList:(id)=>{
-        return axios.get(`${URL_PREFIX}/book/read/${id}`)
-    },
+    // getReadList:(id)=>{
+    //     return axios.get(`${URL_PREFIX}/book/read/${id}`)
+    // },
     newReadList:(id)=>{
         return axios.get(`${URL_PREFIX}/userbooks/read/${id}`)
     },
@@ -107,12 +107,12 @@ const API = {
     addOwned:(book)=>{
         return axios.post(`${URL_PREFIX}/userbooks/add/owned`,book)
     },
-    finishedReading:(review)=> {
-        return axios.post(`${URL_PREFIX}/userbooks/finishedreading`, review)
-    },
-    didNotFinish:(book)=> {
-        return axios.post(`${URL_PREFIX}/userbooks/moveto/dnf`, book)
-    },
+    // finishedReading:(review)=> {
+    //     return axios.post(`${URL_PREFIX}/userbooks/finishedreading`, review)
+    // },
+    // didNotFinish:(book)=> {
+    //     return axios.post(`${URL_PREFIX}/userbooks/moveto/dnf`, book)
+    // },
     removeCurrentlyReading:(userId,bookId)=>{
         return axios.delete(`${URL_PREFIX}/userbooks/delcurrentread/${userId}/${bookId}`)
     },

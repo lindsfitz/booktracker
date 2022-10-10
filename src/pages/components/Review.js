@@ -27,7 +27,7 @@ export default function Review({ review, reviewInfo, openSnackbar }) {
     }
 
     return (
-        <Paper key={`${review.id}${review.UserId}`} elevation={6} sx={{ width: { xs: 3 / 4, md: 3 / 5 }, p: 2 }}>
+        <Paper key={review.id} elevation={6} sx={{ width: { xs: 3 / 4, md: 3 / 5 }, p: 2 }}>
             {editId !== review.id && <Container>
                 <Stack direction='row' justifyContent="space-between">
                     <Stack direction="row" spacing={1} alignItems="center">

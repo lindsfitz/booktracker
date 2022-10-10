@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import dayjs from 'dayjs'
-import { List, ListItem, Divider, Typography, Button, Box, Stack, Rating } from '@mui/material';
+import { List, ListItem, Divider, Typography, Button, Box, Stack, Rating, Link, Chip } from '@mui/material';
 
 
 export default function Booklist() {
@@ -14,42 +14,45 @@ export default function Booklist() {
     const [bookData, setBookData] = useState(null)
     const [title, setTitle] = useState('')
 
-    const renderReadShelf = async () => {
-        const books = await API.getReadList(context.userData.id)
+    const renderReadShelf = async (id) => {
+        // const books = await API.getReadList(context.userData.id)
+        const books = await API.newReadList(id)
+        // console.log(books.data)
+        console.log(books.data)
         setBookData(books.data)
     }
 
-    const renderCurrentlyReading = async () => {
-        const books = await API.getReadingList(context.userData.id)
+    const renderCurrentlyReading = async (id) => {
+        const books = await API.getReadingList(id)
         setBookData(books.data)
     }
 
-    const renderDNF = async () => {
-        const books = await API.getDNFList(context.userData.id)
+    const renderDNF = async (id) => {
+        const books = await API.getDNFList(id)
         setBookData(books.data)
     }
 
-    const renderOwned = async () => {
-        const books = await API.getOwnedList(context.userData.id)
+    const renderOwned = async (id) => {
+        const books = await API.getOwnedList(id)
         setBookData(books.data)
     }
 
     useEffect(() => {
         switch (params.list) {
             case 'read':
-                renderReadShelf()
+                renderReadShelf(context.userData.id)
                 setTitle('Read')
                 break;
             case 'currently':
-                renderCurrentlyReading()
+                renderCurrentlyReading(context.userData.id)
                 setTitle('Currently Reading')
                 break;
             case 'dnf':
-                renderDNF()
+                renderDNF(context.userData.id)
                 setTitle('Did Not Finish')
                 break;
             case 'owned':
-                renderOwned()
+                renderOwned(context.userData.id)
                 setTitle('Owned')
                 break;
             default:
@@ -57,7 +60,7 @@ export default function Booklist() {
                 break;
 
         }
-    }, [])
+    }, [params.list, context.userData])
 
     return (
         <React.Fragment>
@@ -66,7 +69,7 @@ export default function Booklist() {
 
                 {bookData.map((book) => (
                     <React.Fragment>
-                        <ListItem key={`${book.title}${params.list}`} id={`${book.title}${params.list}`} alignItems="center">
+                        <ListItem key={book.id} id={`${book.title}${params.list}`} alignItems="center">
                             <Box sx={{ display: 'flex', justifyContent: 'center', mr: 'auto', ml: 'auto' }}>
                                 <img
                                     src={`${book.cover_img}`}
@@ -88,13 +91,37 @@ export default function Booklist() {
                                         </Typography>
                                         <Button onClick={() => { navigate(`/book/${book.id}`) }}>View Details</Button>
                                     </Stack>
-                                    {params.list === 'read' && <Stack sx={{ alignSelf: 'center' }}>
-                                        {book.Reviews[0].date_started && <Typography variant='caption' color='text.secondary'>Read Dates: {dayjs(book.Reviews[0].date_started).format('MMM D, YYYY')} - {dayjs(book.Reviews[0].date_finished).format('MMM D, YYYY')}</Typography>}
-                                        <Stack direction="row" spacing={0} alignItems="center">
-                                            <Typography component="legend" variant='caption'>Rating:</Typography>
-                                            <Rating name="half-rating-read" defaultValue={book.Reviews[0].rating} precision={0.5} readOnly />
-                                        </Stack>
-                                    </Stack>}
+                                    {params.list === 'read' &&
+                                        <Box>
+                                            {book.Reviews.length > 0 ? (<Stack sx={{ alignSelf: 'center' }}>
+                                                {book.Reviews[0].date_started && <Typography variant='caption' color='text.secondary'>Read Dates: {dayjs(book.Reviews[0].date_started).format('MMM D, YYYY')} - {dayjs(book.Reviews[0].date_finished).format('MMM D, YYYY')}</Typography>}
+                                                <Stack direction="row" spacing={0} alignItems="center">
+                                                    <Typography component="legend" variant='caption'>Rating:</Typography>
+                                                    <Rating name="half-rating-read" defaultValue={book.Reviews[0].rating} precision={0.5} readOnly />
+                                                </Stack>
+                                            </Stack>) : (
+                                                <Stack sx={{ alignSelf: 'center' }}>
+                                                    <Link>Add read dates </Link>
+                                                    {/* <Typography variant='caption'>to count this book towards your Reading Activity</Typography> */}
+                                                    {/* <Typography component="legend" variant='caption'>Rating:</Typography> */}
+
+
+
+                                                </Stack>
+                                            )}
+
+                                            <Stack direction='row'>
+                                                {book.Shelves.map((shelf) => (
+                                                    <Chip key={shelf.id} id={shelf.id} label={shelf.name} variant="outlined" onClick={() => navigate(`/shelf/${shelf.id}`)} />
+                                                ))}
+                                            </Stack>
+
+                                            <Stack sx={{ alignSelf: 'center' }}>
+                                                <Typography variant='caption' color='text.secondary'>Added on {dayjs(book.ReadBooks[0].MarkedRead.createdAt).format('MMM D, YYYY')}</Typography>
+                                            </Stack>
+
+                                        </Box>
+                                    }
                                 </Box>
 
 
@@ -103,7 +130,7 @@ export default function Booklist() {
 
                             </Box>
                         </ListItem>
-                        <Divider variant="inset" component="li" />
+                        <Divider key={`${book.id}-divider`} variant="inset" component="li" />
 
                     </React.Fragment>
                 ))}

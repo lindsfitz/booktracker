@@ -7,7 +7,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+// import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 
 export default function EditReview({reviewData, setEditReview, reviewInfo, setEditId}) {
@@ -23,7 +23,7 @@ export default function EditReview({reviewData, setEditReview, reviewInfo, setEd
         setStartValue(reviewData.date_started)
         setEndValue(reviewData.date_finished)
         setReadSwitch(reviewData.read)
-    },[])
+    },[reviewData])
 
     const handleSwitch = (event) => {
         setReadSwitch(event.target.checked);
@@ -59,8 +59,13 @@ export default function EditReview({reviewData, setEditReview, reviewInfo, setEd
             }
             await API.removeCurrentlyReading(context.userData.id, params.id)
             await API.removeFromDNF(context.userData.id, params.id)
+            await API.addRead({
+                userId: context.userData.id,
+                bookId: params.id
+            })
         }
         if (!readSwitch) {
+            /* Here I need to somehow figure out how to check and see if this book is currently marked as read/if changing the readswitch here would remove the only review where this book is marked as read -- or I guess it can just stay marked as read until they remove it even if they update both reviews? Idk need to decide how to handle this situation */
             updatedReview = {
                 read: readSwitch,
                 review: data.get('review'),

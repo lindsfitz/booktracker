@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import AppContext from '../../AppContext';
-import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Button, Tooltip, MenuItem, ListItemIcon, Divider, ClickAwayListener } from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Button, Tooltip, MenuItem, ListItemIcon, Divider } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
 import PersonAdd from '@mui/icons-material/PersonAdd';
@@ -101,13 +101,13 @@ const Navigation = () => {
                             </MenuItem>
                             <MenuItem onClick={handleCloseNavMenu}>
                                 <Button variant="text" color="custom"
-                                    onClick={() => navigate('/shelves')}>
+                                    onClick={() => navigate('/bookcase')}>
                                     Bookcase
                                 </Button>
                             </MenuItem>
                             <MenuItem onClick={handleCloseNavMenu}>
                                 <Button variant="text" color="custom"
-                                    onClick={() => navigate('/search')}>
+                                    onClick={() => navigate('/browse')}>
                                     Browse
                                 </Button>
                             </MenuItem>
@@ -141,11 +141,11 @@ const Navigation = () => {
                             Home
                         </Button>
                         <Button variant="text" color="custom"
-                            onClick={() => navigate('/shelves')}>
+                            onClick={() => navigate('/bookcase')}>
                             Bookcase
                         </Button>
                         <Button variant="text" color="custom"
-                            onClick={() => navigate('/search')}>
+                            onClick={() => navigate('/browse')}>
                             Browse
                         </Button>
                     </Box>

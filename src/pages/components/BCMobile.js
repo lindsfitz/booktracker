@@ -45,63 +45,7 @@ export default function BCMobile({ shelfId, books }) {
                     <Button variant='outlined' sx={{ color: '#9da283', border: '#939876 1px solid' }}
                             onClick={() => navigate(`/shelf/${shelfId}`)}>Shelf Details</Button>
                 </Box>
-
-                {/* <SwipeableViews
-                    index={activeStep}
-                    style={{ width: '100%' }}
-                    onChangeIndex={handleStepChange}
-                    enableMouseEvents>
-                    <Box sx={{ display: 'flex', width: '100%' }}>
-                        {books.slice(0, 3).map(book => (
-                            <Card key={`${shelfId}${book.id}`} id={`${shelfId}${book.id}`} sx={{ maxWidth: 200, textAlign: 'center', bgcolor: 'transparent' }} className='book-card'>
-                                <CardContent className='book-card'>
-                                    <CardMedia
-                                        component="img"
-                                        sx={{ maxHeight: 218, maxWidth: 148 }}
-                                        onClick={() => { navigate(`/book/${book.id}`) }}
-                                        image={`${book.cover_img}`}
-                                        alt={`${book.title}`}
-                                    />
-                                    <Typography variant='subtitle2' display='block'>{book.title}</Typography>
-                                    <Typography variant='caption' display='block'>{book.author}</Typography>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </Box>
-                    <Box sx={{ display: 'flex', width: '100%' }}>
-                        {books.slice(3, 5).map(book => (
-                            <Card key={`${shelfId}${book.id}`} id={`${shelfId}${book.id}`} sx={{ maxWidth: 200, textAlign: 'center', bgcolor: 'transparent' }} className='book-card'>
-                                <CardContent className='book-card'>
-                                    <CardMedia
-                                        component="img"
-                                        sx={{ maxHeight: 218, maxWidth: 148 }}
-                                        onClick={() => { navigate(`/book/${book.id}`) }}
-                                        image={`${book.cover_img}`}
-                                        alt={`${book.title}`}
-                                    />
-                                    <Typography variant='subtitle2' display='block'>{book.title}</Typography>
-                                    <Typography variant='caption' display='block'>{book.author}</Typography>
-                                </CardContent>
-                            </Card>
-                        ))}
                         
-                    </Box>
-                </SwipeableViews>
-                <MobileStepper
-                    steps={2}
-                    position="static"
-                    activeStep={activeStep}
-                    nextButton={
-                        <IconButton size="small"
-                            onClick={handleNext}
-                            disabled={activeStep === 1}>
-                            <NavigateNextIcon /></IconButton>
-                    }
-                    backButton={
-                        <IconButton size="small" onClick={handleBack} disabled={activeStep === 0}>
-                            <NavigateBeforeIcon /></IconButton>
-                    }
-                /> */}
             </Container>
 
         </React.Fragment>
