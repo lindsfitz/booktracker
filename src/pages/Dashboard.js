@@ -96,12 +96,12 @@ export default function Dashboard(props) {
                     <Divider />
                 </Container>
             ) : (
-                <Container id='currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { md: 'flex' }, flexDirection: 'column', width: 1 / 1 }}>
+                <Container id='currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { md: 'flex' }, flexDirection: 'column', width: 5 / 8 }}>
                     {/* spans whole width of the screen  */}
                     <Typography variant='subtitle1'>Currently Reading:</Typography>
                     <Divider />
                     {currentReads && <Carousel shelf={{ id: 'CR', Books: currentReads }} />}
-                    
+
                     <Divider />
                 </Container>
             )}
@@ -118,8 +118,8 @@ export default function Dashboard(props) {
                                 {/* quick links sections  */}
                                 {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
                                 <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
-                                <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
-                                <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
+                                <Button onClick={() => navigate('/books/dnf')}>Did Not Finish</Button>
+                                <Button onClick={() => navigate('/books/owned')}>Owned</Button>
                             </Stack>
                             <Stack spacing={0} alignItems="center"
                             >
@@ -149,29 +149,13 @@ export default function Dashboard(props) {
                             </List>
                         </Box>
                         <Box sx={{ textAlign: 'center' }}>
-                                <Button variant='outlined'
+                            <Button variant='outlined'
                                 onClick={() => navigate('/bookcase')}>
-                                    <Typography variant='caption'>
-                                        See All Shelves
-                                    </Typography>
-                                </Button>
-                            </Box>
-
-                        {/* <Box id='mobile-quicknav' sx={{ m: '5px auto 5px auto', display: 'flex' }}>
-                            <Typography variant='h6'>Your Bookcase:</Typography>
-                            <Stack spacing={0.5}
-                                alignItems="flex-start"
-                            >
-                                {context.userShelves.map((shelf) => (
-                                    <Button
-                                        key={`${shelf.id}`}
-                                        id={`${shelf.id}`}
-                                        onClick={() => navigate(`/shelf/${shelf.id}`)}
-                                    >
-                                        {shelf.name}</Button>
-                                ))}
-                            </Stack>
-                        </Box> */}
+                                <Typography variant='caption'>
+                                    See All Shelves
+                                </Typography>
+                            </Button>
+                        </Box>
                     </Container>
                 </Container>
             ) : (
@@ -182,41 +166,33 @@ export default function Dashboard(props) {
                         </div>}
 
                         <div id='quicknav' style={{ display: 'flex', margin: '5px auto 5px auto', justifyContent: 'center' }}>
-                            {/* <div id='bookshelf'>
-                               
-                                <Typography variant='h6'>Your Bookcase:</Typography>
-                                <Stack spacing={0.5}
-                                    alignItems="flex-start"
+
+
+                         
+                                <Stack direction='row' spacing={0} alignItems="flex-end"
                                 >
+                                    <Stack spacing={0} alignItems="center"
+                                    >
 
-                                    {context.userShelves.map((shelf) => (
-                                        <Button
-                                            key={`${shelf.id}`}
-                                            id={`${shelf.id}`}
-                                            onClick={() => navigate(`/shelf/${shelf.id}`)}
-                                        >
-                                            {shelf.name}</Button>
-                                    ))}
-                                </Stack>
-                            </div> */}
+                                        <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
+                                        <Button onClick={() => navigate('/books/dnf')}>Did Not Finish</Button>
+                                        <Button onClick={() => navigate('/books/owned')}>Owned</Button>
+                                    </Stack>
+                                    <Stack spacing={0} alignItems="center"
+                                    >
+                                        <Button onClick={() => navigate('/books/read')}>Read</Button>
+                                        <Button onClick={() => navigate('/books')}>All Books</Button>
+                                        <Button onClick={() => navigate('/bookcase')}>My Bookcase</Button>
 
-                            <Divider orientation='vertical' />
-
-                            <div id='quicklinks'>
-                                <Stack spacing={0} alignItems="flex-end"
-                                >
-                                    {/* quick links sections  */}
-                                    {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
-                                    <Button onClick={() => navigate('/books/read')}>Read</Button>
-                                    <Button onClick={() => navigate('/books')}>All Books</Button>
-                                    <Button onClick={() => navigate('/bookcase')}>My Bookcase</Button>
+                                    </Stack>
+                                    {/* 
+                                    
                                     <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
-                                    <Button onClick={() => navigate('/activity')}>Reading Activity</Button>
-                                    <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
-                                    <Button onClick={() => navigate('/books/dnf')}>DNF</Button>
-                                    <Button onClick={() => navigate('/books/owned')}>Owned</Button>
+                                    <Button onClick={() => navigate('/activity')}>Reading Activity</Button> */}
                                 </Stack>
-                            </div>
+
+                            
+                                <Divider />
                         </div>
 
                     </Box>
@@ -240,7 +216,7 @@ export default function Dashboard(props) {
                             </List>
                             <Box sx={{ textAlign: 'center' }}>
                                 <Button variant='outlined'
-                                onClick={() => navigate('/bookcase')}>
+                                    onClick={() => navigate('/bookcase')}>
                                     <Typography variant='caption'>
                                         See All Shelves
                                     </Typography>

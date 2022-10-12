@@ -1,8 +1,24 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import SwipeableViews from 'react-swipeable-views';
-import { Typography, Box, Card, CardMedia, CardContent, MobileStepper } from '@mui/material';
+import { Typography, Box, Card, CardMedia, CardContent, MobileStepper, Button } from '@mui/material';
 
+
+const imageStyle = {
+    boxShadow: '3px 2px 6px #888888',
+    height: { xs: 190, md: 218 }, 
+    width: { xs: 125, md: 148 },
+    m: 2
+}
+
+const detailsStyle = {
+    display:'flex',
+    flexDirection:'column', 
+    alignItems: 'flex-start', 
+    maxWidth:'50%', 
+    justifyContent:'center', 
+    ml:1
+}
 
 export default function ReadingMobile({ currentReads }) {
     let navigate = useNavigate();
@@ -21,17 +37,20 @@ export default function ReadingMobile({ currentReads }) {
                 enableMouseEvents>
                 {currentReads.map((book) => (
                     <Card key={`${book.id}`} className='book-card'>
-                        <CardContent sx={{ display: 'flex' }}>
+                        <CardContent sx={{ display: 'flex', justifyContent:'center' }}>
                             <CardMedia
                                 component="img"
-                                sx={{ maxHeight: { xs: 190, md: 218 }, maxWidth: { xs: 125, md: 148 } }}
+                                sx={imageStyle}
                                 onClick={() => { navigate(`/book/${book.id}`) }}
                                 image={`${book.cover_img}`}
                                 alt={`${book.title}`}
                             />
-                            <Box sx={{ m: 'auto', alignItems: 'center' }}>
+                            <Box sx={detailsStyle}>
                                 <Typography variant='subtitle2' display='block'>{book.title}</Typography>
                                 <Typography variant='caption' display='block'>{book.author}</Typography>
+                                <Button variant='outlined' size='small'>Update Progress</Button>
+                                {/* <Button size='small'>Mark Read</Button> */}
+
                             </Box>
                         </CardContent>
                     </Card>

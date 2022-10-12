@@ -37,7 +37,8 @@ export default function Book() {
     /* component states -- for snackbar/popups on page */
     const [shelfOpen, setShelfOpen] = useState(false);
     const [markOpen, setMarkOpen] = useState(false);
-    const anchorRef = useRef(null);
+    const shelfRef = useRef(null);
+    const markedRef = useRef(null)
     const [snack, setSnack] = useState(false);
     const [snackMessage, setSnackMessage] = useState(null)
 
@@ -394,7 +395,7 @@ export default function Book() {
     };
 
     const closeShelfMenu = (event) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) {
+        if (shelfRef.current && shelfRef.current.contains(event.target)) {
             return;
         }
         setShelfOpen(false);
@@ -405,7 +406,7 @@ export default function Book() {
     }
 
     const closeMarkMenu = (event) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) {
+        if (markedRef.current && markedRef.current.contains(event.target)) {
             return;
         }
         setMarkOpen(false);
@@ -563,7 +564,7 @@ export default function Book() {
                         <Button onClick={toggleReviewForm}>Cancel</Button>
                     </div>) : (
                         <Stack direction='row' spacing={1}>
-                            <ButtonGroup variant="contained" aria-label="text button group" ref={anchorRef}>
+                            <ButtonGroup variant="contained" aria-label="text button group" ref={shelfRef}>
                                 <Button onClick={toggleShelfMenu}>Add to Shelf</Button>
                                 <Button
                                     size="small"
@@ -581,7 +582,7 @@ export default function Book() {
                                     zIndex: 1,
                                 }}
                                 open={shelfOpen}
-                                anchorEl={anchorRef.current}
+                                anchorEl={shelfRef.current}
                                 role={undefined}
                                 transition
                                 disablePortal
@@ -620,7 +621,7 @@ export default function Book() {
                             </Popper>
 
                             {/* {bookBtnOptions()} */}
-                            <ButtonGroup aria-label="text button group" ref={anchorRef}>
+                            <ButtonGroup aria-label="text button group" ref={markedRef}>
                                 <Button onClick={toggleMarkMenu}>Mark As</Button>
                                 <Button
                                     size="small"
@@ -638,7 +639,7 @@ export default function Book() {
                                     zIndex: 1,
                                 }}
                                 open={markOpen}
-                                anchorEl={anchorRef.current}
+                                anchorEl={markedRef.current}
                                 role={undefined}
                                 transition
                                 disablePortal

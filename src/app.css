@@ -16,11 +16,15 @@
     --deep-brown: #443932;
 }
 
-body {
-    background-color: var(--tan);
+* {
+    margin: 0;
 }
 
-.App, #root {
+/* body {
+    background-color: var(--tan);
+} */
+
+/* .App, #root {
     width:100%;
     height: 100%;
 }
@@ -36,31 +40,31 @@ body {
     flex-direction: row-reverse;
 } */
 
-#right-column {
+/* #right-column {
     width:40%;
     margin:10px auto 10px auto;
     padding:10px;
     display:flex;
     flex-direction:column;
-}
+} */
 /* #left-column, #mobile-shelves {
     width: 60%;
     border-right: 1px solid var(--muted-blue)
 } */
 
-#stats {
+/* #stats {
     border:1px solid var(--muted-blue)
-}
+} */
 
 
-#shelves {
+/* #shelves { */
     /* border: 1px solid var(--olive); */
     /* border-bottom: 1px solid var(--muted-blue); */
     /* border-radius: 10px;  */
-    margin:5px;
+    /* margin:5px;
     padding:10px;
-}
+} */
 
-.book-card {
+/* .book-card {
     background: transparent;
-}
+} */ 

@@ -14,10 +14,11 @@ import Shelf from "./pages/Shelf";
 import Search from './pages/Search';
 import AllBooks from "./pages/AllBooks";
 import ReadingActivity from './pages/ReadingActivity';
-// import './app.css'
+import './app.css'
 import { themeOptions } from './utils/Theme';
 import Booklist from './pages/Booklist';
 import Book from './pages/Book';
+import BottomNav from './pages/components/BottomNav';
 
 function App() {
 
@@ -62,6 +63,7 @@ function App() {
               <Route path="/shelf/:id" element={<Shelf />} />
               <Route path="/activity" element={<ReadingActivity />} />
             </Routes>
+            {token && <BottomNav />}
           </BrowserRouter>
         </ThemeProvider>
       </AppContext.Provider>

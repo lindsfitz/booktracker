@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import AppContext from '../../AppContext';
-import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Button, Tooltip, MenuItem, ListItemIcon, Divider } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Button, Tooltip, MenuItem, ListItemIcon, Divider, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import AdbIcon from '@mui/icons-material/Adb';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
@@ -13,20 +13,24 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 const Navigation = () => {
     const context = useContext(AppContext);
     let navigate = useNavigate();
+    const theme = useTheme();
+    // const xs = useMediaQuery('(max-width:450px)')
+    const smxs = useMediaQuery(theme.breakpoints.down('sm'))
 
-    const [anchorElNav, setAnchorElNav] = useState(null);
+    // const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
 
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
+    // const handleOpenNavMenu = (event) => {
+    //     setAnchorElNav(event.currentTarget);
+    // };
+    
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
     };
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
+    // const handleCloseNavMenu = () => {
+    //     setAnchorElNav(null);
+    // };
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
@@ -43,26 +47,79 @@ const Navigation = () => {
         <AppBar position="static" id='nav'>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        BOOKTRACKER
-                    </Typography>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                    {smxs ? (
+                        <React.Fragment>
+                            <AdbIcon sx={{ display:'flex', mr: 1 }} />
+                            <Typography
+                                variant="h5"
+                                noWrap
+                                component="a"
+                                href=""
+                                sx={{
+                                    mr: 2,
+                                    display:'flex',
+                                    flexGrow: 1,
+                                    fontFamily: 'monospace',
+                                    fontWeight: 700,
+                                    letterSpacing: '.3rem',
+                                    color: 'inherit',
+                                    textDecoration: 'none',
+                                }}
+                            >
+                                BOOKTRACKER
+                            </Typography>
+
+                        </React.Fragment>
+                    ) : (
+                        <React.Fragment>
+                            <AdbIcon sx={{ display:'flex', mr: 1 }} />
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                component="a"
+                                href="/"
+                                sx={{
+                                    mr: 2,
+                                    display:'flex',
+                                    fontFamily: 'monospace',
+                                    fontWeight: 700,
+                                    letterSpacing: '.3rem',
+                                    color: 'inherit',
+                                    textDecoration: 'none',
+                                }}
+                            >
+                                BOOKTRACKER
+                            </Typography>
+
+                            <Box sx={{ color: 'white', flexGrow: 1, display: 'flex' }}>
+                                <Button variant="text" color="custom"
+                                    onClick={() => navigate('/')}
+                                >
+                                    Home
+                                </Button>
+                                <Button variant="text" color="custom"
+                                    onClick={() => navigate('/bookcase')}>
+                                    Bookcase
+                                </Button>
+                                <Button variant="text" color="custom"
+                                    onClick={() => navigate('/browse')}>
+                                    Browse
+                                </Button>
+                            </Box>
+                        </React.Fragment>
+                    )}
+
+
+
+
+
+
+
+
+
+
+                    {/* <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
                             aria-label="account of current user"
@@ -114,42 +171,19 @@ const Navigation = () => {
 
 
                         </Menu>
-                    </Box>
-                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href=""
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'flex', md: 'none' },
-                            flexGrow: 1,
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        BOOKTRACKER
-                    </Typography>
-                    <Box sx={{ color: 'white', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        <Button variant="text" color="custom"
-                            onClick={() => navigate('/')}
-                        >
-                            Home
-                        </Button>
-                        <Button variant="text" color="custom"
-                            onClick={() => navigate('/bookcase')}>
-                            Bookcase
-                        </Button>
-                        <Button variant="text" color="custom"
-                            onClick={() => navigate('/browse')}>
-                            Browse
-                        </Button>
-                    </Box>
+                    </Box> */}
 
+
+
+
+
+
+
+
+
+
+
+                    {/* FROM HERE DOWN IS INCLUDED ON BOTH --- AVATAR & USER SETTINGS MENU */}
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
