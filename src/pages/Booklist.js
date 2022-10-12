@@ -5,6 +5,8 @@ import AppContext from '../AppContext';
 import dayjs from 'dayjs'
 import { List, ListItem, Divider, Typography, Button, Box, Stack, Rating, Link, Chip } from '@mui/material';
 import AddReadDates from './components/modals/AddReadDates';
+import ReadingProgress from './components/modals/ReadingProgress';
+
 
 
 export default function Booklist() {
@@ -17,6 +19,8 @@ export default function Booklist() {
     const [title, setTitle] = useState('')
     const [openDates, setOpenDates] = useState(false)
     const [datesBook, setDatesBook] = useState(null)
+    const [openProgress, setOpenProgress] = useState(false)
+    const [bookProgress, setBookProgress] = useState(null)
 
     const handleDatesOpen = (book) => {
         setOpenDates(true);
@@ -26,11 +30,28 @@ export default function Booklist() {
             author: book.author,
             cover: book.cover_img
         })
-      };
-    
-      const handleDatesClose = () => {
+    };
+
+    const handleDatesClose = () => {
         setOpenDates(false);
-      };
+    };
+
+
+
+
+    const handleOpenProgress = (book) => {
+        setOpenProgress(true)
+        setBookProgress({
+            id: book.id,
+            title: book.title,
+            author: book.author,
+            cover: book.cover_img
+        })
+    }
+
+    const handleCloseProgress = () => {
+        setOpenProgress(false)
+    }
 
     const renderReadShelf = async (id) => {
         // const books = await API.getReadList(context.userData.id)
@@ -52,6 +73,62 @@ export default function Booklist() {
     const renderOwned = async (id) => {
         const books = await API.getOwnedList(id)
         setBookData(books.data)
+    }
+
+    const listDetails = (book) => {
+        switch (params.list) {
+            case 'read':
+                return (
+                    <Box>
+                        {book.Reviews.length > 0 ? (<Stack sx={{ alignSelf: 'center' }}>
+                            {book.Reviews[0].date_started && <Typography variant='caption' color='text.secondary'>Read Dates: {dayjs(book.Reviews[0].date_started).format('MMM D, YYYY')} - {dayjs(book.Reviews[0].date_finished).format('MMM D, YYYY')}</Typography>}
+                            <Stack direction="row" spacing={0} alignItems="center">
+                                <Typography component="legend" variant='caption'>Rating:</Typography>
+                                <Rating name="half-rating-read" defaultValue={book.Reviews[0].rating} precision={0.5} readOnly />
+                            </Stack>
+                        </Stack>) : (
+                            <Stack sx={{ alignSelf: 'center' }}>
+                                <Link onClick={() => handleDatesOpen(book)}>Add read dates </Link>
+                            </Stack>
+                        )}
+
+                        <Stack sx={{ alignSelf: 'center' }}>
+                            <Typography variant='caption' color='text.secondary'>Added on {dayjs(book.ReadBooks[0].MarkedRead.createdAt).format('MMM D, YYYY')}</Typography>
+                        </Stack>
+
+                    </Box>
+                );
+            case 'currently':
+                return (
+                    <Box>
+                        <Stack>
+                            <Button variant='outlined' size='small' onClick={()=>handleOpenProgress(book)}>Update Progress</Button>
+                            <Button size='small'>Finished Reading</Button>
+                            <Stack sx={{ alignSelf: 'center' }}>
+                                <Typography variant='caption' color='text.secondary'>Added on {dayjs(book.CurrentBooks[0].CurrentlyReading.createdAt).format('MMM D, YYYY')}</Typography>
+                            </Stack>
+                        </Stack>
+                    </Box>
+                );
+            case 'dnf':
+                return (
+                    <Box>
+                        <Stack sx={{ alignSelf: 'center' }}>
+                            <Typography variant='caption' color='text.secondary'>Added on {dayjs(book.DNFBooks[0].NotFinished.createdAt).format('MMM D, YYYY')}</Typography>
+                        </Stack>
+                    </Box>
+                );
+            case 'owned':
+                return (
+                    <Box>
+                        <Stack sx={{ alignSelf: 'center' }}>
+                            <Typography variant='caption' color='text.secondary'>Added on {dayjs(book.OwnedBooks[0].OwnedItems.createdAt).format('MMM D, YYYY')}</Typography>
+                        </Stack>
+                    </Box>
+                );
+            default:
+                return;
+        }
     }
 
     useEffect(() => {
@@ -108,37 +185,14 @@ export default function Booklist() {
                                         </Typography>
                                         <Button onClick={() => { navigate(`/book/${book.id}`) }}>View Details</Button>
                                     </Stack>
-                                    {params.list === 'read' &&
-                                        <Box>
-                                            {book.Reviews.length > 0 ? (<Stack sx={{ alignSelf: 'center' }}>
-                                                {book.Reviews[0].date_started && <Typography variant='caption' color='text.secondary'>Read Dates: {dayjs(book.Reviews[0].date_started).format('MMM D, YYYY')} - {dayjs(book.Reviews[0].date_finished).format('MMM D, YYYY')}</Typography>}
-                                                <Stack direction="row" spacing={0} alignItems="center">
-                                                    <Typography component="legend" variant='caption'>Rating:</Typography>
-                                                    <Rating name="half-rating-read" defaultValue={book.Reviews[0].rating} precision={0.5} readOnly />
-                                                </Stack>
-                                            </Stack>) : (
-                                                <Stack sx={{ alignSelf: 'center' }}>
-                                                    <Link onClick={()=> handleDatesOpen(book)}>Add read dates </Link>
-                                                    {/* <Typography variant='caption'>to count this book towards your Reading Activity</Typography> */}
-                                                    {/* <Typography component="legend" variant='caption'>Rating:</Typography> */}
+                                    {listDetails(book)}
 
 
-
-                                                </Stack>
-                                            )}
-
-                                            <Stack direction='row'>
-                                                {book.Shelves.map((shelf) => (
-                                                    <Chip key={shelf.id} id={shelf.id} label={shelf.name} variant="outlined" onClick={() => navigate(`/shelf/${shelf.id}`)} />
-                                                ))}
-                                            </Stack>
-
-                                            <Stack sx={{ alignSelf: 'center' }}>
-                                                <Typography variant='caption' color='text.secondary'>Added on {dayjs(book.ReadBooks[0].MarkedRead.createdAt).format('MMM D, YYYY')}</Typography>
-                                            </Stack>
-
-                                        </Box>
-                                    }
+                                    <Stack direction='row'>
+                                        {book.Shelves.map((shelf) => (
+                                            <Chip key={shelf.id} id={shelf.id} size='small' label={shelf.name} variant="outlined" onClick={() => navigate(`/shelf/${shelf.id}`)} />
+                                        ))}
+                                    </Stack>
                                 </Box>
 
 
@@ -154,6 +208,7 @@ export default function Booklist() {
             </List>}
 
             {openDates && <AddReadDates book={datesBook} openDates={openDates} handleDatesClose={handleDatesClose} renderReadShelf={renderReadShelf} />}
+            {openProgress && <ReadingProgress book={bookProgress} open={openProgress} handleClose={handleCloseProgress} />}
         </React.Fragment>
     )
 }

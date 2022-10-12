@@ -10,6 +10,7 @@ import { List, Container, Typography, Box, Divider, Button, Stack, useMediaQuery
 import ReadingMobile from './components/mobile/ReadingMobile';
 import OneShelf from './components/OneShelf';
 import Carousel from './components/Carousel';
+import ReadingProgress from './components/modals/ReadingProgress';
 
 // const imageStyle = {
 //     boxShadow:'3px 2px 6px #888888',
@@ -39,6 +40,7 @@ export default function Dashboard(props) {
     const [userStats, setUserStats] = useState(null);
     const [activityGoals, setActivityGoals] = useState(null)
     const [currentReads, setCurrentReads] = useState(null);
+ 
 
 
     // on page load, check for token (aka logged in user) and render shelves if logged in. If no token (not logged in) or token can't be verified (user doesn't exist) then redirect to the login page
@@ -230,6 +232,8 @@ export default function Dashboard(props) {
             )}
 
             {context.shelfDialog && <AddShelf />}
+
+            
 
 
         </React.Fragment>
