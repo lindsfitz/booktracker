@@ -18,7 +18,7 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
          ** ALSO: make sure that fields default to null if they haven't been changed from their original values (placeholders?) currently submitting the starting value if not changed at all )
 */
 
-export default function AddReview({ reviewInfo, toggleReviewForm }) {
+export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBook }) {
 
     const context = useContext(AppContext);
     const params = useParams();
@@ -35,6 +35,7 @@ export default function AddReview({ reviewInfo, toggleReviewForm }) {
 
     const handleStartDate = (newValue) => {
         setStartValue(newValue);
+        console.log(bookId)
     };
 
     const handleEndDate = (newValue) => {
@@ -44,7 +45,17 @@ export default function AddReview({ reviewInfo, toggleReviewForm }) {
     const reviewSubmit = async (e) => {
         e.preventDefault();
         console.log('submitted')
-        const data = new FormData(e.currentTarget)
+        let id;
+        if (bookId) {
+            id = bookId
+        } else {
+            console.log('no existing book')
+            try {
+                const book = await addBook();
+                id = book.data.id
+            } catch (err) { console.log(err) }
+        }
+        const data = new FormData(e.target)
         let startDate = dayjs(startValue)
         let finishDate = dayjs(endValue)
         if (readSwitch) {
@@ -53,34 +64,38 @@ export default function AddReview({ reviewInfo, toggleReviewForm }) {
                 date_finished: finishDate.format('YYYY/MM/DD'),
                 year_finished: finishDate.year(),
                 month_finished: finishDate.month(),
-                public:false,
+                public: false,
                 rating: data.get('rating'),
                 review: data.get('review'),
                 format: data.get('format'),
                 series: data.get('series'),
                 UserId: context.userData.id,
-                BookId: params.id
+                BookId: id
             }
-            await API.removeCurrentlyReading(context.userData.id,params.id)
-            await API.removeFromDNF(context.userData.id,params.id)
-            await API.addRead({
-                userId: context.userData.id,
-                bookId: params.id
-            })
-            const reviewData = await API.newReview(newReview)
-            console.log(reviewData)
+            try {
+                await API.removeCurrentlyReading(context.userData.id, id)
+                await API.removeFromDNF(context.userData.id, id)
+                await API.addRead({
+                    userId: context.userData.id,
+                    bookId: id
+                })
+                const reviewData = await API.newReview(newReview)
+                console.log(reviewData)
+            } catch (err) { console.log(err) }
 
 
         }
         if (!readSwitch) {
             const newReview = {
-                public:false,
+                public: false,
                 review: data.get('review'),
                 UserId: context.userData.id,
-                BookId: params.id
+                BookId: id
             }
-            const reviewData = await API.newNote(newReview)
-            console.log(reviewData)
+            try {
+                const reviewData = await API.newNote(newReview)
+                console.log(reviewData)
+            } catch (err) { console.log(err) }
         }
         // console.log(newReview)
 

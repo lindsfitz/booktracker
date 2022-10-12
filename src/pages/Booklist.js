@@ -10,6 +10,7 @@ import AddReadDates from './components/modals/AddReadDates';
 export default function Booklist() {
     const context = useContext(AppContext);
     const params = useParams()
+
     let navigate = useNavigate()
 
     const [bookData, setBookData] = useState(null)
@@ -35,7 +36,6 @@ export default function Booklist() {
         // const books = await API.getReadList(context.userData.id)
         const books = await API.newReadList(id)
         // console.log(books.data)
-        console.log(books.data)
         setBookData(books.data)
     }
 

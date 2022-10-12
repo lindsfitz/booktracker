@@ -10,7 +10,7 @@ import EditReview from './modals/EditReview';
 
 
 
-export default function Review({ review, reviewInfo, openSnackbar }) {
+export default function Review({ review, reviewInfo, openSnackbar, bookId }) {
 
     const [editReview, setEditReview] = useState(false);
     const [editId, setEditId] = useState(null);
@@ -76,7 +76,7 @@ export default function Review({ review, reviewInfo, openSnackbar }) {
             </Container>}
 
             {editId === review.id &&
-                <EditReview reviewData={review} setEditReview={setEditReview} reviewInfo={reviewInfo} setEditId={setEditId} />
+                <EditReview reviewData={review} setEditReview={setEditReview} reviewInfo={reviewInfo} setEditId={setEditId} bookId={bookId} />
             }
         </Paper>
     )

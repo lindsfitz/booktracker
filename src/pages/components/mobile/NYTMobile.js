@@ -41,7 +41,7 @@ export default function NYTMobile({ bestSellers, nytSearch }) {
                                         badgeContent={book.rank} color="primary">
                                         <CardMedia
                                             component="img"
-                                            onClick={() => nytSearch(book.primary_isbn13)}
+                                            onClick={() => nytSearch(book.primary_isbn13, book.title, book.author)}
                                             // sx={{ maxHeight: { xs: 190, md: 218 }, maxWidth: { xs: 125, md: 148 } }}
                                             height='140'
                                             image={`${book.book_image}`}

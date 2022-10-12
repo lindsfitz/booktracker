@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import AppContext from '../../AppContext';
 import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Button, Tooltip, MenuItem, ListItemIcon, Divider, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -14,6 +14,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 const Navigation = () => {
     const context = useContext(AppContext);
+    const location = useLocation()
     let navigate = useNavigate();
     const theme = useTheme();
     // const xs = useMediaQuery('(max-width:450px)')
@@ -45,6 +46,14 @@ const Navigation = () => {
         navigate('/login')
     }
 
+    const backBtn = () => {
+        if (location.pathname === '/books/read' || location.pathname === '/books/currently' || location.pathname === '/books/dnf' || location.pathname === '/books/owned' || location.pathname === '/activity' || location.pathname.includes('/book/')) {
+            return (
+                <IconButton onClick={()=>navigate(-1)}><ArrowBackIosIcon /></IconButton>
+            )
+        }
+    }
+
     return (
         <AppBar position="static" id='nav'>
             <Container maxWidth="xl">
@@ -52,7 +61,8 @@ const Navigation = () => {
 
                     {smxs ? (
                         <React.Fragment>
-                            <IconButton><ArrowBackIosIcon /></IconButton>
+                            {/* <IconButton><ArrowBackIosIcon /></IconButton> */}
+                            {backBtn()}
                             <AdbIcon sx={{ display:'flex', mr: 1 }} />
                             <Typography
                                 variant="h5"

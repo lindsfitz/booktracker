@@ -1,15 +1,15 @@
 import React, { useState, useContext } from 'react';
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AppContext from '../../../AppContext';
 import API from '../../../utils/API'
 import {
-    Typography, FormControl, Rating, Stack, Switch, Box,
-    TextField, Button, useMediaQuery, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Card, CardContent, CardMedia
+    Typography, Stack, Box,
+    TextField, Button, useMediaQuery, Dialog, DialogTitle, DialogContent, DialogActions, Card, CardContent, CardMedia
 } from '@mui/material/';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+// import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 import { useTheme } from '@mui/material/styles';

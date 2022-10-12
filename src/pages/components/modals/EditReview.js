@@ -10,7 +10,7 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 // import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 
-export default function EditReview({reviewData, setEditReview, reviewInfo, setEditId}) {
+export default function EditReview({reviewData, setEditReview, reviewInfo, setEditId, bookId}) {
 
     const context = useContext(AppContext);
     const params = useParams();
@@ -23,6 +23,7 @@ export default function EditReview({reviewData, setEditReview, reviewInfo, setEd
         setStartValue(reviewData.date_started)
         setEndValue(reviewData.date_finished)
         setReadSwitch(reviewData.read)
+        console.log(bookId)
     },[reviewData])
 
     const handleSwitch = (event) => {
@@ -57,11 +58,11 @@ export default function EditReview({reviewData, setEditReview, reviewInfo, setEd
                 format: data.get('format'),
                 series: data.get('series'),
             }
-            await API.removeCurrentlyReading(context.userData.id, params.id)
-            await API.removeFromDNF(context.userData.id, params.id)
+            await API.removeCurrentlyReading(context.userData.id, bookId)
+            await API.removeFromDNF(context.userData.id, bookId)
             await API.addRead({
                 userId: context.userData.id,
-                bookId: params.id
+                bookId: bookId
             })
         }
         if (!readSwitch) {

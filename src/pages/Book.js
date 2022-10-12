@@ -514,7 +514,7 @@ export default function Book() {
                 // console.log(location.state)
                 if (book.data.id) {
                     console.log(book.data.id)
-                    navigate(`/book/${book.data.id}`)
+                    // navigate(`/book/${book.data.id}`)
                     setdbBook(true)
                     dbBookInfo(book.data.id)
                 } else { olBookInfo(params.id) }
@@ -560,7 +560,7 @@ export default function Book() {
                     <Divider />
 
                     {reviewForm ? (<div>
-                        <AddReview reviewInfo={reviewInfo} toggleReviewForm={toggleReviewForm} />
+                        <AddReview reviewInfo={reviewInfo} toggleReviewForm={toggleReviewForm} bookId={bookData.id} addBook={addBook} />
                         <Button onClick={toggleReviewForm}>Cancel</Button>
                     </div>) : (
                         <Stack direction='row' spacing={1}>
@@ -706,6 +706,7 @@ export default function Book() {
                                 review={review}
                                 reviewInfo={reviewInfo}
                                 openSnackbar={openSnackbar}
+                                bookId={bookData.id}
                             />)}
 
                         </Container>}

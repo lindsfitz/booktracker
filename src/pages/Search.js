@@ -92,6 +92,7 @@ export default function Search() {
             date: best.data.results.bestsellers_date,
             title: best.data.results.display_name
         })
+        console.log(best.data.results.books)
     }
 
     const subjectSearch = async () => {
@@ -106,7 +107,8 @@ export default function Search() {
 
     }
 
-    const nytSearch = async (isbn, title, author) => {
+    const nytSearch = async (isbn,title,author) => {
+        console.log(isbn,title,author)
         const bookFind = await API.olBookISBN(isbn)
         const formattedTitle = title.toLowerCase().split(' ')
             .map((s) => s.charAt(0).toUpperCase() + s.substring(1)).join(' ');
@@ -216,7 +218,7 @@ export default function Search() {
                     ) : (
                         <Box sx={{ display: { sm: 'flex' }, flexWrap: 'wrap' }}>
                             {bestSellers.map(book => (
-                                <Card key={book.primary_isbn13} sx={{ maxWidth: 120 }}>
+                                <Card key={book.primary_isbn13} sx={{ maxWidth: 120 }} onClick={()=> nytSearch(book.primary_isbn13,book.title, book.author)}>
                                     <CardContent sx={{ wordWrap: 'break-word' }}>
                                         <Badge anchorOrigin={{
                                             vertical: 'top',
@@ -225,7 +227,7 @@ export default function Search() {
                                             badgeContent={book.rank} color="primary">
                                             <CardMedia
                                                 component="img"
-                                                onClick={() => nytSearch(book.primary_isbn13, book.title, book.author)}
+                                                // onClick={() => nytSearch(book.title)}
                                                 // sx={{ maxHeight: { xs: 190, md: 218 }, maxWidth: { xs: 125, md: 148 } }}
                                                 height='140'
                                                 image={`${book.book_image}`}
