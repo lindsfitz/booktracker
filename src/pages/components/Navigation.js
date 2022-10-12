@@ -9,6 +9,8 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 const Navigation = () => {
     const context = useContext(AppContext);
@@ -50,6 +52,7 @@ const Navigation = () => {
 
                     {smxs ? (
                         <React.Fragment>
+                            <IconButton><ArrowBackIosIcon /></IconButton>
                             <AdbIcon sx={{ display:'flex', mr: 1 }} />
                             <Typography
                                 variant="h5"

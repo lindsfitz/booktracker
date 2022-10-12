@@ -4,6 +4,7 @@ import API from '../utils/API';
 import AppContext from '../AppContext';
 import dayjs from 'dayjs'
 import { List, ListItem, Divider, Typography, Button, Box, Stack, Rating, Link, Chip } from '@mui/material';
+import AddReadDates from './components/modals/AddReadDates';
 
 
 export default function Booklist() {
@@ -13,6 +14,22 @@ export default function Booklist() {
 
     const [bookData, setBookData] = useState(null)
     const [title, setTitle] = useState('')
+    const [openDates, setOpenDates] = useState(false)
+    const [datesBook, setDatesBook] = useState(null)
+
+    const handleDatesOpen = (book) => {
+        setOpenDates(true);
+        setDatesBook({
+            id: book.id,
+            title: book.title,
+            author: book.author,
+            cover: book.cover_img
+        })
+      };
+    
+      const handleDatesClose = () => {
+        setOpenDates(false);
+      };
 
     const renderReadShelf = async (id) => {
         // const books = await API.getReadList(context.userData.id)
@@ -101,7 +118,7 @@ export default function Booklist() {
                                                 </Stack>
                                             </Stack>) : (
                                                 <Stack sx={{ alignSelf: 'center' }}>
-                                                    <Link>Add read dates </Link>
+                                                    <Link onClick={()=> handleDatesOpen(book)}>Add read dates </Link>
                                                     {/* <Typography variant='caption'>to count this book towards your Reading Activity</Typography> */}
                                                     {/* <Typography component="legend" variant='caption'>Rating:</Typography> */}
 
@@ -135,6 +152,8 @@ export default function Booklist() {
                     </React.Fragment>
                 ))}
             </List>}
+
+            {openDates && <AddReadDates book={datesBook} openDates={openDates} handleDatesClose={handleDatesClose} renderReadShelf={renderReadShelf} />}
         </React.Fragment>
     )
 }
