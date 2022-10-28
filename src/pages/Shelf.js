@@ -10,12 +10,30 @@ import API from '../utils/API';
 import dayjs from 'dayjs'
 import AppContext from '../AppContext';
 import EditShelf from './components/modals/EditShelf';
-import { Container, List, ListItem, Divider, Stack, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, Chip } from '@mui/material';
+import { Container, List, ListItem, Divider, Stack, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, Chip, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 const imageStyle = {
     boxShadow: '3px 2px 6px #888888',
     width: 148,
     height: 218
+}
+
+const titleBoxStyle = {
+    p: 3,
+    textAlign: 'center',
+    maxWidth: { xs: 3 / 4, sm: 1 / 2 },
+    mr: 'auto',
+    ml: 'auto'
+}
+
+const bookBoxStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: 1 / 2,
+    mr: 'auto',
+    ml: 'auto'
 }
 
 
@@ -83,14 +101,18 @@ export default function Shelf() {
     return (
         <React.Fragment>
             {shelf && <Container>
-                <Box sx={{ p: 3, textAlign: 'center', maxWidth: { xs: 3 / 4, sm: 1 / 2 } }}>
+                <Box sx={titleBoxStyle}>
                     <Typography variant='h5'>{shelf.name}</Typography>
                     <Typography variant='subtitle2'>{shelf.description}</Typography>
                     <Typography variant='caption' color='text.secondary'>Last Updated: {dayjs(shelf.last_update).format('MMM D, YYYY')}</Typography>
-                    <Stack direction='row'>
-                        <Button>Add Books</Button>
-                        <Button onClick={() => setEditDialog(true)}>Edit</Button>
-                        <Button onClick={handleClickOpen}>Delete</Button>
+                    <Stack direction='row' justifyContent='flex-end' spacing={2}>
+                        {/* <Button>Add Books</Button> */}
+                        <IconButton aria-label="edit" size="small" onClick={() => setEditDialog(true)}>
+                            <EditIcon fontSize="inherit" />
+                        </IconButton>
+                        <IconButton aria-label="delete" size="small" onClick={handleClickOpen}>
+                            <DeleteIcon fontSize="inherit" />
+                        </IconButton>
                     </Stack>
                 </Box>
 
@@ -100,7 +122,7 @@ export default function Shelf() {
 
                         <React.Fragment>
                             <ListItem key={book.id} id={`${book.title}${shelf.name}shelf`} alignItems="center">
-                                <Box sx={{ display: 'flex', justifyContent: 'center', mr: 'auto', ml: 'auto' }}>
+                                <Box sx={bookBoxStyle}>
                                     <img
                                         src={`${book.cover_img}`}
                                         srcSet={`${book.cover_img}`}
@@ -145,9 +167,6 @@ export default function Shelf() {
                                     </Box>
 
                                 </Box>
-
-
-
                             </ListItem>
                             <Divider key={`${book.id}-divider`} variant="inset" component="li" />
 

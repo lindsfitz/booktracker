@@ -41,7 +41,7 @@ export default function Review({ review, reviewInfo, openSnackbar, bookId }) {
                     </Stack>
 
                     <Stack spacing={0.5} direction="row" alignItems="center">
-                        <IconButton onClick={() => toggleEditForm(review.id)} aria-label="delete" size="small">
+                        <IconButton onClick={() => toggleEditForm(review.id)} aria-label="edit" size="small">
                             <EditIcon fontSize="inherit" />
                         </IconButton>
                         <IconButton onClick={() => deleteReview(review.id)} aria-label="delete" size="small">

@@ -7,6 +7,7 @@ import { render } from '@testing-library/react';
 import ReadingMobile from './components/mobile/ReadingMobile';
 import OneShelf from './components/OneShelf';
 import Carousel from './components/Carousel';
+import ShelfStack from './components/ShelfStack';
 
 export default function AllBooks() {
     const context = useContext(AppContext);
@@ -18,36 +19,43 @@ export default function AllBooks() {
     const [previewShelves, setPreviewShelves] = useState(null)
 
     const renderCurrentReads = async () => {
-        const reads = await API.getReadingList(context.userData.id)
-        setCurrentReads(reads.data)
+        try {
+            const reads = await API.getReadingList(context.userData.id)
+            setCurrentReads(reads.data)
+        } catch (err) { console.log(err) }
     }
 
     const renderShelves = async () => {
-        const profile = await API.getProfile(context.userData.id)
-        if (profile.data.favorite_shelf) {
-            const favShelf = context.userShelves.filter(shelf => shelf.id === profile.data.favorite_shelf)
-            setFavoriteShelf(favShelf)
-            const otherShelves = context.userShelves.filter(shelf => shelf.id !== profile.data.favorite_shelf)
-            setPreviewShelves(otherShelves)
-        } else {
-            setFavoriteShelf(context.userShelves[0])
-            setPreviewShelves(context.userShelves.slice(1, 4))
-        }
-
+        try {
+            const profile = await API.getProfile(context.userData.id)
+            if (profile.data.favorite_shelf) {
+                const favShelf = context.userShelves.filter(shelf => shelf.id === profile.data.favorite_shelf)
+                setFavoriteShelf(favShelf)
+                const otherShelves = context.userShelves.filter(shelf => shelf.id !== profile.data.favorite_shelf)
+                setPreviewShelves(otherShelves)
+            } else {
+                setFavoriteShelf(context.userShelves[0])
+                setPreviewShelves(context.userShelves.slice(1, 4))
+            }
+        } catch (err) { console.log(err) }
     }
 
     const renderReadShelf = async () => {
-        const books = await API.allReadBooks(context.userData.id)
-        setMarkedRead({
-            name: 'Read',
-            id: 'markedread',
-            Books: books.data
-        })
+        try {
+            const books = await API.newReadList(context.userData.id)
+            setMarkedRead({
+                name: 'Read',
+                id: 'markedread',
+                Books: books.data
+            })
+        } catch (err) { console.log(err) }
     }
 
     const renderOwned = async () => {
-        const books = await API.allOwnedBooks(context.userData.id)
-        setOwnedBooks(books.data)
+        try {
+            const books = await API.getOwnedList(context.userData.id)
+            setOwnedBooks(books.data)
+        } catch (err) { console.log(err) }
     }
 
 
@@ -92,23 +100,23 @@ export default function AllBooks() {
                 <Typography variant='subtitle2' color='text.secondary'>Pinned Shelf</Typography>
                 <Divider />
                 <List id='pinned-shelf' sx={{ width: '100%', bgcolor: 'transparent' }}>
-                    {favoriteShelf && <OneShelf shelf={favoriteShelf} length={4} />}
+                    {/* {favoriteShelf && <OneShelf shelf={favoriteShelf} length={4} />} */}
+                    {favoriteShelf && <Carousel shelf={favoriteShelf} />}
 
                 </List>
                 <Divider />
             </Container>
 
             <Container>
-                {favoriteShelf && <Carousel shelf={favoriteShelf} />}
             </Container>
 
             <List id='marked-read' sx={{ width: '100%', bgcolor: 'transparent' }}>
-                {markedRead && <OneShelf shelf={markedRead} length={1} />}
+                {markedRead && <ShelfStack shelf={markedRead} />}
 
             </List>
 
             <Container>
-            <Typography variant='subtitle2' color='text.secondary'>Bookshelves</Typography>
+                <Typography variant='subtitle2' color='text.secondary'>Bookshelves</Typography>
                 <Divider />
                 <List id='preview-shelves' sx={{ display: 'flex', bgcolor: 'transparent' }}>
                     {previewShelves &&

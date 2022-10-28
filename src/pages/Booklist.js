@@ -7,7 +7,13 @@ import { List, ListItem, Divider, Typography, Button, Box, Stack, Rating, Link, 
 import AddReadDates from './components/modals/AddReadDates';
 import ReadingProgress from './components/modals/ReadingProgress';
 
-
+const bookBoxStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: 2/6,
+    mr: 'auto',
+    ml: 'auto'
+}
 
 export default function Booklist() {
     const context = useContext(AppContext);
@@ -164,7 +170,7 @@ export default function Booklist() {
                 {bookData.map((book) => (
                     <React.Fragment>
                         <ListItem key={book.id} id={`${book.title}${params.list}`} alignItems="center">
-                            <Box sx={{ display: 'flex', justifyContent: 'center', mr: 'auto', ml: 'auto' }}>
+                            <Box sx={bookBoxStyle}>
                                 <img
                                     src={`${book.cover_img}`}
                                     srcSet={`${book.cover_img}`}
