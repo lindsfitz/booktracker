@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import AppContext from '../../AppContext';
 import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Button, Tooltip, MenuItem, ListItemIcon, Divider, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { createSvgIcon } from '@mui/material/utils';
 import AdbIcon from '@mui/icons-material/Adb';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
@@ -11,6 +12,9 @@ import PersonIcon from '@mui/icons-material/Person';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+
+
+const BookendR = createSvgIcon()
 
 const Navigation = () => {
     const context = useContext(AppContext);
@@ -63,7 +67,8 @@ const Navigation = () => {
                         <React.Fragment>
                             {/* <IconButton><ArrowBackIosIcon /></IconButton> */}
                             {backBtn()}
-                            <AdbIcon sx={{ display:'flex', mr: 1 }} />
+                            <img style={{height:'40px'}} src='/assets/booked.png' />
+                            
                             <Typography
                                 variant="h5"
                                 noWrap
@@ -71,6 +76,7 @@ const Navigation = () => {
                                 href=""
                                 sx={{
                                     mr: 2,
+                                    ml:1,
                                     display:'flex',
                                     flexGrow: 1,
                                     fontFamily: 'monospace',
@@ -80,13 +86,17 @@ const Navigation = () => {
                                     textDecoration: 'none',
                                 }}
                             >
-                                BOOKTRACKER
+                                booked
                             </Typography>
 
                         </React.Fragment>
                     ) : (
                         <React.Fragment>
-                            <AdbIcon sx={{ display:'flex', mr: 1 }} />
+                            {/* <AdbIcon sx={{ display:'flex', mr: 1 }} /> */}
+                            <img style={{height:'40px'}} src='/assets/booked.png' />
+                             
+                            {/* <img style={{width:'50px'}} src='/assets/bookends.svg' /> */}
+
                             <Typography
                                 variant="h6"
                                 noWrap
@@ -94,6 +104,7 @@ const Navigation = () => {
                                 href="/"
                                 sx={{
                                     mr: 2,
+                                    ml:1,
                                     display:'flex',
                                     fontFamily: 'monospace',
                                     fontWeight: 700,
@@ -102,8 +113,10 @@ const Navigation = () => {
                                     textDecoration: 'none',
                                 }}
                             >
-                                BOOKTRACKER
+                                 booked
                             </Typography>
+                            {/* <img style={{width:'24px'}} src='/assets/bookendR.png' /> */}
+
 
                             <Box sx={{ color: 'white', flexGrow: 1, display: 'flex' }}>
                                 <Button variant="text" color="custom"
