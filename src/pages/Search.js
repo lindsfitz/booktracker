@@ -172,7 +172,7 @@ export default function Search() {
             </Container>}
 
             {searchResults ? (
-                <Container>
+                <Container sx={{mb:'60px'}}>
                     <List>
                         {searchResults.map((book) => (
                             <ListItem key={`${book.cover_edition_key}`} id={book.cover_edition_key}

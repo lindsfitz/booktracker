@@ -87,8 +87,8 @@ export default function DashStats({ userStats, goals }) {
         const date = new Date();
         setYear(date.getFullYear())
         setMonth(date.getMonth())
-        if (userStats.month) { setMonthProgress((userStats.month.bookCount / goals.month.value * 100)) }
-        if (userStats.year) { setYearProgress((userStats.year.bookCount / goals.year.value * 100)) }
+        if (userStats.month && goals.month) { setMonthProgress((userStats.month.bookCount / goals.month.value * 100)) }
+        if (userStats.year && goals.year) { setYearProgress((userStats.year.bookCount / goals.year.value * 100)) }
     }, [userStats, goals])
 
     return (

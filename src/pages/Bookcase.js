@@ -51,7 +51,7 @@ export default function Bookcase() {
 
     return (
         <React.Fragment>
-            <Container sx={{ mr: 'auto', ml: 'auto', textAlign:'center', mt:2 }}>
+            <Container sx={{ mr: 'auto', ml: 'auto', textAlign:'center', mt:2, mb:'50px' }}>
                 <Typography variant='h6'>Bookcase</Typography>
                 <Container sx={{ display: 'flex', justifyContent: 'space-between', m: 5, width:'90%' }}>
                     <ButtonGroup>

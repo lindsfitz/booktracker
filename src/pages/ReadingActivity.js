@@ -214,7 +214,7 @@ export default function ReadingActivity() {
                     </Container>
                     }
 
-                    {monthlyBooks && <Container sx={{ width: { xs: 1 / 1, md: 4 / 5 }, mr: 'auto', ml: 'auto' }}>
+                    {monthlyBooks && <Container sx={{ width: { xs: 1 / 1, md: 4 / 5 }, mr: 'auto', ml: 'auto', mb:'50px' }}>
                         <List sx={{ bgcolor: 'background.paper' }}>
                             {monthlyBooks.map((book) => (<React.Fragment>
                                 <ListItem key={book.id} alignItems="flex-start" sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center' }}>
@@ -285,7 +285,7 @@ export default function ReadingActivity() {
                     </Container>}
 
 
-                    {yearlyBooks && <Container sx={{ width: { xs: 1 / 1, md: 4 / 5 }, mr: 'auto', ml: 'auto' }}>
+                    {yearlyBooks && <Container sx={{ width: { xs: 1 / 1, md: 4 / 5 }, mr: 'auto', ml: 'auto', mb:'50px' }}>
                         <List sx={{ bgcolor: 'background.paper' }}>
                             {yearlyBooks.map((book) => (<React.Fragment>
                                 <ListItem key={`${book.title}${book.id}month`} alignItems="flex-start" sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center' }}>

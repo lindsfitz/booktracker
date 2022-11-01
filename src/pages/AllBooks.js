@@ -115,7 +115,7 @@ export default function AllBooks() {
 
             </List>
 
-            <Container>
+            <Container sx={{mb:'50px'}}>
                 <Typography variant='subtitle2' color='text.secondary'>Bookshelves</Typography>
                 <Divider />
                 <List id='preview-shelves' sx={{ display: 'flex', bgcolor: 'transparent' }}>

@@ -31,7 +31,7 @@ const titleBoxStyle = {
 const bookBoxStyle = {
     display: 'flex',
     justifyContent: 'space-between',
-    width: 1 / 2,
+    width: { xs: 1/1, sm:3/4, md:1 / 2},
     mr: 'auto',
     ml: 'auto'
 }
@@ -100,7 +100,7 @@ export default function Shelf() {
 
     return (
         <React.Fragment>
-            {shelf && <Container>
+            {shelf && <Container sx={{mb:'80px'}}>
                 <Box sx={titleBoxStyle}>
                     <Typography variant='h5'>{shelf.name}</Typography>
                     <Typography variant='subtitle2'>{shelf.description}</Typography>
@@ -163,7 +163,7 @@ export default function Shelf() {
                                     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                         <Button onClick={() => removeBook(book.id)}>X</Button>
 
-                                        <Button onClick={() => { navigate(`/book/${book.id}`) }}>Details</Button>
+                                        <Button onClick={() => { navigate(`/book/${book.id}`) }}>More</Button>
                                     </Box>
 
                                 </Box>

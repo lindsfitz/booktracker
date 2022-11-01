@@ -10,10 +10,11 @@ import ReadingProgress from './components/modals/ReadingProgress';
 const bookBoxStyle = {
     display: 'flex',
     justifyContent: 'space-between',
-    width: 2/6,
-    mr: 'auto',
-    ml: 'auto'
+    width: {xs:3/4, sm: 2/6},
+    mr: {xs:1,md:'auto'},
+    ml: {xs:1,md:'auto'}
 }
+
 
 export default function Booklist() {
     const context = useContext(AppContext);
@@ -60,9 +61,7 @@ export default function Booklist() {
     }
 
     const renderReadShelf = async (id) => {
-        // const books = await API.getReadList(context.userData.id)
         const books = await API.newReadList(id)
-        // console.log(books.data)
         setBookData(books.data)
     }
 
@@ -108,7 +107,7 @@ export default function Booklist() {
                 return (
                     <Box>
                         <Stack>
-                            <Button variant='outlined' size='small' onClick={()=>handleOpenProgress(book)}>Update Progress</Button>
+                            <Button variant='outlined' size='mdall' onClick={()=>handleOpenProgress(book)}>Update Progress</Button>
                             <Button size='small'>Finished Reading</Button>
                             <Stack sx={{ alignSelf: 'center' }}>
                                 <Typography variant='caption' color='text.secondary'>Added on {dayjs(book.CurrentBooks[0].CurrentlyReading.createdAt).format('MMM D, YYYY')}</Typography>
@@ -164,7 +163,7 @@ export default function Booklist() {
 
     return (
         <React.Fragment>
-            <Typography variant='h6'>{title}</Typography>
+            <Typography sx={{textAlign:'center', m:1}} variant='h6'>{title}</Typography>
             {bookData && <List sx={{ width: { xs: 7 / 8, md: 4 / 5 }, bgcolor: 'transparent', mr: 'auto', ml: 'auto' }}>
 
                 {bookData.map((book) => (

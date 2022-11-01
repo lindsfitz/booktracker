@@ -91,7 +91,6 @@ export default function Dashboard(props) {
 
     return (
         <React.Fragment>
-
             {smxs ? (
                 <Container id='mobile-currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { xs: 'flex' }, flexDirection: 'column' }}>
                     <Typography variant='subtitle2' color='text.secondary'>Currently Reading:</Typography>
@@ -111,7 +110,7 @@ export default function Dashboard(props) {
             )}
 
             {md ? (
-                <Container sx={{ display: { xs: 'flex' }, flexDirection: 'column' }}>
+                <Container sx={{ display: { xs: 'flex' }, flexDirection: 'column', mb:'65px' }}>
                     {userStats &&
                         <DashStats userStats={userStats} goals={activityGoals} />
                     }
@@ -238,8 +237,4 @@ export default function Dashboard(props) {
 
         </React.Fragment>
     )
-
-
-
-
 }

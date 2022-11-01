@@ -688,7 +688,7 @@ export default function Book() {
                     <Divider />
 
                     <Container>
-                        {!reviewData && !reviewForm && <div style={{ margin: '30px auto 0 auto', textAlign: 'center' }}>
+                        {!reviewData && !reviewForm && <div style={{ margin: '30px auto 85px auto', textAlign: 'center' }}>
                             <Typography variant='subtitle2'>
                                 It looks like you haven't reviewed this book yet.
                             </Typography>
@@ -697,7 +697,7 @@ export default function Book() {
                         </div>}
 
 
-                        {reviewData && <Container>
+                        {reviewData && <Container sx={{mb:'70px'}}>
                             <Typography variant='subtitle1'>
                                 Your Reviews:
                             </Typography>
