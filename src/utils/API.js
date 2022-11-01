@@ -179,13 +179,13 @@ const API = {
     /* ------- OPEN LIBRARY API  ------ */
 
     olSearchTitle:(title)=>{
-        return axios.get(`http://openlibrary.org/search.json?title=${title}&limit=10&language=eng`)
+        return axios.get(`https://openlibrary.org/search.json?title=${title}&limit=10&language=eng`)
     },
     olSearchAuthor:(author)=>{
         return axios.get(`https://openlibrary.org/search.json?author=${author}&limit=10`)
     },
     olSearchBySubject:(subject)=>{
-        return axios.get(`http://openlibrary.org/subjects/${subject}.json?details=true&ebooks=true`)
+        return axios.get(`https://openlibrary.org/subjects/${subject}.json?details=true&ebooks=true`)
     },
     olAuthor:(key) => {
         return axios.get(`https://openlibrary.org/authors/${key}/works.json`)
