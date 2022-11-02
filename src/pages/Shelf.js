@@ -10,9 +10,10 @@ import API from '../utils/API';
 import dayjs from 'dayjs'
 import AppContext from '../AppContext';
 import EditShelf from './components/modals/EditShelf';
-import { Container, List, ListItem, Divider, Stack, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, Chip, IconButton } from '@mui/material';
+import { Container, List, ListItem, Divider, Stack, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, Chip, IconButton, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import CloseIcon from '@mui/icons-material/Close';
 
 const imageStyle = {
     boxShadow: '3px 2px 6px #888888',
@@ -31,7 +32,7 @@ const titleBoxStyle = {
 const bookBoxStyle = {
     display: 'flex',
     justifyContent: 'space-between',
-    width: { xs: 1/1, sm:3/4, md:1 / 2},
+    width: { xs: 1 / 1, sm: 3 / 4, md: 1 / 2 },
     mr: 'auto',
     ml: 'auto'
 }
@@ -100,7 +101,7 @@ export default function Shelf() {
 
     return (
         <React.Fragment>
-            {shelf && <Container sx={{mb:'80px'}}>
+            {shelf && <Container sx={{ mb: '80px' }}>
                 <Box sx={titleBoxStyle}>
                     <Typography variant='h5'>{shelf.name}</Typography>
                     <Typography variant='subtitle2'>{shelf.description}</Typography>
@@ -108,10 +109,14 @@ export default function Shelf() {
                     <Stack direction='row' justifyContent='flex-end' spacing={2}>
                         {/* <Button>Add Books</Button> */}
                         <IconButton aria-label="edit" size="small" onClick={() => setEditDialog(true)}>
-                            <EditIcon fontSize="inherit" />
+                            <Tooltip title="Edit">
+                                <EditIcon fontSize="inherit" />
+                            </Tooltip>
                         </IconButton>
                         <IconButton aria-label="delete" size="small" onClick={handleClickOpen}>
-                            <DeleteIcon fontSize="inherit" />
+                            <Tooltip title="Delete">
+                                <DeleteIcon fontSize="inherit" />
+                            </Tooltip>
                         </IconButton>
                     </Stack>
                 </Box>
@@ -161,9 +166,11 @@ export default function Shelf() {
                                     </Box>
 
                                     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                                        <Button onClick={() => removeBook(book.id)}>X</Button>
-
-                                        <Button onClick={() => { navigate(`/book/${book.id}`) }}>More</Button>
+                                        <IconButton size='small' onClick={() => removeBook(book.id)}>
+                                            <Tooltip title="Remove Book">
+                                                <CloseIcon fontSize="small" />
+                                            </Tooltip>
+                                        </IconButton>
                                     </Box>
 
                                 </Box>

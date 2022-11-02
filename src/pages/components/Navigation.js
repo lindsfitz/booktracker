@@ -3,41 +3,28 @@ import { useNavigate, useLocation } from "react-router-dom";
 import AppContext from '../../AppContext';
 import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Avatar, Button, Tooltip, MenuItem, ListItemIcon, Divider, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { createSvgIcon } from '@mui/material/utils';
-import AdbIcon from '@mui/icons-material/Adb';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 
-const BookendR = createSvgIcon()
+
 
 const Navigation = () => {
     const context = useContext(AppContext);
     const location = useLocation()
     let navigate = useNavigate();
     const theme = useTheme();
-    // const xs = useMediaQuery('(max-width:450px)')
     const smxs = useMediaQuery(theme.breakpoints.down('sm'))
 
-    // const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
-
-    // const handleOpenNavMenu = (event) => {
-    //     setAnchorElNav(event.currentTarget);
-    // };
     
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
     };
-
-    // const handleCloseNavMenu = () => {
-    //     setAnchorElNav(null);
-    // };
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
@@ -65,9 +52,8 @@ const Navigation = () => {
 
                     {smxs ? (
                         <React.Fragment>
-                            {/* <IconButton><ArrowBackIosIcon /></IconButton> */}
                             {backBtn()}
-                            <img style={{height:'40px'}} src='/assets/booked.png' />
+                            <img style={{height:'40px'}} alt='bookends-logo' src='/assets/booked.png' />
                             
                             <Typography
                                 variant="h5"
@@ -92,11 +78,9 @@ const Navigation = () => {
                         </React.Fragment>
                     ) : (
                         <React.Fragment>
-                            {/* <AdbIcon sx={{ display:'flex', mr: 1 }} /> */}
-                            <img style={{height:'40px'}} src='/assets/booked.png' />
-                             
-                            {/* <img style={{width:'50px'}} src='/assets/bookends.svg' /> */}
-
+                        
+                            <img style={{height:'40px'}} alt='bookends-logo' src='/assets/booked.png' />
+                
                             <Typography
                                 variant="h6"
                                 noWrap
@@ -115,8 +99,6 @@ const Navigation = () => {
                             >
                                  booked
                             </Typography>
-                            {/* <img style={{width:'24px'}} src='/assets/bookendR.png' /> */}
-
 
                             <Box sx={{ color: 'white', flexGrow: 1, display: 'flex' }}>
                                 <Button variant="text" color="custom"
@@ -135,79 +117,6 @@ const Navigation = () => {
                             </Box>
                         </React.Fragment>
                     )}
-
-
-
-
-
-
-
-
-
-
-                    {/* <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
-
-                        >
-                            <MenuItem onClick={handleCloseNavMenu}>
-                                <Button variant="text" color="custom"
-                                    onClick={() => navigate('/')}
-                                >
-                                    Home
-                                </Button>
-                            </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
-                                <Button variant="text" color="custom"
-                                    onClick={() => navigate('/bookcase')}>
-                                    Bookcase
-                                </Button>
-                            </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
-                                <Button variant="text" color="custom"
-                                    onClick={() => navigate('/browse')}>
-                                    Browse
-                                </Button>
-                            </MenuItem>
-
-
-                        </Menu>
-                    </Box> */}
-
-
-
-
-
-
-
-
-
-
 
                     {/* FROM HERE DOWN IS INCLUDED ON BOTH --- AVATAR & USER SETTINGS MENU */}
                     <Box sx={{ flexGrow: 0 }}>

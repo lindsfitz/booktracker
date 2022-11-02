@@ -14,13 +14,14 @@ const EditShelfDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    textAlign: 'center',
 }));
 
 const EditShelfDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
 
     return (
-        <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+        <DialogTitle sx={{ m: 0, p: 2, mt: 10 }} {...other}>
             {children}
             {onClose ? (
                 <IconButton
@@ -28,8 +29,8 @@ const EditShelfDialogTitle = (props) => {
                     onClick={onClose}
                     sx={{
                         position: 'absolute',
-                        right: 8,
-                        top: 8,
+                        right: 20,
+                        top: 50,
                         color: (theme) => theme.palette.grey[500],
                     }}
                 >
@@ -46,7 +47,7 @@ EditShelfDialogTitle.propTypes = {
 };
 
 
-export default function EditShelf({shelf, setEditShelf, editShelf}) {
+export default function EditShelf({ shelf, setEditShelf, editShelf }) {
     const context = useContext(AppContext);
 
     const shelfSubmit = async (e) => {
@@ -75,16 +76,18 @@ export default function EditShelf({shelf, setEditShelf, editShelf}) {
     return (
         <div>
             <EditShelfDialog
-                onClose={()=>setEditShelf(!editShelf)}
+                fullScreen
+                onClose={() => setEditShelf(!editShelf)}
                 aria-labelledby="customized-dialog-title"
                 open={editShelf}
             >
-                <EditShelfDialogTitle id="customized-dialog-title" onClose={()=>setEditShelf(!editShelf)}>
+                <EditShelfDialogTitle id="customized-dialog-title" onClose={() => setEditShelf(!editShelf)}>
                     Edit Your Shelf
                 </EditShelfDialogTitle>
                 <Box component='form' noValidate onSubmit={shelfSubmit} >
                     <DialogContent dividers>
                         <TextField
+                            sx={{ width: { xs: 1 / 1, md: 1 / 2 } }}
                             id="name"
                             name='name'
                             label="Bookshelf Name"
@@ -92,16 +95,17 @@ export default function EditShelf({shelf, setEditShelf, editShelf}) {
                             multiline
                         /><br /><br />
                         <TextField
+                            sx={{ width: { xs: 1 / 1, md: 1 / 2 } }}
                             id="description"
                             name='description'
                             label="Description"
                             defaultValue={shelf.description}
                             multiline
-                            rows={4}
+                            rows={6}
 
                         />
                     </DialogContent>
-                    <DialogActions>
+                    <DialogActions sx={{justifyContent:'center'}}>
                         <Button autoFocus type='submit'>
                             Update Shelf
                         </Button>

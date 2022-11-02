@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
 // import AppContext from '../AppContext';
 import { useTheme, styled, alpha } from '@mui/material/styles';
-import { Box, OutlinedInput, TextField, InputLabel, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography, Badge, Card, CardMedia, CardContent, useMediaQuery, InputBase, IconButton } from '@mui/material';
+import { Box, OutlinedInput, TextField, InputLabel, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography, Badge, Card, CardMedia, CardContent, useMediaQuery, InputBase, IconButton, Grid } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import NYTMobile from './components/mobile/NYTMobile';
 
@@ -26,8 +26,6 @@ import NYTMobile from './components/mobile/NYTMobile';
 //     "young-adult-paperback-monthly"]
 
 const SearchBar = styled('div')(({ theme }) => ({
-
-    // position: 'relative',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: alpha(theme.palette.custom.main, 0.15),
     '&:hover': {
@@ -35,10 +33,10 @@ const SearchBar = styled('div')(({ theme }) => ({
     },
     marginLeft: 5,
     width: '100%',
-    [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3),
-        width: 'auto',
-    },
+    // [theme.breakpoints.up('sm')]: {
+    //     marginLeft: theme.spacing(3),
+    //     width: 'auto',
+    // },
 }));
 
 
@@ -49,9 +47,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         marginTop: 4,
         transition: theme.transitions.create('width'),
         width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: '20ch',
-        },
+        // [theme.breakpoints.up('md')]: {
+        //     width: '20ch',
+        // },
     },
 }));
 
@@ -164,33 +162,26 @@ export default function Search() {
 
 
     return (
-        <Container sx={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
+        <Container sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
             <Box
                 component="form"
                 sx={{
                     display: 'flex',
-                    maxWidth: { xs: 1 / 1, sm: 3 / 5 },
-                    m: { xs: 2, sm: 5 }
+                    width: { xs: 1 / 1, sm: 3 / 4, md: 3 / 5 },
+                    mt: 5,
+                    alignSelf: 'center'
                 }}
                 noValidate
                 autoComplete="off"
             >
                 <Box sx={{ minWidth: 116 }}>
                     <FormControl>
-                        {/* <InputLabel id="demo-simple-select-label">Search By</InputLabel> */}
                         <Select
                             id="searchby-select"
                             value={searchBy}
                             input={<OutlinedInput />}
                             onChange={changeSearchBy}
-                            // renderValue={(selected) => {
-                            //     if (selected.length === 0) {
-                            //       return <em>Placeholder</em>;
-                            //     }
-                    
-                            //     return selected.join(', ');
-                            //   }}
                         >
                             <MenuItem disabled value={'placeholder'}>
                                 <em>Search By</em>
@@ -214,36 +205,6 @@ export default function Search() {
                 {/* </SearchIconWrapper> */}
                 {/* <Button onClick={search}>Search</Button> */}
             </Box>
-
-
-            {/* <Box
-                component="form"
-                sx={{
-                    display: 'flex',
-                    maxWidth: { xs: 1 / 1, sm: 3 / 5 },
-                    m: { xs: 2, sm: 5 }
-                }}
-                noValidate
-                autoComplete="off"
-            >
-                <Box sx={{ minWidth: 78 }}>
-                    <FormControl>
-                        <InputLabel id="demo-simple-select-label">Search By</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={searchBy}
-                            label="Search"
-                            onChange={changeSearchBy}
-                        >
-                            <MenuItem value={'title'}>Title</MenuItem>
-                            <MenuItem value={'author'}>Author</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Box>
-                <TextField onChange={handleInputChange} sx={{ width: 2 / 3 }} id="standard-basic" label="Search..." variant="standard" />
-                <Button onClick={search}>Search</Button>
-            </Box> */}
 
             {noResults && <Container sx={{ m: '20px auto 20px auto', textAlign: 'center' }}>
                 <Typography variant='subtitle2'>No Results Found</Typography>
@@ -288,38 +249,50 @@ export default function Search() {
 
             {NYTdiv && bestSellers && <Container>
                 <Box>
-                    <Typography variant='h6'>New York Times Best Sellers List</Typography>
-                    <Typography variant='subtitle1'>{bestListInfo.title}</Typography>
-                    <Typography variant='subtitle2' color='text.secondary'>{bestListInfo.date}</Typography>
+                    <Stack alignItems='center' sx={{mb:4}}>
+                        <Typography variant='h6'>New York Times Best Sellers List</Typography>
+                        <Typography variant='subtitle1'>{bestListInfo.title}</Typography>
+                        <Typography variant='subtitle2' color='text.secondary'>{bestListInfo.date}</Typography>
+                    </Stack>
                     {smxs ? (
                         <NYTMobile bestSellers={bestSellers} nytSearch={nytSearch} />
                     ) : (
-                        <Box sx={{ display: { sm: 'flex' }, flexWrap: 'wrap' }}>
-                            {bestSellers.map(book => (
-                                <Card key={book.primary_isbn13} sx={{ maxWidth: 120 }} onClick={() => nytSearch(book.primary_isbn13, book.title, book.author)}>
-                                    <CardContent sx={{ wordWrap: 'break-word' }}>
-                                        <Badge anchorOrigin={{
-                                            vertical: 'top',
-                                            horizontal: 'left',
-                                        }}
-                                            badgeContent={book.rank} color="primary">
-                                            <CardMedia
-                                                component="img"
-                                                // onClick={() => nytSearch(book.title)}
-                                                // sx={{ maxHeight: { xs: 190, md: 218 }, maxWidth: { xs: 125, md: 148 } }}
-                                                height='140'
-                                                image={`${book.book_image}`}
-                                                alt={`${book.title}`}
-                                            />
-                                        </Badge>
-                                        <Typography variant='caption' sx={{ fontWeight: 'bold' }}>{book.title}</Typography>
-                                        <br />
-                                        <Typography variant='caption' color='text.secondary'>{book.author}</Typography>
-                                        <br />
-                                        <Typography variant='caption'>Weeks on List: {book.weeks_on_list}</Typography>
-                                    </CardContent>
-                                </Card>
-                            ))}
+                        <Box sx={{mt:2, mb:10}}>
+                            <Grid container rowSpacing={1} columnSpacing={0.5} 
+                       
+                            sx={{mr:'auto', ml:'auto',width:{sm: 7/8, md: 3/4, xl: 3/5}}}>
+
+                                {bestSellers.map(book => (
+                                    <Grid item sm={3} md={2.4}>
+
+                                        <Card key={book.primary_isbn13} sx={{ width: 120, height: '100%'}} onClick={() => nytSearch(book.primary_isbn13, book.title, book.author)}>
+                                            <CardContent sx={{ wordWrap: 'break-word' }}>
+                                                <Badge anchorOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'left',
+                                                }}
+                                                    badgeContent={book.rank} color="primary">
+                                                    <CardMedia
+                                                        component="img"
+                                                        // onClick={() => nytSearch(book.title)}
+                                                        // sx={{ maxHeight: { xs: 190, md: 218 }, maxWidth: { xs: 125, md: 148 } }}
+                                                        height='140'
+                                                        image={`${book.book_image}`}
+                                                        alt={`${book.title}`}
+                                                    />
+                                                </Badge>
+                                                <Typography variant='caption' sx={{ fontWeight: 'bold' }}>{book.title}</Typography>
+                                                <br />
+                                                <Typography variant='caption' color='text.secondary'>{book.author}</Typography>
+                                                <br />
+                                                <Typography variant='caption'>Weeks on List: {book.weeks_on_list}</Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+
+                                ))}
+                            </Grid>
+
                         </Box>
                     )}
                 </Box>

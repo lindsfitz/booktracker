@@ -14,13 +14,14 @@ const ShelfDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    textAlign: 'center',
 }));
 
 const ShelfDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
 
     return (
-        <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+        <DialogTitle sx={{ m: 0, p: 2, mt: 10 }} {...other}>
             {children}
             {onClose ? (
                 <IconButton
@@ -28,8 +29,8 @@ const ShelfDialogTitle = (props) => {
                     onClick={onClose}
                     sx={{
                         position: 'absolute',
-                        right: 8,
-                        top: 8,
+                        right: 20,
+                        top: 50,
                         color: (theme) => theme.palette.grey[500],
                     }}
                 >
@@ -76,6 +77,7 @@ export default function AddShelf() {
     return (
         <div>
             <ShelfDialog
+            fullScreen
                 onClose={context.toggleShelfDialog}
                 aria-labelledby="customized-dialog-title"
                 open={context.shelfDialog}
@@ -86,6 +88,7 @@ export default function AddShelf() {
                 <Box component='form' noValidate onSubmit={shelfSubmit} >
                     <DialogContent dividers>
                         <TextField
+                        sx={{ width: { xs: 1 / 1, md: 1 / 2 } }}
                             id="name"
                             name='name'
                             label="Bookshelf Name"
@@ -93,15 +96,16 @@ export default function AddShelf() {
                             multiline
                         /><br /><br />
                         <TextField
+                        sx={{ width: { xs: 1 / 1, md: 1 / 2 } }}
                             id="description"
                             name='description'
                             label="Description"
                             multiline
-                            rows={4}
+                            rows={6}
 
                         />
                     </DialogContent>
-                    <DialogActions>
+                    <DialogActions sx={{justifyContent:'center'}}>
                         <Button autoFocus type='submit'>
                             Create Shelf
                         </Button>
