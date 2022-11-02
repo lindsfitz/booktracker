@@ -104,10 +104,10 @@ export default function DashStats({ userStats, goals }) {
 
                         aria-label="stats tabs"
                     >
-                        <Tab label="This Month" {...a11yProps(0)} />
-                        <Tab label="This Year" {...a11yProps(1)} />
+                        <Tab label="Month" {...a11yProps(0)} />
+                        <Tab label="Year" {...a11yProps(1)} />
                         <Tab label="All-Time" {...a11yProps(2)} />
-                        <Tab label="All Shelves" {...a11yProps(3)} />
+                        <Tab label="Shelved" {...a11yProps(3)} />
 
                     </Tabs>
                 </Box>
@@ -146,11 +146,11 @@ export default function DashStats({ userStats, goals }) {
                             </div>
                         )}
 
-                        {goals.month ? <Link href="#" underline="hover" variant='caption'>
+                        {/* {goals.month ? <Link href="#" underline="hover" variant='caption'>
                             update activity goal
                         </Link> : <Link href="#" underline="hover" variant='caption'>
                             add an activity goal
-                        </Link>}
+                        </Link>} */}
                         <br />
 
                         <Button onClick={() => navigate('/activity')}>View All Activity</Button>
@@ -184,11 +184,11 @@ export default function DashStats({ userStats, goals }) {
                             </div>
                         )}
 
-                        {goals.year ? <Link href="#" underline="hover" variant='caption'>
+                        {/* {goals.year ? <Link href="#" underline="hover" variant='caption'>
                             update activity goal
                         </Link> : <Link href="#" underline="hover" variant='caption'>
                             add an activity goal
-                        </Link>}
+                        </Link>} */}
                         <br />
                         <Button onClick={() => navigate('/activity')}>View All Activity</Button>
                     </TabPanel>
