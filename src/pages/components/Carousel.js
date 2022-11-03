@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import { Box, Typography, Button, Card, CardMedia, CardContent, IconButton } from '@mui/material';
+import { Box, Typography, Button, Card, CardMedia, CardContent, IconButton, Tooltip } from '@mui/material';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import "@splidejs/splide/dist/css/themes/splide-default.min.css";
 import ReadingProgress from './modals/ReadingProgress';
@@ -20,7 +20,10 @@ const cardStyle = {
 const imageStyle = {
     boxShadow: '3px 2px 6px #888888',
     height: { xs: 183, sm: 218 },
-    width: { xs: 120, sm: 148 }
+    width: { xs: 120, sm: 148 },
+    '&:hover': {
+        cursor: 'pointer'
+    }
 }
 
 const detailBoxStyling = {
@@ -110,7 +113,8 @@ export default function Carousel({ shelf }) {
                                 <Box sx={detailBoxStyling}>
                                     <Typography variant='caption' display='block'>{book.title}</Typography>
                                     <Typography variant='caption' color='text.secondary' display='block'>{book.author}</Typography>
-                                    {shelf.id === 'CR' && <Button onClick={() => handleOpenProgress(book)} variant='outlined' size='small'>Update Progress</Button>}
+                                    <br />
+                                    {shelf.id === 'CR' && <Button onClick={() => handleOpenProgress(book)} variant='outlined' color='success' size='small'>Update Progress</Button>}
                                 </Box>
                             </CardContent>
                         </Card>
@@ -120,8 +124,10 @@ export default function Carousel({ shelf }) {
                 {shelf.id !== 'CR' && <SplideSlide>
                     <Card sx={cardStyle}>
                         <CardContent>
-                            <Button variant='outlined' sx={btnStyle}
-                                onClick={() => navigate(`/shelf/${shelf.id}`)}>Shelf Details</Button>
+                            <Tooltip title={`More About ${shelf.name}`}>
+                                <Button variant='outlined' sx={btnStyle}
+                                    onClick={() => navigate(`/shelf/${shelf.id}`)}>Shelf Details</Button>
+                            </Tooltip>
                         </CardContent>
                     </Card>
                 </SplideSlide>}

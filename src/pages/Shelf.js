@@ -10,7 +10,8 @@ import API from '../utils/API';
 import dayjs from 'dayjs'
 import AppContext from '../AppContext';
 import EditShelf from './components/modals/EditShelf';
-import { Container, List, ListItem, Divider, Stack, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, Chip, IconButton, Tooltip } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { Container, List, ListItem, Divider, Stack, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, Chip, IconButton, Tooltip, useMediaQuery } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
@@ -18,7 +19,15 @@ import CloseIcon from '@mui/icons-material/Close';
 const imageStyle = {
     boxShadow: '3px 2px 6px #888888',
     width: 148,
-    height: 218
+    height: 218,
+
+}
+
+const titleStyle = {
+    '&:hover': {
+        textDecoration: 'underline',
+        cursor: 'pointer'
+    },
 }
 
 const titleBoxStyle = {
@@ -42,6 +51,8 @@ export default function Shelf() {
     const context = useContext(AppContext);
     const params = useParams()
     let navigate = useNavigate()
+    const theme = useTheme();
+    const mobile = useMediaQuery(theme.breakpoints.down('md'))
 
     const [open, setOpen] = React.useState(false);
     const [shelf, setShelf] = useState(null)
@@ -109,12 +120,12 @@ export default function Shelf() {
                     <Stack direction='row' justifyContent='flex-end' spacing={2}>
                         {/* <Button>Add Books</Button> */}
                         <IconButton aria-label="edit" size="small" onClick={() => setEditDialog(true)}>
-                            <Tooltip title="Edit">
+                            <Tooltip title="Edit Shelf">
                                 <EditIcon fontSize="inherit" />
                             </Tooltip>
                         </IconButton>
                         <IconButton aria-label="delete" size="small" onClick={handleClickOpen}>
-                            <Tooltip title="Delete">
+                            <Tooltip title="Delete Shelf">
                                 <DeleteIcon fontSize="inherit" />
                             </Tooltip>
                         </IconButton>
@@ -126,19 +137,30 @@ export default function Shelf() {
                     {shelf.Books.map((book) => (
 
                         <React.Fragment>
-                            <ListItem key={book.id} id={`${book.title}${shelf.name}shelf`} alignItems="center">
+                            <ListItem key={book.id} id={`${book.title}${shelf.name}shelf`}
+                            onClick={mobile ? () => {
+                                navigate(`/book/${book.id}`)
+                            } : null} alignItems="center">
                                 <Box sx={bookBoxStyle}>
-                                    <img
-                                        src={`${book.cover_img}`}
-                                        srcSet={`${book.cover_img}`}
-                                        alt={`${book.title}`}
-                                        style={imageStyle}
-                                        loading="lazy"
-                                        onClick={() => { navigate(`/book/${book.id}`) }}
-                                    />
+                                    <Box sx={{
+                                        '&:hover': {
+                                            cursor: 'pointer'
+                                        }
+                                    }}>
+                                        <img
+                                            src={`${book.cover_img}`}
+                                            srcSet={`${book.cover_img}`}
+                                            alt={`${book.title}`}
+                                            style={imageStyle}
+                                            loading="lazy"
+                                            onClick={() => { navigate(`/book/${book.id}`) }}
+                                        />
+                                    </Box>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', ml: 2 }}>
                                         <Stack sx={{ alignSelf: 'center', ml: 1, p: 1 }}>
-                                            <Typography variant='subtitle1'>{book.title}</Typography>
+                                            <Typography sx={titleStyle} 
+                                            onClick={() => { navigate(`/book/${book.id}`) }}
+                                             variant='subtitle1'>{book.title}</Typography>
                                             <Typography
                                                 component="span"
                                                 variant="body2"

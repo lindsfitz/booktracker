@@ -16,9 +16,10 @@ import { useTheme } from '@mui/material/styles';
 
 
 const cardStyle = {
-    // maxWidth: 345,
+    width:'fit-content',
     backgroundColor: 'transparent',
     boxShadow: 0,
+    m: '0px 10px',
 }
 
 const imageStyle = {
@@ -56,10 +57,9 @@ export default function ReadingProgress({ book, open, handleClose }) {
             UserId: context.userData.id,
             BookId: book.id
         }
-
+        
         try {
-            const reviewData = await API.newReview(review)
-            console.log(reviewData)
+            const reviewData = await API.newNote(review)
             handleClose()
         }
         catch (err) { console.log(err) }
@@ -76,6 +76,8 @@ export default function ReadingProgress({ book, open, handleClose }) {
     return (
         <React.Fragment>
             <Dialog
+                maxWidth={'sm'}
+                fullWidth={true}
                 fullScreen={smxs}
                 open={open} onClose={handleClose}>
                 <DialogTitle>
@@ -121,6 +123,7 @@ export default function ReadingProgress({ book, open, handleClose }) {
                                 rows={6}
                                 margin="dense"
                                 id="note"
+                                name='note'
                                 label="Notes"
                                 fullWidth
                                 // variant="standard"

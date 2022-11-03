@@ -1,5 +1,5 @@
 import React from 'react';
-import {Typography, Box, Rating, Stack, CircularProgress, Link } from '@mui/material';
+import { Typography, Box, Rating, Stack, CircularProgress, Link } from '@mui/material';
 
 // IF month stats exist, render this component
 
@@ -47,6 +47,7 @@ export default function MonthlyStats({ stats, monthProgress, monthlyGoal, month,
                                 {/* <Typography>Your activity goal for {months[month]} is {monthlyGoal} books. </Typography> */}
                                 <Typography>Get reading to reach your {months[month]} activity goal of {monthlyGoal} books. </Typography>
                                 <Link onClick={() => updateGoal('month')}
+                                    color='secondary'
                                     component="button" underline="hover" variant='caption'>
                                     update activity goal
                                 </Link>
@@ -54,6 +55,7 @@ export default function MonthlyStats({ stats, monthProgress, monthlyGoal, month,
                             </Stack>
                         ) : (
                             <Link onClick={() => newGoal('month')}
+                                color='secondary'
                                 component="button" underline="hover" variant='caption'>
                                 add an activity goal
                             </Link>
@@ -73,6 +75,7 @@ export default function MonthlyStats({ stats, monthProgress, monthlyGoal, month,
                             <CircularProgressWithLabel value={monthProgress} />
                             <br />
                             <Link onClick={() => updateGoal('month')}
+                                color='secondary'
                                 component="button" underline="hover" variant='caption'>
                                 update activity goal
                             </Link>
@@ -83,6 +86,7 @@ export default function MonthlyStats({ stats, monthProgress, monthlyGoal, month,
                                 <br />
                                 <Typography variant='caption'>No Activity Goal</Typography>
                                 <Link onClick={() => newGoal('month')}
+                                    color='secondary'
                                     component="button" underline="hover" variant='caption'>
                                     add an activity goal
                                 </Link>

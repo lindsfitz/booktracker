@@ -151,8 +151,8 @@ export default function Dashboard(props) {
                                 ))}
                             </List>
                         </Box>
-                        <Box sx={{ textAlign: 'center' }}>
-                            <Button variant='outlined'
+                        <Box sx={{ textAlign: 'center', mb:10 }}>
+                            <Button variant='outlined' color='success'
                                 onClick={() => navigate('/bookcase')}>
                                 <Typography variant='caption'>
                                     See All Shelves
@@ -188,10 +188,6 @@ export default function Dashboard(props) {
                                         <Button onClick={() => navigate('/bookcase')}>My Bookcase</Button>
 
                                     </Stack>
-                                    {/* 
-                                    
-                                    <Button onClick={context.toggleShelfDialog}>Add A Shelf</Button>
-                                    <Button onClick={() => navigate('/activity')}>Reading Activity</Button> */}
                                 </Stack>
 
                             
@@ -217,8 +213,8 @@ export default function Dashboard(props) {
                                     </React.Fragment>
                                 ))}
                             </List>
-                            <Box sx={{ textAlign: 'center' }}>
-                                <Button variant='outlined'
+                            <Box sx={{ textAlign: 'center', mt:3, mb:10 }}>
+                                <Button variant='outlined' color='success'
                                     onClick={() => navigate('/bookcase')}>
                                     <Typography variant='caption'>
                                         See All Shelves

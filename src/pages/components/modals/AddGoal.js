@@ -1,9 +1,9 @@
-import React, { useContext, useEffect , useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import API from '../../../utils/API';
 import AppContext from '../../../AppContext';
 import PropTypes from 'prop-types';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Typography, useMediaQuery } from '@mui/material';
+import { styled, useTheme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
 
@@ -47,8 +47,10 @@ AddGoalDialogTitle.propTypes = {
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
-export default function AddGoal({addGoal, setAddGoal, action, setMonthlyGoal, setYearlyGoal}) {
+export default function AddGoal({ addGoal, setAddGoal, action, setMonthlyGoal, setYearlyGoal }) {
     const context = useContext(AppContext);
+    const theme = useTheme();
+    const smxs = useMediaQuery(theme.breakpoints.down('sm'))
 
     const [current, setCurrent] = useState(null)
 
@@ -56,7 +58,7 @@ export default function AddGoal({addGoal, setAddGoal, action, setMonthlyGoal, se
     const thismonth = date.getMonth()
     const thisyear = date.getFullYear()
 
-  
+
     const addActivityGoal = (e) => {
         e.preventDefault();
         console.log('submitted')
@@ -70,7 +72,7 @@ export default function AddGoal({addGoal, setAddGoal, action, setMonthlyGoal, se
         }
 
         const yearGoal = {
-            month:null,
+            month: null,
             value: newGoal,
             UserId: context.userData.id
         }
@@ -87,7 +89,7 @@ export default function AddGoal({addGoal, setAddGoal, action, setMonthlyGoal, se
             setAddGoal(false)
         }
     }
-    
+
     useEffect(() => {
         if (action === 'month') {
             setCurrent(months[thismonth]);
@@ -101,16 +103,20 @@ export default function AddGoal({addGoal, setAddGoal, action, setMonthlyGoal, se
     return (
         <>
             <AddGoalDialog
-                onClose={()=>setAddGoal(!addGoal)}
+                sx={{ textAlign: 'center' }}
+                maxWidth={'sm'}
+                fullWidth={true}
+                fullScreen={smxs}
+                onClose={() => setAddGoal(!addGoal)}
                 aria-labelledby="customized-dialog-title"
                 open={addGoal}
             >
-                <AddGoalDialogTitle id="customized-dialog-title" onClose={()=>setAddGoal(!addGoal)}>
+                <AddGoalDialogTitle id="customized-dialog-title" onClose={() => setAddGoal(!addGoal)}>
                     Reading Activity Goal
                 </AddGoalDialogTitle>
                 <Box component='form' noValidate onSubmit={addActivityGoal} >
                     <DialogContent dividers>
-                    <Typography variant='subtitle2'>Set your goal number of books <br /> you'd like to read in {current}.</Typography>
+                        <Typography variant='subtitle2'>Set your goal number of books <br /> you'd like to read in {current}.</Typography>
                         <br /><br />
                         <TextField
                             id={action}
@@ -119,7 +125,7 @@ export default function AddGoal({addGoal, setAddGoal, action, setMonthlyGoal, se
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button autoFocus onClick={()=>setAddGoal(!addGoal)}>
+                        <Button autoFocus onClick={() => setAddGoal(!addGoal)}>
                             Cancel
                         </Button>
                         <Button autoFocus type='submit'>

@@ -46,7 +46,7 @@ const Navigation = () => {
     }
 
     return (
-        <AppBar position="static" id='nav'>
+        <AppBar position="sticky" id='nav'>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
 

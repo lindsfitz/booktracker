@@ -622,7 +622,7 @@ export default function Book() {
 
                             {/* {bookBtnOptions()} */}
                             <ButtonGroup aria-label="text button group" ref={markedRef}>
-                                <Button onClick={toggleMarkMenu}>Mark As</Button>
+                                <Button color='secondary' onClick={toggleMarkMenu}>Mark As</Button>
                                 <Button
                                     size="small"
                                     aria-controls={markOpen ? 'split-button-menu' : undefined}
@@ -667,20 +667,14 @@ export default function Book() {
 
                             <Divider orientation='vertical' />
 
-                            <Button onClick={toggleReviewForm}>Add A Review</Button>
+                            <Button color='secondary' onClick={toggleReviewForm}>Add A Review</Button>
 
                             {markedAs === 'Read' &&
-                                <Button onClick={toggleReviewForm}>Add Read Dates</Button>
+                                <Button color='secondary' onClick={toggleReviewForm}>Add Read Dates</Button>
 
                             }
 
-                            {!markedOwned && <Button onClick={addOwned}>Mark As Owned</Button>}
-
-
-
-
-
-
+                            {!markedOwned && <Button color='secondary' onClick={addOwned}>Mark As Owned</Button>}
 
                         </Stack>
                     )}

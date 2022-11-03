@@ -9,16 +9,19 @@ export default function OneShelf({ shelf, length }) {
     const cardStyle = {
         maxWidth: 345,
         backgroundColor: 'transparent',
-        boxShadow:0,
+        boxShadow: 0,
+        '&:hover': {
+            cursor: 'pointer'
+        }
     }
 
     const imageStyle = {
-        boxShadow:'3px 2px 6px #888888',
-        height:140,
-        width: 92.5
+        boxShadow: '3px 2px 6px #888888',
+        height: 140,
+        width: 92.5,
     }
 
-    
+
 
     return (
         <React.Fragment>

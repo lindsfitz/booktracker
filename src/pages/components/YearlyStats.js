@@ -45,6 +45,7 @@ export default function YearlyStats({ stats, yearProgress, yearlyGoal, year, upd
                                 {/* <Typography>Your activity goal for {year} is {yearlyGoal} books. </Typography> */}
                                 <Typography>Get reading to reach your {year} activity goal of {yearlyGoal} books. </Typography>
                                 <Link onClick={() => updateGoal('year')}
+                                    color='secondary'
                                     component="button" underline="hover" variant='caption'>
                                     update activity goal
                                 </Link>
@@ -52,6 +53,7 @@ export default function YearlyStats({ stats, yearProgress, yearlyGoal, year, upd
                             </Stack>
                         ) : (
                             <Link onClick={() => newGoal('year')}
+                                color='secondary'
                                 component="button" underline="hover" variant='caption'>
                                 add an activity goal
                             </Link>
@@ -72,6 +74,7 @@ export default function YearlyStats({ stats, yearProgress, yearlyGoal, year, upd
                             <CircularProgressWithLabel value={yearProgress} />
                             <br />
                             <Link onClick={() => updateGoal('year')}
+                                color='secondary'
                                 component="button" underline="hover" variant='caption'>
                                 update activity goal
                             </Link>
@@ -84,6 +87,7 @@ export default function YearlyStats({ stats, yearProgress, yearlyGoal, year, upd
                             <br />
                             <Typography variant='caption'>No Activity Goal</Typography>
                             <Link onClick={() => newGoal('year')}
+                                color='secondary'
                                 component="button" underline="hover" variant='caption'>
                                 add an activity goal
                             </Link>

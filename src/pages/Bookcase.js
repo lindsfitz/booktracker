@@ -54,7 +54,7 @@ export default function Bookcase() {
             <Container sx={{ mr: 'auto', ml: 'auto', textAlign:'center', mt:2, mb:'50px' }}>
                 <Typography variant='h6'>Bookcase</Typography>
                 <Container sx={{ display: 'flex', justifyContent: 'space-between', m: 5, width:'90%' }}>
-                    <ButtonGroup>
+                    <ButtonGroup size='small' color='success'>
                         <Button variant="outlined" onClick={() => navigate('/books/currently')}>
                             Currently Reading
                         </Button>
@@ -62,8 +62,8 @@ export default function Bookcase() {
                             Read
                         </Button>
                     </ButtonGroup>
-                    <Button variant="outlined" onClick={context.toggleShelfDialog}>
-                        Add A Shelf
+                    <Button variant="outlined" color='success' onClick={context.toggleShelfDialog}>
+                        Add Shelf
                     </Button>
                 </Container>
                 <Divider />
@@ -80,12 +80,12 @@ export default function Bookcase() {
                                     </Link>
                                 </Typography>
                                 <ButtonGroup variant="outlined" aria-label="text button group">
-                                    <Tooltip title="Edit">
+                                    <Tooltip title="Edit Shelf">
                                         <IconButton size='small' onClick={() => handleShelfEdit(shelf)}>
                                             <EditIcon fontSize="inherit" />
                                         </IconButton>
                                     </Tooltip>
-                                    <Tooltip title="Delete">
+                                    <Tooltip title="Delete Shelf">
                                         <IconButton size='small' onClick={handleClickOpen}>
                                             <DeleteIcon fontSize="inherit" />
                                         </IconButton>

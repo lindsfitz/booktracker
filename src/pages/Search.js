@@ -38,7 +38,7 @@ const SearchBar = styled('div')(({ theme }) => ({
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: 'inherit',
-    width:'100%',
+    width: '100%',
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 1),
         marginTop: 4,
@@ -220,13 +220,13 @@ export default function Search() {
             </Container>}
 
             {searchResults ? (
-                <Container sx={{ mb: '60px', mt:4 }}>
+                <Container sx={{ mb: '60px', mt: 4 }}>
                     <List sx={{ width: '100%', bgcolor: 'transparent' }}>
                         {searchResults.map((book) => (
                             <React.Fragment>
                                 <ListItem key={`${book.cover_edition_key}`}
                                     alignItems="center"
-                                    
+
                                     onClick={mobile ? () => {
                                         navigate(`/book/${book.edition_key[0]}`, {
                                             state: {
@@ -244,7 +244,7 @@ export default function Search() {
                                         justifyContent: 'space-between',
                                         mr: 'auto',
                                         ml: 'auto',
-                                       
+
                                     }}>
                                         <Box sx={{
                                             '&:hover': {
@@ -269,7 +269,7 @@ export default function Search() {
                                                 }}
                                             />
                                         </Box>
-                                        <Box sx={{display:'flex',flexDirection:'column',textAlign:'center', justifyContent:'center', width:1/2}}>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'center', justifyContent: 'center', width: 1 / 2 }}>
                                             <Stack sx={{ alignSelf: 'center', ml: 1 }}>
                                                 <Typography variant='subtitle1'
                                                     sx={titleStyle}
@@ -293,7 +293,7 @@ export default function Search() {
                                                     {book.author_name[0]}
                                                 </Typography>
                                             </Stack>
-                                            <Stack sx={{padding:2}}>
+                                            <Stack sx={{ padding: 2 }}>
                                                 <Typography variant='caption' color='text.secondary'>Published: {book.first_publish_year}</Typography>
                                                 <Typography variant='caption' color='text.secondary'>{book.edition_count} editions</Typography>
                                             </Stack>
@@ -334,7 +334,11 @@ export default function Search() {
                                 {bestSellers.map(book => (
                                     <Grid item sm={3} md={2.4}>
 
-                                        <Card key={book.primary_isbn13} sx={{ width: 120, height: '100%' }} onClick={() => nytSearch(book.primary_isbn13, book.title, book.author)}>
+                                        <Card key={book.primary_isbn13} sx={{
+                                            width: 120, height: '100%', '&:hover': {
+                                                cursor: 'pointer'
+                                            }
+                                        }} onClick={() => nytSearch(book.primary_isbn13, book.title, book.author)}>
                                             <CardContent sx={{ wordWrap: 'break-word' }}>
                                                 <Badge anchorOrigin={{
                                                     vertical: 'top',

@@ -146,14 +146,9 @@ export default function DashStats({ userStats, goals }) {
                             </div>
                         )}
 
-                        {/* {goals.month ? <Link href="#" underline="hover" variant='caption'>
-                            update activity goal
-                        </Link> : <Link href="#" underline="hover" variant='caption'>
-                            add an activity goal
-                        </Link>} */}
                         <br />
 
-                        <Button onClick={() => navigate('/activity')}>View All Activity</Button>
+                        <Button color='success' onClick={() => navigate('/activity')}>View All Activity</Button>
 
                     </TabPanel>
 
@@ -183,14 +178,8 @@ export default function DashStats({ userStats, goals }) {
                                 <Typography variant='subtitle1'>You haven't marked any books as read so far this year.</Typography>
                             </div>
                         )}
-
-                        {/* {goals.year ? <Link href="#" underline="hover" variant='caption'>
-                            update activity goal
-                        </Link> : <Link href="#" underline="hover" variant='caption'>
-                            add an activity goal
-                        </Link>} */}
                         <br />
-                        <Button onClick={() => navigate('/activity')}>View All Activity</Button>
+                        <Button color='success' onClick={() => navigate('/activity')}>View All Activity</Button>
                     </TabPanel>
 
                     {/* ALL TIME Stats */}
@@ -214,7 +203,7 @@ export default function DashStats({ userStats, goals }) {
                                 <Typography variant='subtitle1'>You haven't marked any books as read on this account yet.</Typography>
                             </div>
                         )}
-                        <Button onClick={() => navigate('/books/read')}>Marked As Read</Button>
+                        <Button color='success' onClick={() => navigate('/books/read')}>Marked As Read</Button>
                     </TabPanel>
 
                     {/* ALL SHELVED BOOKS */}
@@ -230,7 +219,7 @@ export default function DashStats({ userStats, goals }) {
                                 <Typography variant='subtitle1'>You don't have any books in your Bookcase yet.</Typography>
                             </div>
                         )}
-                        <Button onClick={() => navigate('/books')}>View Your Books</Button>
+                        <Button color='success' onClick={() => navigate('/books')}>View Your Books</Button>
                     </TabPanel>
                 </SwipeableViews>
                 <Divider />

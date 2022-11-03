@@ -97,7 +97,6 @@ export default function ReadingActivity() {
     }
 
     const updateGoal = (action) => {
-        console.log(action)
         setAction(action)
         setEditGoal(true)
     }
@@ -139,7 +138,7 @@ export default function ReadingActivity() {
             const allStats = await API.allStats(context.userData.id, year, month)
             const monthGoals = await API.monthlyGoal(month, context.userData.id)
             const yearGoals = await API.yearlyGoal(year, context.userData.id)
-            console.log(yearBooks)
+            // console.log(yearBooks)
             setMonthlyBooks(monthBooks.data)
             setYearlyBooks(yearBooks.data)
             setStats(allStats.data)
@@ -214,12 +213,16 @@ export default function ReadingActivity() {
                     </Container>
                     }
 
-                    {monthlyBooks && <Container sx={{ width: { xs: 1 / 1, md: 4 / 5 }, mr: 'auto', ml: 'auto', mb:'50px' }}>
+                    {monthlyBooks && <Container sx={{ width: { xs: 1 / 1, md: 4 / 5 }, mr: 'auto', ml: 'auto', mb: '50px' }}>
                         <List sx={{ bgcolor: 'background.paper' }}>
                             {monthlyBooks.map((book) => (<React.Fragment>
                                 <ListItem key={book.id} alignItems="flex-start" sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center' }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <Card sx={{ height: { xs: 145, md: 218 }, width: { xs: 100, md: 148 } }}>
+                                        <Card sx={{
+                                            height: { xs: 145, md: 218 }, width: { xs: 100, md: 148 }, '&:hover': {
+                                                cursor: 'pointer'
+                                            }
+                                        }}>
                                             <CardMedia
                                                 component='img'
                                                 onClick={() => { navigate(`/book/${book.id}`) }}
@@ -285,12 +288,14 @@ export default function ReadingActivity() {
                     </Container>}
 
 
-                    {yearlyBooks && <Container sx={{ width: { xs: 1 / 1, md: 4 / 5 }, mr: 'auto', ml: 'auto', mb:'50px' }}>
+                    {yearlyBooks && <Container sx={{ width: { xs: 1 / 1, md: 4 / 5 }, mr: 'auto', ml: 'auto', mb: '50px' }}>
                         <List sx={{ bgcolor: 'background.paper' }}>
                             {yearlyBooks.map((book) => (<React.Fragment>
                                 <ListItem key={`${book.title}${book.id}month`} alignItems="flex-start" sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center' }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <Card sx={{ height: { xs: 145, md: 218 }, width: { xs: 100, md: 148 } }}>
+                                        <Card sx={{ height: { xs: 145, md: 218 }, width: { xs: 100, md: 148 },'&:hover': {
+                                        cursor: 'pointer'
+                                    } }}>
                                             <CardMedia
                                                 component='img'
                                                 onClick={() => { navigate(`/book/${book.id}`) }}

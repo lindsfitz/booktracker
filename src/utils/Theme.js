@@ -20,7 +20,7 @@ export const themeOptions = createTheme({
         main: '#839da2',
       },
       success: {
-        main: '#83a288',
+        main: '#5F5B71',
       },
       custom:{
         main:'#5F5B71',

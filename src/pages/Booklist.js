@@ -3,16 +3,16 @@ import { useParams, useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import dayjs from 'dayjs'
-import { List, ListItem, Divider, Typography, Button, Box, Stack, Rating, Link, Chip } from '@mui/material';
+import { List, ListItem, Divider, Typography, Button, Box, Stack, Rating, Link, Chip, Tooltip } from '@mui/material';
 import AddReadDates from './components/modals/AddReadDates';
 import ReadingProgress from './components/modals/ReadingProgress';
 
 const bookBoxStyle = {
     display: 'flex',
     justifyContent: 'space-between',
-    width: {xs:3/4, sm: 2/6},
-    mr: {xs:1,md:'auto'},
-    ml: {xs:1,md:'auto'}
+    width: { xs: 3 / 4, sm: 2 / 6 },
+    mr: { xs: 1, md: 'auto' },
+    ml: { xs: 1, md: 'auto' }
 }
 
 
@@ -107,7 +107,7 @@ export default function Booklist() {
                 return (
                     <Box>
                         <Stack>
-                            <Button variant='outlined' size='mdall' onClick={()=>handleOpenProgress(book)}>Update Progress</Button>
+                            <Button variant='outlined' size='mdall' onClick={() => handleOpenProgress(book)}>Update Progress</Button>
                             <Button size='small'>Finished Reading</Button>
                             <Stack sx={{ alignSelf: 'center' }}>
                                 <Typography variant='caption' color='text.secondary'>Added on {dayjs(book.CurrentBooks[0].CurrentlyReading.createdAt).format('MMM D, YYYY')}</Typography>
@@ -163,21 +163,27 @@ export default function Booklist() {
 
     return (
         <React.Fragment>
-            <Typography sx={{textAlign:'center', m:1}} variant='h6'>{title}</Typography>
+            <Typography sx={{ textAlign: 'center', m: 1 }} variant='h6'>{title}</Typography>
             {bookData && <List sx={{ width: { xs: 7 / 8, md: 4 / 5 }, bgcolor: 'transparent', mr: 'auto', ml: 'auto' }}>
 
                 {bookData.map((book) => (
                     <React.Fragment>
                         <ListItem key={book.id} id={`${book.title}${params.list}`} alignItems="center">
                             <Box sx={bookBoxStyle}>
-                                <img
-                                    src={`${book.cover_img}`}
-                                    srcSet={`${book.cover_img}`}
-                                    alt={`${book.title}`}
-                                    loading="lazy"
-                                    style={{ height: 218, width: 148 }}
-                                    onClick={() => { navigate(`/book/${book.id}`) }}
-                                />
+                                <Box sx={{
+                                    '&:hover': {
+                                        cursor: 'pointer'
+                                    }
+                                }}>
+                                    <img
+                                        src={`${book.cover_img}`}
+                                        srcSet={`${book.cover_img}`}
+                                        alt={`${book.title}`}
+                                        loading="lazy"
+                                        style={{ height: 218, width: 148 }}
+                                        onClick={() => { navigate(`/book/${book.id}`) }}
+                                    />
+                                </Box>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', ml: 2 }}>
                                     <Stack sx={{ alignSelf: 'center', ml: 1 }}>
                                         <Typography variant='subtitle1'>{book.title}</Typography>
@@ -188,14 +194,18 @@ export default function Booklist() {
                                         >
                                             {book.author}
                                         </Typography>
-                                        <Button onClick={() => { navigate(`/book/${book.id}`) }}>View Details</Button>
+                                        {/* <Tooltip title='Book Info'>
+                                            <Button onClick={() => { navigate(`/book/${book.id}`) }}>View Details</Button>
+                                        </Tooltip> */}
                                     </Stack>
                                     {listDetails(book)}
 
 
                                     <Stack direction='row'>
                                         {book.Shelves.map((shelf) => (
-                                            <Chip key={shelf.id} id={shelf.id} size='small' label={shelf.name} variant="outlined" onClick={() => navigate(`/shelf/${shelf.id}`)} />
+                                            <Tooltip title="View Shelf">
+                                                <Chip key={shelf.id} id={shelf.id} size='small' label={shelf.name} variant="outlined" onClick={() => navigate(`/shelf/${shelf.id}`)} />
+                                            </Tooltip>
                                         ))}
                                     </Stack>
                                 </Box>

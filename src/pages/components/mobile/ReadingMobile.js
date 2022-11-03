@@ -68,7 +68,8 @@ export default function ReadingMobile({ currentReads }) {
                             <Box sx={detailsStyle}>
                                 <Typography variant='subtitle2' display='block'>{book.title}</Typography>
                                 <Typography variant='caption' display='block'>{book.author}</Typography>
-                                <Button onClick={()=>handleOpenProgress(book)} variant='outlined' size='small'>Update Progress</Button>
+                                <br />
+                                <Button color='success' onClick={()=>handleOpenProgress(book)} variant='outlined' size='small'>Update Progress</Button>
                                 {/* <Button size='small'>Mark Read</Button> */}
 
                             </Box>

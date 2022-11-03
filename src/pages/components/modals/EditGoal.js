@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import API from '../../../utils/API';
 import AppContext from '../../../AppContext';
 import PropTypes from 'prop-types';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Typography, useMediaQuery } from '@mui/material';
+import { styled, useTheme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
 
@@ -18,6 +18,8 @@ const EditGoalDialog = styled(Dialog)(({ theme }) => ({
 
 const EditGoalDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
+
+
 
     return (
         <DialogTitle variant='subtitle1' sx={{ m: 0, p: 2 }} {...other}>
@@ -50,6 +52,8 @@ const months = ["January", "February", "March", "April", "May", "June", "July", 
 
 export default function EditGoal({ editGoal, setEditGoal, action, goal, setMonthlyGoal, setYearlyGoal }) {
     const context = useContext(AppContext);
+    const theme = useTheme();
+    const smxs = useMediaQuery(theme.breakpoints.down('sm'))
 
     const [current, setCurrent] = useState(null)
     const [goalValue, setGoalValue] = useState(null)
@@ -67,7 +71,7 @@ export default function EditGoal({ editGoal, setEditGoal, action, goal, setMonth
         }
 
         const yearGoal = {
-            month:null,
+            month: null,
             value: newGoal
         }
 
@@ -108,6 +112,10 @@ export default function EditGoal({ editGoal, setEditGoal, action, goal, setMonth
     return (
         <>
             <EditGoalDialog
+                sx={{ textAlign: 'center' }}
+                maxWidth={'sm'}
+                fullWidth={true}
+                fullScreen={smxs}
                 onClose={() => setEditGoal(!editGoal)}
                 aria-labelledby="customized-dialog-title"
                 open={editGoal}
