@@ -316,7 +316,7 @@ export default function Search() {
                 </Stack>
             )}
 
-            {NYTdiv && bestSellers && <Container>
+            {NYTdiv && bestSellers && <Container sx={{mb:10}}>
                 <Box>
                     <Stack alignItems='center' sx={{ mb: 4 }}>
                         <Typography variant='h6'>New York Times Best Sellers List</Typography>

@@ -101,6 +101,7 @@ export default function EditReview({reviewData, setEditReview, reviewInfo, setEd
                         <Stack direction="row" spacing={1} alignItems="center">
                             <Typography>Unread</Typography>
                             <Switch name='read'
+                                color='secondary'
                                 id='read'
                                 checked={readSwitch}
                                 onChange={handleSwitch}
@@ -177,8 +178,8 @@ export default function EditReview({reviewData, setEditReview, reviewInfo, setEd
                     />
                 </FormControl>
 
-                <Button type='submit'>Update Review</Button>
-                <Button onClick={()=>setEditId(null)}>Cancel</Button>
+                <Button color='secondary' type='submit'>Update Review</Button>
+                <Button color='secondary' onClick={()=>setEditId(null)}>Cancel</Button>
 
             </Box>
 

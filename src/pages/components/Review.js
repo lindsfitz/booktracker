@@ -27,12 +27,13 @@ export default function Review({ review, reviewInfo, openSnackbar, bookId }) {
     }
 
     return (
-        <Paper key={review.id} elevation={6} sx={{ width: { xs: 3 / 4, md: 3 / 5 }, p: 2 }}>
+        <Paper key={review.id} elevation={6} sx={{ width: { xs: 1 / 1, sm: 3 / 4, md: 3 / 5 }, p: 2, m: '4 0' }}>
             {editId !== review.id && <Container>
                 <Stack direction='row' justifyContent="space-between">
                     <Stack direction="row" spacing={1} alignItems="center">
                         <Typography variant='caption'>Unread</Typography>
                         <Switch name='read'
+                            color='secondary'
                             id='read'
                             checked={review.read}
                             size='small'
@@ -42,10 +43,10 @@ export default function Review({ review, reviewInfo, openSnackbar, bookId }) {
 
                     <Stack spacing={0.5} direction="row" alignItems="center">
                         <IconButton onClick={() => toggleEditForm(review.id)} aria-label="edit" size="small">
-                            <EditIcon fontSize="inherit" />
+                            <EditIcon color='success' fontSize="inherit" />
                         </IconButton>
                         <IconButton onClick={() => deleteReview(review.id)} aria-label="delete" size="small">
-                            <DeleteIcon fontSize="inherit" />
+                            <DeleteIcon color='success' fontSize="inherit" />
                         </IconButton>
                     </Stack>
                 </Stack>

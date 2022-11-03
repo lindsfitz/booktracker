@@ -117,16 +117,16 @@ export default function Shelf() {
                     <Typography variant='h5'>{shelf.name}</Typography>
                     <Typography variant='subtitle2'>{shelf.description}</Typography>
                     <Typography variant='caption' color='text.secondary'>Last Updated: {dayjs(shelf.last_update).format('MMM D, YYYY')}</Typography>
-                    <Stack direction='row' justifyContent='flex-end' spacing={2}>
+                    <Stack direction='row' justifyContent='center' spacing={2}>
                         {/* <Button>Add Books</Button> */}
                         <IconButton aria-label="edit" size="small" onClick={() => setEditDialog(true)}>
                             <Tooltip title="Edit Shelf">
-                                <EditIcon fontSize="inherit" />
+                                <EditIcon color='secondary' fontSize="inherit" />
                             </Tooltip>
                         </IconButton>
                         <IconButton aria-label="delete" size="small" onClick={handleClickOpen}>
                             <Tooltip title="Delete Shelf">
-                                <DeleteIcon fontSize="inherit" />
+                                <DeleteIcon color='secondary' fontSize="inherit" />
                             </Tooltip>
                         </IconButton>
                     </Stack>

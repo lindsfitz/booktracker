@@ -106,7 +106,7 @@ export default function EditShelf({ shelf, setEditShelf, editShelf }) {
                         />
                     </DialogContent>
                     <DialogActions sx={{justifyContent:'center'}}>
-                        <Button autoFocus type='submit'>
+                        <Button color='secondary' autoFocus type='submit'>
                             Update Shelf
                         </Button>
                     </DialogActions>

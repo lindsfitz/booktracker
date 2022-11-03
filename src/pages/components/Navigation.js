@@ -38,7 +38,7 @@ const Navigation = () => {
     }
 
     const backBtn = () => {
-        if (location.pathname === '/books/read' || location.pathname === '/books/currently' || location.pathname === '/books/dnf' || location.pathname === '/books/owned' || location.pathname === '/activity' || location.pathname.includes('/book/')) {
+        if (location.pathname === '/books/read' || location.pathname === '/books/currently' || location.pathname === '/books/dnf' || location.pathname === '/books/owned' || location.pathname === '/activity' || location.pathname.includes('/book/') || location.pathname.includes('/shelf/')) {
             return (
                 <IconButton onClick={()=>navigate(-1)}><ArrowBackIosIcon /></IconButton>
             )

@@ -106,7 +106,7 @@ export default function AddShelf() {
                         />
                     </DialogContent>
                     <DialogActions sx={{justifyContent:'center'}}>
-                        <Button autoFocus type='submit'>
+                        <Button color='secondary' autoFocus type='submit'>
                             Create Shelf
                         </Button>
                     </DialogActions>
