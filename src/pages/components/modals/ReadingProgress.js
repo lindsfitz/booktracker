@@ -4,7 +4,7 @@ import AppContext from '../../../AppContext';
 import API from '../../../utils/API'
 import {
     Typography, Stack, Box,
-    TextField, Button, useMediaQuery, Dialog, DialogTitle, DialogContent, DialogActions, Card, CardContent, CardMedia
+    TextField, Button, useMediaQuery, Dialog, DialogTitle, DialogContent, DialogActions, Card, CardContent, CardMedia, Link, ButtonGroup
 } from '@mui/material/';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs'
@@ -16,7 +16,7 @@ import { useTheme } from '@mui/material/styles';
 
 
 const cardStyle = {
-    width:'fit-content',
+    width: 'fit-content',
     backgroundColor: 'transparent',
     boxShadow: 0,
     m: '0px 10px',
@@ -42,6 +42,7 @@ export default function ReadingProgress({ book, open, handleClose }) {
 
     const [startValue, setStartValue] = useState(new Date());
     const [endValue, setEndValue] = useState(new Date());
+    const [progressVal, setProgressVal] = useState(true)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -57,12 +58,26 @@ export default function ReadingProgress({ book, open, handleClose }) {
             UserId: context.userData.id,
             BookId: book.id
         }
-        
+
         try {
             const reviewData = await API.newNote(review)
             handleClose()
         }
         catch (err) { console.log(err) }
+    }
+
+    const markRead = async () => {
+        try {
+            await API.removeCurrentlyReading(context.userData.id, book.id)
+                .catch(console.error)
+
+            await API.addRead({
+                userId: context.userData.id,
+                bookId: book.id
+            })
+
+            navigate(`/book/${book.id}`)
+        } catch (err) { console.log(err) }
     }
 
     const handleStartDate = (newValue) => {
@@ -117,6 +132,19 @@ export default function ReadingProgress({ book, open, handleClose }) {
                                     renderInput={(params) => <TextField {...params} />}
                                 />
                             </LocalizationProvider>
+                            <Box>
+                                <TextField
+                                    sx={{ width: 1 / 8, mr: 1 }}
+                                    size='small'
+                                    id="progress"
+                                    name='progress'
+                                    variant="outlined" />
+                                    {progressVal ? <Typography variant='caption'>of # pages</Typography> : <Typography variant='caption'>% done</Typography>}
+                                <ButtonGroup variant='outlined' size="small" sx={{ml:1}}>
+                                    <Button onClick={()=> setProgressVal(false)}>%</Button>
+                                    <Button onClick={()=> setProgressVal(true)}>pages</Button>
+                                </ButtonGroup>
+                            </Box>
                             <TextField
                                 // autoFocus
                                 multiline
@@ -126,8 +154,15 @@ export default function ReadingProgress({ book, open, handleClose }) {
                                 name='note'
                                 label="Notes"
                                 fullWidth
-                                // variant="standard"
+                            // variant="standard"
                             />
+                            <Link onClick={markRead} sx={{
+                                '&:hover': {
+                                    textDecoration: 'underline',
+                                    cursor: 'pointer'
+                                },
+                            }} color='success.main'>I've finished this book!</Link>
+
                         </Stack>
                     </DialogContent>
                     <DialogActions>

@@ -164,7 +164,7 @@ export default function Booklist() {
     return (
         <React.Fragment>
             <Typography sx={{ textAlign: 'center', m: 1 }} variant='h6'>{title}</Typography>
-            {bookData && <List sx={{ width: { xs: 1/1, md: 4 / 5 }, bgcolor: 'transparent', mr: 'auto', ml: 'auto' }}>
+            {bookData && <List sx={{ width: { xs: 1/1, md: 4 / 5 }, bgcolor: 'transparent', mr: 'auto', ml: 'auto', mb:'50px' }}>
 
                 {bookData.map((book) => (
                     <React.Fragment>

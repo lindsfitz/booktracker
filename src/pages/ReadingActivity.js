@@ -101,26 +101,6 @@ export default function ReadingActivity() {
         setEditGoal(true)
     }
 
-
-    // const monthlyStats = async (month) => {
-    //     const monthBooks = await API.monthlyBooks(month, context.userData.id)
-    //     const monthGoals = await API.monthlyGoal(month, context.userData.id)
-    //     setMonthlyBooks(monthBooks.data)
-    //     monthGoals.data ? setMonthlyGoal(monthGoals.data.value) : setMonthlyGoal(null)
-    // }
-
-    // const yearlyStats = async (year) => {
-    //     const yearBooks = await API.yearlyBooks(year, context.userData.id)
-    //     const yearGoals = await API.yearlyGoal(year, context.userData.id)
-    //     setYearlyBooks(yearBooks.data)
-    //     yearGoals.data ? setYearlyGoal(yearGoals.data.value) : setYearlyGoal(null)
-    // }
-
-    // const loadStats = async (year, month) => {
-    //     const allStats = await API.allStats(context.userData.id, year, month)
-    //     setStats(allStats.data)
-    // }
-
     const date = new Date();
     const thismonth = date.getMonth()
     const thisyear = date.getFullYear()
@@ -232,11 +212,16 @@ export default function ReadingActivity() {
                                             />
                                         </Card>
                                         <Box>
-                                            <Typography variant='subtitle2'>{book.title}</Typography>
+                                            <Typography sx={{
+                                                '&:hover': {
+                                                    textDecoration: 'underline',
+                                                    cursor: 'pointer'
+                                                },
+                                            }} onClick={() => { navigate(`/book/${book.id}`) }} variant='subtitle2'>{book.title}</Typography>
                                             <Typography variant="caption" color="text.secondary">
                                                 {book.author}
                                             </Typography>
-                                            <Button onClick={() => { navigate(`/book/${book.id}`) }}>Book Details</Button>
+
                                         </Box>
                                     </Box>
 
@@ -291,11 +276,13 @@ export default function ReadingActivity() {
                     {yearlyBooks && <Container sx={{ width: { xs: 1 / 1, md: 4 / 5 }, mr: 'auto', ml: 'auto', mb: '50px' }}>
                         <List sx={{ bgcolor: 'background.paper' }}>
                             {yearlyBooks.map((book) => (<React.Fragment>
-                                <ListItem key={`${book.title}${book.id}month`} alignItems="flex-start" sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center' }}>
+                                <ListItem key={`${book.title}${book.id}month`} sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: 'center', justifyContent:'space-between', width:{xs: 1/1, lg:7/8} }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <Card sx={{ height: { xs: 145, md: 218 }, width: { xs: 100, md: 148 },'&:hover': {
-                                        cursor: 'pointer'
-                                    } }}>
+                                        <Card sx={{
+                                            height: { xs: 145, md: 218 }, width: { xs: 100, md: 148 }, '&:hover': {
+                                                cursor: 'pointer'
+                                            }
+                                        }}>
                                             <CardMedia
                                                 component='img'
                                                 onClick={() => { navigate(`/book/${book.id}`) }}
@@ -304,12 +291,17 @@ export default function ReadingActivity() {
                                                 sx={{ height: { xs: 140, md: 218 }, width: { xs: 95, md: 148 } }}
                                             />
                                         </Card>
-                                        <Box>
-                                            <Typography variant='subtitle2'>{book.title}</Typography>
+                                        <Box sx={{ml:2}}>
+                                            <Typography sx={{
+                                                '&:hover': {
+                                                    textDecoration: 'underline',
+                                                    cursor: 'pointer'
+                                                },
+                                            }} onClick={() => { navigate(`/book/${book.id}`) }} variant='subtitle2'>{book.title}</Typography>
                                             <Typography variant="caption" color="text.secondary">
                                                 {book.author}
                                             </Typography>
-                                            <Button onClick={() => { navigate(`/book/${book.id}`) }}>Book Details</Button>
+                                          
                                         </Box>
                                     </Box>
 
