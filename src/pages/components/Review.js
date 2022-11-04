@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import API from '../../utils/API'
 import dayjs from 'dayjs'
 import {
-    Rating, Typography, Box, Container, Paper, Switch, Stack, Chip, IconButton
+    Rating, Typography, Box, Container, Paper, Switch, Stack, Chip, IconButton, Button
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import EditReview from './modals/EditReview';
+
+const clampedStyle = {
+    height: 230,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
+}
+
+const unclampedStyle = {
+    height: 'fit-content'
+}
 
 
 
@@ -14,6 +24,13 @@ export default function Review({ review, reviewInfo, openSnackbar, bookId }) {
 
     const [editReview, setEditReview] = useState(false);
     const [editId, setEditId] = useState(null);
+    const [clamp, setClamp] = useState(true);
+    const [overflowActive, setOverflowActive] = useState(null)
+    const reviewRef = useRef(null)
+
+    const isOverflowActive = (e) => {
+        return e.offsetHeight < e.scrollHeight || e.offsetWidth < e.scrollWidth;
+    }
 
     const toggleEditForm = (id) => {
         setEditId(id)
@@ -25,6 +42,16 @@ export default function Review({ review, reviewInfo, openSnackbar, bookId }) {
         openSnackbar('Review Removed')
         reviewInfo()
     }
+
+    useEffect(() => {
+        if (isOverflowActive(reviewRef.current)) {
+            setOverflowActive(true);
+            setClamp(true)
+            return;
+        }
+        setOverflowActive(false)
+        setClamp(null)
+    }, [overflowActive])
 
     return (
         <Paper key={review.id} elevation={6} sx={{ width: { xs: 1 / 1, sm: 3 / 4, md: 3 / 5 }, p: 2, m: '4 0' }}>
@@ -69,9 +96,20 @@ export default function Review({ review, reviewInfo, openSnackbar, bookId }) {
                             <Typography variant='caption'>Read From: {dayjs(review.date_started).format('MMM D, YYYY')} - {dayjs(review.date_finished).format('MMM D, YYYY')}</Typography>}
                     </Box>
 
-                    {review.review && <Typography variant="subtitle1" color="text.secondary">
-                        {review.review}
-                    </Typography>}
+                    {review.review && <Stack>
+                        <Typography ref={reviewRef} sx={clamp ? clampedStyle : unclampedStyle} variant="subtitle1" color="text.secondary">
+                            {review.review}
+                        </Typography>
+
+
+
+                        { overflowActive && 
+                            <React.Fragment>
+                                {clamp ? <Button onClick={() => setClamp(false)} size='small'>See More</Button> : <Button onClick={() => setClamp(true)} size='small'>Hide</Button>}
+                            </React.Fragment>
+                        }
+                    </Stack>
+                    }
                 </Box>
 
             </Container>}

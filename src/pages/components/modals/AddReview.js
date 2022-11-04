@@ -2,21 +2,12 @@ import React, { useState, useContext } from 'react';
 import { useParams } from "react-router-dom";
 import AppContext from '../../../AppContext';
 import API from '../../../utils/API'
-import { Typography, FormControl, Rating, Stack, Switch, Box, TextField, Button } from '@mui/material/';
+import { Typography, FormControl, Rating, Stack, Switch, Box, TextField, Link, Button } from '@mui/material/';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-// import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
-
-/* ----- HERE IN ADD REVIEW - two different post or 'handle submit' functions 
-
-    ** If 'Read' is set to false -- addNote() and post to newNote route (do not need to include read: false as that's been added to the back end route - in this function body object should have public: false, review text, and user & book id)
-
-    ** If 'Read' is set to true -- addReview() and post to newReview route (do not need to include read: true, in back end route. Body object should have all of the filled in info from the form. 
-         ** ALSO: make sure that fields default to null if they haven't been changed from their original values (placeholders?) currently submitting the starting value if not changed at all )
-*/
 
 export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBook }) {
 
@@ -25,17 +16,15 @@ export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBoo
 
     const [startValue, setStartValue] = useState(new Date());
     const [endValue, setEndValue] = useState(new Date());
+    const [addDates, setAddDates] = useState(false)
 
-    const [readSwitch, setReadSwitch] = useState(false);
-
-    const handleSwitch = (event) => {
-        setReadSwitch(event.target.checked);
-    };
-
+    const toggleDates = () => {
+        setAddDates(!addDates)
+    }
 
     const handleStartDate = (newValue) => {
         setStartValue(newValue);
-        console.log(bookId)
+        setEndValue(newValue)
     };
 
     const handleEndDate = (newValue) => {
@@ -58,46 +47,34 @@ export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBoo
         const data = new FormData(e.target)
         let startDate = dayjs(startValue)
         let finishDate = dayjs(endValue)
-        if (readSwitch) {
-            const newReview = {
-                date_started: startDate.format('YYYY/MM/DD'),
-                date_finished: finishDate.format('YYYY/MM/DD'),
-                year_finished: finishDate.year(),
-                month_finished: finishDate.month(),
-                public: false,
-                rating: data.get('rating'),
-                review: data.get('review'),
-                format: data.get('format'),
-                series: data.get('series'),
-                UserId: context.userData.id,
-                BookId: id
-            }
-            try {
-                await API.removeCurrentlyReading(context.userData.id, id)
-                await API.removeFromDNF(context.userData.id, id)
-                await API.addRead({
-                    userId: context.userData.id,
-                    bookId: id
-                })
-                const reviewData = await API.newReview(newReview)
-                console.log(reviewData)
-            } catch (err) { console.log(err) }
+
+        const newReview = {
+            date_started: addDates ? startDate.format('YYYY/MM/DD') : null,
+            date_finished: addDates ? finishDate.format('YYYY/MM/DD') : null,
+            year_finished: finishDate.year(),
+            month_finished: finishDate.month(),
+            public: false,
+            rating: data.get('rating'),
+            review: data.get('review'),
+            format: data.get('format'),
+            series: data.get('series'),
+            UserId: context.userData.id,
+            BookId: id
+        }
+        try {
+            await API.removeCurrentlyReading(context.userData.id, id)
+            await API.removeFromDNF(context.userData.id, id)
+            await API.addRead({
+                userId: context.userData.id,
+                bookId: id
+            })
+            const reviewData = await API.newReview(newReview)
+            console.log(reviewData)
+        } catch (err) { console.log(err) }
 
 
-        }
-        if (!readSwitch) {
-            const newReview = {
-                public: false,
-                review: data.get('review'),
-                UserId: context.userData.id,
-                BookId: id
-            }
-            try {
-                const reviewData = await API.newNote(newReview)
-                console.log(reviewData)
-            } catch (err) { console.log(err) }
-        }
-        // console.log(newReview)
+
+
 
         reviewInfo()
         toggleReviewForm();
@@ -108,31 +85,33 @@ export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBoo
         <React.Fragment>
             <Box
                 component="form"
-                sx={{ m: 1, width: '50%' }}
+                sx={{ m: 1, width: { xs: 1 / 1, md: 1 / 2 } }}
                 noValidate
                 autoComplete="off"
                 onSubmit={reviewSubmit}
             >
 
-                <Stack direction="row" spacing={4} alignItems="center" justifyContent="center">
+                <Stack spacing={3} alignItems="center" justifyContent="center">
 
-
-                    <Stack spacing={3} alignItems="center" justifyContent="center">
-
-                        {/* For the review form I need:
-                    - Toggle for True/False if they are marking the book as read or unread */}
-
+                    <Stack alignItems="center" justifyContent="center" direction='row' spacing={5}>
                         <Stack direction="row" spacing={1} alignItems="center">
                             <Typography>Unread</Typography>
                             <Switch name='read'
                                 id='read'
-                                checked={readSwitch}
-                                onChange={handleSwitch}
+                                checked={true}
                                 inputProps={{ 'aria-label': 'controlled' }} />
                             <Typography>Read</Typography>
                         </Stack>
 
-                        {readSwitch && <Stack spacing={3}>
+                        <Stack alignItems="center" direction="row" spacing={1}>
+                            <Typography component="legend">Your Rating:</Typography>
+                            <Rating name="rating" id='rating' defaultValue={0} precision={0.5} />
+                        </Stack>
+
+                    </Stack>
+
+                    {addDates ? <Stack justifyContent="center" spacing={0.5}>
+                        <Stack alignItems="center" justifyContent="center" direction='row' spacing={5}>
                             {/* - Date picker for the start date */}
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
 
@@ -156,15 +135,12 @@ export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBoo
                                 />
                             </LocalizationProvider>
                         </Stack>
-                        }
-                    </Stack>
+                        <Button size='small' onClick={toggleDates}>Hide Dates</Button>
+                    </Stack> : <Button onClick={toggleDates}>Add Read Dates</Button>}
 
-                    {readSwitch && <Stack spacing={3} >
-                        <Stack direction="row" spacing={0}>
-                            <Typography component="legend">Your Rating:</Typography>
-                            <Rating name="rating" id='rating' defaultValue={0} precision={0.5} />
-                        </Stack>
 
+
+                    <Stack alignItems="center" justifyContent="center" direction='row' spacing={5} >
                         {/* - Dropdown menu for the format 
                     - Ebook, hard copy */}
                         {/* - Or maybe a text field for format, not sure yet */}
@@ -181,26 +157,28 @@ export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBoo
                             label="Series Details"
                             defaultValue="Series Name #2"
                         />
-                    </Stack>}
+                    </Stack>
 
+                    <FormControl fullWidth sx={{ m: 1 }}>
+
+                        <TextField
+                            id="review"
+                            name='review'
+                            label={'Review'}
+                            multiline
+                            rows={10}
+
+                        />
+                    </FormControl>
                 </Stack>
 
 
 
                 {/* - Textbox for the actual review */}
-                <FormControl fullWidth sx={{ m: 1 }}>
-
-                    <TextField
-                        id="review"
-                        name='review'
-                        label={readSwitch ? 'Review' : 'Notes'}
-                        multiline
-                        rows={10}
-
-                    />
-                </FormControl>
 
                 <Button type='submit'>Add Review</Button>
+                <Button onClick={toggleReviewForm}>Cancel</Button>
+
 
             </Box>
 

@@ -13,6 +13,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AddReview from './components/modals/AddReview';
 import Review from './components/Review';
 import BookInfo from './components/BookInfo';
+import AddNote from './components/modals/AddNote'
 
 
 export default function Book() {
@@ -28,6 +29,7 @@ export default function Book() {
     const [bookData, setBookData] = useState(null)
     const [shelfChoices, setShelfChoices] = useState([])
     const [reviewForm, setReviewForm] = useState(false)
+    const [noteForm, setNoteForm] = useState(false)
     const [dbBook, setdbBook] = useState(false)
 
 
@@ -54,7 +56,6 @@ export default function Book() {
         const book = await API.getBookandShelves(id, context.userData.id);
         setBookData(book.data)
         setShelfChoices([])
-        console.log(book.data)
         if (book.data.CurrentBooks.length) {
             setMarkedAs('Currently Reading')
         }
@@ -91,18 +92,6 @@ export default function Book() {
         // shelfOptions(book.data)
     }, [context.userData.id, context.userShelves])
 
-    // const shelfOptions = (data) => {
-    //     if (!data.Shelves.length) {
-    //         setShelfChoices(context.userShelves)
-    //         return;
-    //     }
-    //     context.userShelves.forEach(shelf => {
-    //         const found = data.Shelves.find(element => element.name === shelf.name)
-    //         if (!found) {
-    //             setShelfChoices(current => [...current, shelf])
-    //         }
-    //     })
-    // }
 
     const chipOptions = () => {
         switch (markedAs) {
@@ -393,6 +382,10 @@ export default function Book() {
         setReviewForm(!reviewForm)
     }
 
+    const toggleNoteForm = () => {
+        setNoteForm(!noteForm)
+    }
+
     const toggleShelfMenu = () => {
         setShelfOpen((prevOpen) => !prevOpen);
     };
@@ -562,14 +555,13 @@ export default function Book() {
 
                     <Divider />
 
-                    {reviewForm ? (<div>
-                        <AddReview reviewInfo={reviewInfo} toggleReviewForm={toggleReviewForm} bookId={bookData.id} addBook={addBook} />
-                        <Button onClick={toggleReviewForm}>Cancel</Button>
+                    {reviewForm || noteForm ? (<div>
+                        {reviewForm ? (<AddReview reviewInfo={reviewInfo} toggleReviewForm={toggleReviewForm} bookId={bookData.id} addBook={addBook} />) : (<AddNote reviewInfo={reviewInfo} toggleNoteForm={toggleNoteForm} bookId={bookData.id} addBook={addBook} />)}
+
                     </div>) : (
                         <React.Fragment>
-
                             {mobile ? (
-                                <Stack alignItems='center' sx={{p:2}}>
+                                <Stack alignItems='center' sx={{ p: 2 }}>
                                     <Stack direction='row' spacing={1}>
                                         <ButtonGroup variant="contained" aria-label="text button group" ref={shelfRef}>
                                             <Button onClick={toggleShelfMenu}>Add to Shelf</Button>
@@ -628,9 +620,10 @@ export default function Book() {
                                         </Popper>
 
                                         {/* {bookBtnOptions()} */}
-                                        <ButtonGroup aria-label="text button group" ref={markedRef}>
-                                            <Button color='secondary' onClick={toggleMarkMenu}>Mark As</Button>
+                                        <ButtonGroup variant='contained' aria-label="text button group" ref={markedRef}>
+                                            <Button color='secondary'  onClick={toggleMarkMenu}>Mark As</Button>
                                             <Button
+                                                color='secondary'
                                                 size="small"
                                                 aria-controls={markOpen ? 'split-button-menu' : undefined}
                                                 aria-expanded={markOpen ? 'true' : undefined}
@@ -664,7 +657,6 @@ export default function Book() {
                                                             <MenuList id="split-button-menu" autoFocusItem>
                                                                 {markedMenuOptions().map(btn => btn
                                                                 )}
-                                                                {/* {markedMenuOptions()} */}
                                                             </MenuList>
                                                         </ClickAwayListener>
                                                     </Paper>
@@ -675,6 +667,7 @@ export default function Book() {
                                         <Divider orientation='vertical' />
                                     </Stack>
                                     <Stack direction='row' spacing={1}>
+                                        {(markedAs !== 'Read' && markedAs !== 'Read & Reviewed') && <Button color='secondary' onClick={toggleNoteForm}>Add A Note</Button>}
                                         <Button color='secondary' onClick={toggleReviewForm}>Add A Review</Button>
 
                                         {markedAs === 'Read' &&
@@ -685,122 +678,123 @@ export default function Book() {
                                         {!markedOwned && <Button color='secondary' onClick={addOwned}>Mark As Owned</Button>}
 
                                     </Stack>
-                                </Stack> ) : (<Stack direction='row' spacing={1}>
-                                <ButtonGroup variant="contained" aria-label="text button group" ref={shelfRef}>
-                                    <Button onClick={toggleShelfMenu}>Add to Shelf</Button>
-                                    <Button
-                                        size="small"
-                                        aria-controls={shelfOpen ? 'split-button-menu' : undefined}
-                                        aria-expanded={shelfOpen ? 'true' : undefined}
-                                        aria-label="select merge strategy"
-                                        aria-haspopup="menu"
-                                        onClick={toggleShelfMenu}
-                                    >
-                                        <ArrowDropDownIcon />
-                                    </Button>
-                                </ButtonGroup>
-                                <Popper
-                                    sx={{
-                                        zIndex: 1,
-                                    }}
-                                    open={shelfOpen}
-                                    anchorEl={shelfRef.current}
-                                    role={undefined}
-                                    transition
-                                    disablePortal
-                                >
-                                    {({ TransitionProps, placement }) => (
-                                        <Grow
-                                            {...TransitionProps}
-                                            style={{
-                                                transformOrigin:
-                                                    placement === 'bottom' ? 'center top' : 'center bottom',
-                                            }}
+                                </Stack>) : (<Stack direction='row' spacing={1}>
+                                    <ButtonGroup variant="contained" aria-label="text button group" ref={shelfRef}>
+                                        <Button onClick={toggleShelfMenu}>Add to Shelf</Button>
+                                        <Button
+                                            size="small"
+                                            aria-controls={shelfOpen ? 'split-button-menu' : undefined}
+                                            aria-expanded={shelfOpen ? 'true' : undefined}
+                                            aria-label="select merge strategy"
+                                            aria-haspopup="menu"
+                                            onClick={toggleShelfMenu}
                                         >
-                                            <Paper>
-                                                <ClickAwayListener onClickAway={closeShelfMenu}>
-                                                    <MenuList id="split-button-menu" autoFocusItem>
-                                                        {shelfChoices.map((shelf, index) => (
-                                                            <MenuItem
-                                                                key={shelf.name}
-                                                                id={shelf.id}
-                                                                onClick={(event) => addToShelf(event)}
-                                                            >
-                                                                {shelf.name}
+                                            <ArrowDropDownIcon />
+                                        </Button>
+                                    </ButtonGroup>
+                                    <Popper
+                                        sx={{
+                                            zIndex: 1,
+                                        }}
+                                        open={shelfOpen}
+                                        anchorEl={shelfRef.current}
+                                        role={undefined}
+                                        transition
+                                        disablePortal
+                                    >
+                                        {({ TransitionProps, placement }) => (
+                                            <Grow
+                                                {...TransitionProps}
+                                                style={{
+                                                    transformOrigin:
+                                                        placement === 'bottom' ? 'center top' : 'center bottom',
+                                                }}
+                                            >
+                                                <Paper>
+                                                    <ClickAwayListener onClickAway={closeShelfMenu}>
+                                                        <MenuList id="split-button-menu" autoFocusItem>
+                                                            {shelfChoices.map((shelf, index) => (
+                                                                <MenuItem
+                                                                    key={shelf.name}
+                                                                    id={shelf.id}
+                                                                    onClick={(event) => addToShelf(event)}
+                                                                >
+                                                                    {shelf.name}
+                                                                </MenuItem>
+                                                            ))}
+                                                            <MenuItem onClick={context.toggleShelfDialog}>
+                                                                <Typography variant='caption'>
+
+                                                                    ADD NEW SHELF
+                                                                </Typography>
                                                             </MenuItem>
-                                                        ))}
-                                                        <MenuItem onClick={context.toggleShelfDialog}>
-                                                            <Typography variant='caption'>
+                                                        </MenuList>
+                                                    </ClickAwayListener>
+                                                </Paper>
+                                            </Grow>
+                                        )}
+                                    </Popper>
 
-                                                                ADD NEW SHELF
-                                                            </Typography>
-                                                        </MenuItem>
-                                                    </MenuList>
-                                                </ClickAwayListener>
-                                            </Paper>
-                                        </Grow>
-                                    )}
-                                </Popper>
-
-                                {/* {bookBtnOptions()} */}
-                                <ButtonGroup aria-label="text button group" ref={markedRef}>
-                                    <Button color='secondary' onClick={toggleMarkMenu}>Mark As</Button>
-                                    <Button
-                                        size="small"
-                                        aria-controls={markOpen ? 'split-button-menu' : undefined}
-                                        aria-expanded={markOpen ? 'true' : undefined}
-                                        aria-label="select merge strategy"
-                                        aria-haspopup="menu"
-                                        onClick={toggleMarkMenu}
-                                    >
-                                        <ArrowDropDownIcon />
-                                    </Button>
-                                </ButtonGroup>
-                                <Popper
-                                    sx={{
-                                        zIndex: 1,
-                                    }}
-                                    open={markOpen}
-                                    anchorEl={markedRef.current}
-                                    role={undefined}
-                                    transition
-                                    disablePortal
-                                >
-                                    {({ TransitionProps, placement }) => (
-                                        <Grow
-                                            {...TransitionProps}
-                                            style={{
-                                                transformOrigin:
-                                                    placement === 'bottom' ? 'center top' : 'center bottom',
-                                            }}
+                                    {/* {bookBtnOptions()} */}
+                                    <ButtonGroup variant="contained" aria-label="text button group" ref={markedRef}>
+                                        <Button color='secondary' onClick={toggleMarkMenu}>Mark As</Button>
+                                        <Button
+                                            color='secondary'
+                                            size="small"
+                                            aria-controls={markOpen ? 'split-button-menu' : undefined}
+                                            aria-expanded={markOpen ? 'true' : undefined}
+                                            aria-label="select merge strategy"
+                                            aria-haspopup="menu"
+                                            onClick={toggleMarkMenu}
                                         >
-                                            <Paper>
-                                                <ClickAwayListener onClickAway={closeMarkMenu}>
-                                                    <MenuList id="split-button-menu" autoFocusItem>
-                                                        {markedMenuOptions().map(btn => btn
-                                                        )}
-                                                        {/* {markedMenuOptions()} */}
-                                                    </MenuList>
-                                                </ClickAwayListener>
-                                            </Paper>
-                                        </Grow>
-                                    )}
-                                </Popper>
+                                            <ArrowDropDownIcon />
+                                        </Button>
+                                    </ButtonGroup>
+                                    <Popper
+                                        sx={{
+                                            zIndex: 1,
+                                        }}
+                                        open={markOpen}
+                                        anchorEl={markedRef.current}
+                                        role={undefined}
+                                        transition
+                                        disablePortal
+                                    >
+                                        {({ TransitionProps, placement }) => (
+                                            <Grow
+                                                {...TransitionProps}
+                                                style={{
+                                                    transformOrigin:
+                                                        placement === 'bottom' ? 'center top' : 'center bottom',
+                                                }}
+                                            >
+                                                <Paper>
+                                                    <ClickAwayListener onClickAway={closeMarkMenu}>
+                                                        <MenuList id="split-button-menu" autoFocusItem>
+                                                            {markedMenuOptions().map(btn => btn
+                                                            )}
+                                                            {/* {markedMenuOptions()} */}
+                                                        </MenuList>
+                                                    </ClickAwayListener>
+                                                </Paper>
+                                            </Grow>
+                                        )}
+                                    </Popper>
 
-                                <Divider orientation='vertical' />
+                                    <Divider orientation='vertical' />
 
 
+                                    {(markedAs !== 'Read' && markedAs !== 'Read & Reviewed') && <Button color='secondary' onClick={toggleNoteForm}>Add A Note</Button>}
+                                    <Button color='secondary' onClick={toggleReviewForm}>Add A Review</Button>
 
-                                <Button color='secondary' onClick={toggleReviewForm}>Add A Review</Button>
+                                    {markedAs === 'Read' &&
+                                        <Button color='secondary' onClick={toggleReviewForm}>Add Read Dates</Button>
 
-                                {markedAs === 'Read' &&
-                                    <Button color='secondary' onClick={toggleReviewForm}>Add Read Dates</Button>
+                                    }
 
-                                }
+                                    {!markedOwned && <Button color='secondary' onClick={addOwned}>Mark As Owned</Button>}
 
-                                {!markedOwned && <Button color='secondary' onClick={addOwned}>Mark As Owned</Button>}
-
-                            </Stack>)}
+                                </Stack>)}
                         </React.Fragment>
 
                     )
@@ -818,9 +812,9 @@ export default function Book() {
                         </div>}
 
 
-                        {reviewData && <Container sx={{ mb: '70px', mt:2, mx:0, px:0, display:'flex', flexDirection:'column', justifyContent:'center' }}>
+                        {reviewData && <Container sx={{ mb: '70px', mt: 2, mx: 0, px: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                             <Typography variant='subtitle1'>
-                                Your Reviews:
+                                Notes & Reviews:
                             </Typography>
                             <br />
                             {reviewData.map((review) => <Review
