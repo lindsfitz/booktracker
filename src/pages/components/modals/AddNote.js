@@ -39,7 +39,7 @@ export default function AddNote({ noteInfo, toggleNoteForm, bookId, pages, addBo
             UserId: context.userData.id,
             BookId: id
         }
-    
+
 
         try {
             const reviewData = await API.newNote(newNote)
@@ -92,11 +92,15 @@ export default function AddNote({ noteInfo, toggleNoteForm, bookId, pages, addBo
                                 id="progress"
                                 name='progress'
                                 variant="outlined" />
-                            {progressVal ? <Typography variant='caption'>of {pages} pages</Typography> : <Typography variant='caption'>% done</Typography>}
-                            <ButtonGroup variant='outlined' size="small" sx={{ ml: 1 }}>
-                                <Button onClick={() => setProgressVal(false)}>%</Button>
-                                <Button onClick={() => setProgressVal(true)}>pages</Button>
-                            </ButtonGroup>
+                            {progressVal ? <React.Fragment>
+                                <Typography variant='caption'>of {pages} pages</Typography>
+                                <Button variant='outlined' size="small" sx={{ ml: 1 }} onClick={() => setProgressVal(false)}>%</Button>
+                            </React.Fragment>
+                                : <React.Fragment>
+                                    <Typography variant='caption'>% done</Typography>
+                                    <Button variant='outlined' size="small" sx={{ ml: 1 }} onClick={() => setProgressVal(true)}>pages</Button>
+                                </React.Fragment>
+                            }
                         </Box>
                     }
                 </Stack>

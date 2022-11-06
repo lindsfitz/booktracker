@@ -208,11 +208,15 @@ export default function EditReview({ type, reviewData, setEditReview, reviewInfo
                                     name='progress'
                                     variant="outlined"
                                     defaultValue={reviewData.progress} />
-                                {progressVal ? <Typography variant='caption'>of {pages} pages</Typography> : <Typography variant='caption'>% done</Typography>}
-                                <ButtonGroup variant='outlined' size="small" sx={{ ml: 1 }}>
-                                    <Button onClick={() => setProgressVal(false)}>%</Button>
-                                    <Button onClick={() => setProgressVal(true)}>pages</Button>
-                                </ButtonGroup>
+                                 {progressVal ? <React.Fragment>
+                                    <Typography variant='caption'>of {pages} pages</Typography>
+                                    <Button variant='outlined' size="small" sx={{ ml: 1 }} onClick={() => setProgressVal(false)}>%</Button>
+                                </React.Fragment>
+                                    : <React.Fragment>
+                                        <Typography variant='caption'>% done</Typography>
+                                        <Button variant='outlined' size="small" sx={{ ml: 1 }} onClick={() => setProgressVal(true)}>pages</Button>
+                                    </React.Fragment>
+                                }
                             </Box>
                         }
                     </Stack>

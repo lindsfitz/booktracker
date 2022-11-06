@@ -152,6 +152,33 @@ const API = {
 
     /* ---- TAG ROUTES ---- */
 
+    allTags: () => {
+        return axios.get(`${URL_PREFIX}/tags`)
+    },
+    postTag: (tag) => {
+        return axios.post(`${URL_PREFIX}/tags`, tag)
+    },
+    taggedBooks: (tagId) => {
+        return axios.get(`${URL_PREFIX}/tags/books/${tagId}`)
+    },
+    taggedShelves: (tagId) => {
+        return axios.get(`${URL_PREFIX}/tags/shelves/${tagId}`)
+    }, 
+    taggedProfiles: (tagId) => {
+        return axios.get(`${URL_PREFIX}/tags/profiles/${tagId}`)
+    },  
+    tagShelf: (tagData) => {
+        return axios.post(`${URL_PREFIX}/tags/shelf`,tagData)
+    },
+    tagProfile: (tagData) => {
+        return axios.post(`${URL_PREFIX}/tags/profile`,tagData)
+    },
+    untagShelf: (shelfId, tagId) => {
+        return axios.delete(`${URL_PREFIX}/tags/shelf/${shelfId}/${tagId}`)
+    },
+    untagProfile: (shelfId, tagId) => {
+        return axios.delete(`${URL_PREFIX}/tags/profile/${shelfId}/${tagId}`)
+    },
 
     /* ---- STATS ROUTES ---- */
 
