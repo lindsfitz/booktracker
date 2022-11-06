@@ -17,6 +17,8 @@ export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBoo
     const [startValue, setStartValue] = useState(new Date());
     const [endValue, setEndValue] = useState(new Date());
     const [addDates, setAddDates] = useState(false)
+    const [onPublic, setOnPublic] = useState(false)
+
 
     const toggleDates = () => {
         setAddDates(!addDates)
@@ -29,6 +31,10 @@ export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBoo
 
     const handleEndDate = (newValue) => {
         setEndValue(newValue);
+    };
+
+    const handleSwitch = (event) => {
+        setOnPublic(event.target.checked);
     };
 
     const reviewSubmit = async (e) => {
@@ -53,7 +59,7 @@ export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBoo
             date_finished: addDates ? finishDate.format('YYYY/MM/DD') : null,
             year_finished: finishDate.year(),
             month_finished: finishDate.month(),
-            public: false,
+            public: onPublic,
             rating: data.get('rating'),
             review: data.get('review'),
             format: data.get('format'),
@@ -93,18 +99,22 @@ export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBoo
 
                 <Stack spacing={3} alignItems="center" justifyContent="center">
 
-                    <Stack alignItems="center" justifyContent="center" direction='row' spacing={5}>
+                    <Stack alignItems="center" justifyContent="center"
+                        direction={{ xs: "column", sm: 'row' }} spacing={5}>
                         <Stack direction="row" spacing={1} alignItems="center">
-                            <Typography>Unread</Typography>
-                            <Switch name='read'
-                                id='read'
-                                checked={true}
+                            <Typography variant='caption'>Private</Typography>
+                            <Switch name='public'
+                                id='public'
+                                size='small'
+
+                                onChange={handleSwitch}
+                                checked={onPublic}
                                 inputProps={{ 'aria-label': 'controlled' }} />
-                            <Typography>Read</Typography>
+                            <Typography variant='caption'>Public</Typography>
                         </Stack>
 
                         <Stack alignItems="center" direction="row" spacing={1}>
-                            <Typography component="legend">Your Rating:</Typography>
+                            <Typography variant='caption' component="legend">Your Rating:</Typography>
                             <Rating name="rating" id='rating' defaultValue={0} precision={0.5} />
                         </Stack>
 

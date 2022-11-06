@@ -1,8 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useParams } from "react-router-dom";
 import AppContext from '../../../AppContext';
 import API from '../../../utils/API'
-import { Typography, FormControl, Rating, Stack, Switch, Box, TextField, Button } from '@mui/material/';
+import { Typography, FormControl, Rating, Stack, Switch, Box, TextField, Button, Select, MenuItem, ButtonGroup } from '@mui/material/';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -10,24 +9,36 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 // import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 
-export default function EditReview({reviewData, setEditReview, reviewInfo, setEditId, bookId}) {
+export default function EditReview({ type, reviewData, setEditReview, reviewInfo, setEditId, bookId, pages }) {
 
     const context = useContext(AppContext);
-    const params = useParams();
 
     const [startValue, setStartValue] = useState(null);
     const [endValue, setEndValue] = useState(null);
-    const [readSwitch, setReadSwitch] = useState(true)
+    const [onPublic, setOnPublic] = useState(false)
+    const [status, setStatus] = useState('')
+    const [progressVal, setProgressVal] = useState(true)
 
-    useEffect(()=>{
+
+
+    const toggleDates = () => {
+        setStartValue(new Date())
+        setEndValue(new Date())
+    }
+
+    const handleStatusChange = (event) => {
+        setStatus(event.target.value);
+    };
+
+    useEffect(() => {
         setStartValue(reviewData.date_started)
         setEndValue(reviewData.date_finished)
-        setReadSwitch(reviewData.read)
-        console.log(bookId)
-    },[reviewData])
+        setOnPublic(reviewData.public)
+        setStatus(reviewData.status)
+    }, [reviewData])
 
     const handleSwitch = (event) => {
-        setReadSwitch(event.target.checked);
+        setOnPublic(event.target.checked);
     };
 
 
@@ -39,16 +50,15 @@ export default function EditReview({reviewData, setEditReview, reviewInfo, setEd
         setEndValue(newValue);
     };
 
-    const reviewSubmit = async (e) => {
+    const submit = async (e) => {
         e.preventDefault();
         console.log('submitted')
-        let updatedReview;
         const data = new FormData(e.currentTarget)
-        let startDate = dayjs(startValue)
-        let finishDate = dayjs(endValue)
-        if (readSwitch) {
-            updatedReview = {
-                read: readSwitch,
+        if (type === 'review') {
+            let startDate = dayjs(startValue)
+            let finishDate = dayjs(endValue)
+            const updatedReview = {
+                public: onPublic,
                 date_started: startDate.format('YYYY/MM/DD'),
                 date_finished: finishDate.format('YYYY/MM/DD'),
                 year_finished: finishDate.year(),
@@ -64,17 +74,22 @@ export default function EditReview({reviewData, setEditReview, reviewInfo, setEd
                 userId: context.userData.id,
                 bookId: bookId
             })
+
+            const updated = await API.editReview(updatedReview, reviewData.id)
+            console.log(updated)
         }
-        if (!readSwitch) {
-            /* Here I need to somehow figure out how to check and see if this book is currently marked as read/if changing the readswitch here would remove the only review where this book is marked as read -- or I guess it can just stay marked as read until they remove it even if they update both reviews? Idk need to decide how to handle this situation */
-            updatedReview = {
-                read: readSwitch,
-                review: data.get('review'),
+        if (type === 'note') {
+            const updatedNote = {
+                content: data.get('review'),
+                status: data.get('status'),
+                progress: data.get('progress')
             }
+
+            const updated = await API.editNote(updatedNote, reviewData.id)
+            console.log(updated)
+
         }
-        console.log(updatedReview)
-        const updated = await API.editReview(updatedReview,reviewData.id)
-        console.log(updated)
+
         reviewInfo()
         setEditId(null)
         setEditReview(false)
@@ -87,29 +102,36 @@ export default function EditReview({reviewData, setEditReview, reviewInfo, setEd
                 // sx={{ m: 1, width: '50%' }}
                 noValidate
                 autoComplete="off"
-                onSubmit={reviewSubmit}
+                onSubmit={submit}
             >
 
-                <Stack direction="row" spacing={4} alignItems="center" justifyContent="center">
-
-
+                {type === 'review' ? (
                     <Stack spacing={3} alignItems="center" justifyContent="center">
+                        <Stack
+                            alignItems="center" justifyContent="center"
+                            direction={{ xs: "column", sm: 'row' }}
+                            spacing={5}>
+                            <Stack direction="row" spacing={1} alignItems="center">
+                                <Typography variant='caption'>Private</Typography>
+                                <Switch name='read'
+                                    size='small'
+                                    color='secondary'
+                                    id='read'
+                                    checked={onPublic}
+                                    onChange={handleSwitch}
+                                    inputProps={{ 'aria-label': 'controlled' }} />
+                                <Typography variant='caption'>Public</Typography>
+                            </Stack>
 
-                        {/* For the review form I need:
-                    - Toggle for True/False if they are marking the book as read or unread */}
-
-                        <Stack direction="row" spacing={1} alignItems="center">
-                            <Typography>Unread</Typography>
-                            <Switch name='read'
-                                color='secondary'
-                                id='read'
-                                checked={readSwitch}
-                                onChange={handleSwitch}
-                                inputProps={{ 'aria-label': 'controlled' }} />
-                            <Typography>Read</Typography>
+                            <Stack direction="row" spacing={0}>
+                                <Typography variant='caption' component="legend">Your Rating:</Typography>
+                                <Rating name="rating" id='rating' defaultValue={reviewData.rating} precision={0.5} />
+                            </Stack>
                         </Stack>
 
-                        {readSwitch && <Stack spacing={3}>
+
+
+                        {startValue || endValue ? (<Stack alignItems="center" justifyContent="center" direction='row' spacing={5}>
                             {/* - Date picker for the start date */}
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
 
@@ -132,54 +154,86 @@ export default function EditReview({reviewData, setEditReview, reviewInfo, setEd
                                     renderInput={(params) => <TextField {...params} />}
                                 />
                             </LocalizationProvider>
+                        </Stack>) : <Button onClick={toggleDates}>Add Read Dates</Button>}
+
+
+
+                        <Stack direction='row'
+                            alignItems="center" justifyContent="center"
+                            spacing={3} >
+
+                            <TextField
+                                name='format'
+                                id="format"
+                                label="Format"
+                                defaultValue={reviewData.format}
+                            />
+                            <TextField
+                                name='series'
+                                id="series"
+                                label="Series Details"
+                                defaultValue={reviewData.series}
+                            />
                         </Stack>
+
+
+
+
+                        {/* - Textbox for the actual review */}
+
+                    </Stack>) : (
+                    <Stack spacing={3} alignItems="center" justifyContent="center">
+                        <Stack direction="row" spacing={1} alignItems="center">
+                            <Typography variant='caption'>Status:</Typography>
+                            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                                <Select
+                                    value={status}
+                                    onChange={handleStatusChange}
+                                >
+                                    <MenuItem value={''}>
+                                        <em>None</em>
+                                    </MenuItem>
+                                    <MenuItem value={'Currently Reading'}>Currently Reading</MenuItem>
+                                    <MenuItem value={'To Be Read'}>To Be Read</MenuItem>
+                                    <MenuItem value={'Did Not Finish'}>Did Not Finish</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Stack>
+                        {status === 'Currently Reading' &&
+                            <Box>
+                                <TextField
+                                    sx={{ width: 1 / 8, mr: 1 }}
+                                    size='small'
+                                    id="progress"
+                                    name='progress'
+                                    variant="outlined"
+                                    defaultValue={reviewData.progress} />
+                                {progressVal ? <Typography variant='caption'>of {pages} pages</Typography> : <Typography variant='caption'>% done</Typography>}
+                                <ButtonGroup variant='outlined' size="small" sx={{ ml: 1 }}>
+                                    <Button onClick={() => setProgressVal(false)}>%</Button>
+                                    <Button onClick={() => setProgressVal(true)}>pages</Button>
+                                </ButtonGroup>
+                            </Box>
                         }
                     </Stack>
 
-                    {readSwitch && <Stack spacing={3} >
-                        <Stack direction="row" spacing={0}>
-                            <Typography component="legend">Your Rating:</Typography>
-                            <Rating name="rating" id='rating' defaultValue={reviewData.rating} precision={0.5} />
-                        </Stack>
+                )}
 
-                        {/* - Dropdown menu for the format 
-                    - Ebook, hard copy */}
-                        {/* - Or maybe a text field for format, not sure yet */}
-                        <TextField
-                            name='format'
-                            id="format"
-                            label="Format"
-                            defaultValue={reviewData.format}
-                        />
-                        {/* - Textfield for Series? */}
-                        <TextField
-                            name='series'
-                            id="series"
-                            label="Series Details"
-                            defaultValue={reviewData.series}
-                        />
-                    </Stack>}
-
-                </Stack>
-
-
-
-                {/* - Textbox for the actual review */}
                 <FormControl fullWidth sx={{ m: 1 }}>
 
                     <TextField
                         id="review"
                         name='review'
-                        label={readSwitch ? 'Review' : 'Notes'}
+                        label={type === 'review' ? 'Review' : 'Notes'}
                         multiline
                         rows={10}
-                        defaultValue={reviewData.review}
+                        defaultValue={type === 'review' ? reviewData.review : reviewData.content}
 
                     />
                 </FormControl>
 
-                <Button color='secondary' type='submit'>Update Review</Button>
-                <Button color='secondary' onClick={()=>setEditId(null)}>Cancel</Button>
+                <Button color='secondary' type='submit'>Update</Button>
+                <Button color='secondary' onClick={() => setEditId(null)}>Cancel</Button>
 
             </Box>
 

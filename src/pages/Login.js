@@ -47,19 +47,21 @@ export default function Login() {
         const data = new FormData(event.currentTarget);
         const user = {
             email: data.get('loginEmail'),
-            password:data.get('loginPassword'),
+            password: data.get('loginPassword'),
         }
 
         API.login(user).then(async (res) => {
-            console.log(res.data)
-            localStorage.setItem("token", res.data.token)
-            context.setUserData({
-                id: res.data.user.id,
-                name: res.data.user.first_name,
-                created: res.data.createdAt
-            })
-            context.setToken(res.data.token)
-            navigate('/');
+            try {
+                localStorage.setItem("token", res.data.token)
+                context.setUserData({
+                    id: res.data.user.id,
+                    name: res.data.profile.display_name,
+                    created: res.data.createdAt
+                })
+                context.setToken(res.data.token)
+                navigate('/');
+            }
+            catch (err) { console.log(err) }
         })
 
     };

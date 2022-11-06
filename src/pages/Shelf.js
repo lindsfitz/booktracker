@@ -175,7 +175,7 @@ export default function Shelf() {
                                         <Stack sx={{ alignSelf: 'center', ml: 1, p: 1 }} direction={{ xs: 'column', md: 'row' }}>
                                             {book.CurrentBooks.length > 0 && <Chip label='Currently Reading' />}
                                             {book.DNFBooks.length > 0 && <Chip label='DNF' />}
-                                            {book.Reviews.length > 0 && <Chip label='Read' />}
+                                            {book.ReadBooks.length > 0 && <Chip label='Read' />}
 
                                             {book.Shelves.length > 1 && getChips(book.Shelves)}
 

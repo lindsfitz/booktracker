@@ -6,12 +6,6 @@ import {
     Typography, Stack, Box,
     TextField, Button, useMediaQuery, Dialog, DialogTitle, DialogContent, DialogActions, Card, CardContent, CardMedia, Link, ButtonGroup
 } from '@mui/material/';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-
 import { useTheme } from '@mui/material/styles';
 
 
@@ -40,27 +34,27 @@ export default function ReadingProgress({ book, open, handleClose }) {
     const smxs = useMediaQuery(theme.breakpoints.down('sm'))
     let navigate = useNavigate()
 
-    const [startValue, setStartValue] = useState(new Date());
-    const [endValue, setEndValue] = useState(new Date());
     const [progressVal, setProgressVal] = useState(true)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         console.log(`nice, submitted for book id ${book.id}`)
         const data = new FormData(e.target)
-        let startDate = dayjs(startValue)
-        let finishDate = dayjs(endValue)
+        let progress;
 
-        const review = {
-            public: false,
-            date_started: startDate.format('YYYY/MM/DD'),
-            review: data.get('note'),
+        progressVal ? progress = `${data.get('progress')}/${book.pages}` : progress = `${data.get('progress')}%`
+
+
+        const note = {
+            content: data.get('note'),
+            status:'Currently Reading',
+            progress: progress,
             UserId: context.userData.id,
             BookId: book.id
         }
 
         try {
-            const reviewData = await API.newNote(review)
+            const noteData = await API.newNote(note)
             handleClose()
         }
         catch (err) { console.log(err) }
@@ -79,14 +73,6 @@ export default function ReadingProgress({ book, open, handleClose }) {
             navigate(`/book/${book.id}`)
         } catch (err) { console.log(err) }
     }
-
-    const handleStartDate = (newValue) => {
-        setStartValue(newValue);
-    };
-
-    const handleEndDate = (newValue) => {
-        setEndValue(newValue);
-    };
 
     return (
         <React.Fragment>
@@ -121,17 +107,6 @@ export default function ReadingProgress({ book, open, handleClose }) {
 
                     <DialogContent dividers>
                         <Stack spacing={3}>
-                            {/* - Date picker for the start date */}
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <MobileDatePicker
-                                    label="Date Started"
-                                    name='started'
-                                    id='started'
-                                    value={startValue}
-                                    onChange={handleStartDate}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
-                            </LocalizationProvider>
                             <Box>
                                 <TextField
                                     sx={{ width: 1 / 8, mr: 1 }}
@@ -139,11 +114,16 @@ export default function ReadingProgress({ book, open, handleClose }) {
                                     id="progress"
                                     name='progress'
                                     variant="outlined" />
-                                    {progressVal ? <Typography variant='caption'>of # pages</Typography> : <Typography variant='caption'>% done</Typography>}
-                                <ButtonGroup variant='outlined' size="small" sx={{ml:1}}>
-                                    <Button onClick={()=> setProgressVal(false)}>%</Button>
-                                    <Button onClick={()=> setProgressVal(true)}>pages</Button>
-                                </ButtonGroup>
+                                {progressVal ? <React.Fragment>
+                                    <Typography variant='caption'>of {book.pages} pages</Typography>
+                                    <Button variant='outlined' size="small" sx={{ ml: 1 }} onClick={() => setProgressVal(false)}>%</Button>
+                                </React.Fragment>
+                                    : <React.Fragment>
+                                        <Typography variant='caption'>% done</Typography>
+                                        <Button variant='outlined' size="small" sx={{ ml: 1 }} onClick={() => setProgressVal(true)}>pages</Button>
+                                    </React.Fragment>
+                                }
+
                             </Box>
                             <TextField
                                 // autoFocus

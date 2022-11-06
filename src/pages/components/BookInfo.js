@@ -5,8 +5,8 @@ import {
 } from '@mui/material';
 
 const cardStyle = {
-    maxWidth: { xs: 220, md: 345 },
-    minWidth: { xs: 200, md: 240 },
+    maxWidth: { xs: 120, sm: 160, md: 345 },
+    minWidth: { xs: 80, md: 240 },
     alignSelf: 'center',
     backgroundColor: 'transparent',
     boxShadow: 0,
@@ -63,7 +63,7 @@ export default function BookInfo({ book }) {
                     />
                 </CardContent>
             </Card>
-            <Box sx={{ maxWidth: { xs: 1 / 1, md: 3 / 5 }, p: 4, mt: 0 }}>
+            <Box sx={{ maxWidth: { xs: 1 / 1, md: 3 / 5 }, p: 4,pt:0, mt: 0 }}>
                 <Box sx={{ textAlign: 'center' }}>
                     <Typography gutterBottom variant="h5" component="div">
                         {book.title}

@@ -56,7 +56,8 @@ export default function Carousel({ shelf }) {
             id: book.id,
             title: book.title,
             author: book.author,
-            cover: book.cover_img
+            cover: book.cover_img,
+            pages: book.pages
         })
     }
 

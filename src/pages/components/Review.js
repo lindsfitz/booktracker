@@ -44,13 +44,15 @@ export default function Review({ review, reviewInfo, openSnackbar, bookId }) {
     }
 
     useEffect(() => {
-        if (isOverflowActive(reviewRef.current)) {
-            setOverflowActive(true);
-            setClamp(true)
-            return;
+        if (review.review) {
+            if (isOverflowActive(reviewRef.current)) {
+                setOverflowActive(true);
+                setClamp(true)
+                return;
+            }
+            setOverflowActive(false)
+            setClamp(null)
         }
-        setOverflowActive(false)
-        setClamp(null)
     }, [overflowActive])
 
     return (
@@ -103,7 +105,7 @@ export default function Review({ review, reviewInfo, openSnackbar, bookId }) {
 
 
 
-                        { overflowActive && 
+                        {overflowActive &&
                             <React.Fragment>
                                 {clamp ? <Button onClick={() => setClamp(false)} size='small'>See More</Button> : <Button onClick={() => setClamp(true)} size='small'>Hide</Button>}
                             </React.Fragment>
@@ -115,7 +117,7 @@ export default function Review({ review, reviewInfo, openSnackbar, bookId }) {
             </Container>}
 
             {editId === review.id &&
-                <EditReview reviewData={review} setEditReview={setEditReview} reviewInfo={reviewInfo} setEditId={setEditId} bookId={bookId} />
+                <EditReview type={'review'} reviewData={review} setEditReview={setEditReview} reviewInfo={reviewInfo} setEditId={setEditId} bookId={bookId} />
             }
         </Paper>
     )

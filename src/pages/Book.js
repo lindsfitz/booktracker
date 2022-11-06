@@ -14,6 +14,7 @@ import AddReview from './components/modals/AddReview';
 import Review from './components/Review';
 import BookInfo from './components/BookInfo';
 import AddNote from './components/modals/AddNote'
+import Note from './components/Note';
 
 
 export default function Book() {
@@ -35,6 +36,7 @@ export default function Book() {
 
     /* only if book exists in db & user associated */
     const [reviewData, setReviewData] = useState(false)
+    const [noteData, setNoteData] = useState(false)
     const [markedAs, setMarkedAs] = useState(null)
     const [markedOwned, setMarkOwned] = useState(false)
 
@@ -64,11 +66,10 @@ export default function Book() {
         }
         if (book.data.Reviews.length) {
             setReviewData(book.data.Reviews)
-            for (let i = 0; i < book.data.Reviews.length; i++) {
-                if (book.data.Reviews[i].read === true) {
-                    setMarkedAs('Read & Reviewed')
-                }
-            }
+            setMarkedAs('Read & Reviewed')
+        }
+        if (book.data.Notes.length) {
+            setNoteData(book.data.Notes)
         }
         if (book.data.OwnedBooks.length) {
             setMarkOwned(true)
@@ -133,6 +134,7 @@ export default function Book() {
 
     /* JUST being defined here to pass into Add Review & Review components */
     const reviewInfo = async () => {
+        setReviewData(false)
         let bookId;
         if (dbBook) {
             bookId = bookData.id
@@ -143,23 +145,27 @@ export default function Book() {
         const review = await API.getOneReview(context.userData.id, bookId)
         if (review.data.length) {
             setReviewData(review.data)
+            setMarkedAs('Read & Reviewed')
         }
+    }
 
-        for (let i = 0; i < review.data.length; i++) {
-            if (review.data[i].read === true) {
-                setMarkedAs('Read')
-            }
+    const noteInfo = async () => {
+        setNoteData(false)
+        let bookId;
+        if (dbBook) {
+            bookId = bookData.id
+        } else {
+            const book = await addBook();
+            bookId = book.data.id
+        }
+        const note = await API.getUserNotes(context.userData.id, bookId)
+        if (note.data.length) {
+            setNoteData(note.data)
         }
     }
 
     /* ------------------------------------------------------------ */
 
-
-    /* --------------------------RESULTBOOK-------------------- */
-
-
-
-    /* ------------------------------------------------------------ */
 
 
     /* --------------------------BTN FUNCTIONS-------------------- */
@@ -556,7 +562,7 @@ export default function Book() {
                     <Divider />
 
                     {reviewForm || noteForm ? (<div>
-                        {reviewForm ? (<AddReview reviewInfo={reviewInfo} toggleReviewForm={toggleReviewForm} bookId={bookData.id} addBook={addBook} />) : (<AddNote reviewInfo={reviewInfo} toggleNoteForm={toggleNoteForm} bookId={bookData.id} addBook={addBook} />)}
+                        {reviewForm ? (<AddReview reviewInfo={reviewInfo} toggleReviewForm={toggleReviewForm} bookId={bookData.id} addBook={addBook} />) : (<AddNote noteInfo={noteInfo} toggleNoteForm={toggleNoteForm} bookId={bookData.id} addBook={addBook} pages={bookData.pages} />)}
 
                     </div>) : (
                         <React.Fragment>
@@ -621,7 +627,7 @@ export default function Book() {
 
                                         {/* {bookBtnOptions()} */}
                                         <ButtonGroup variant='contained' aria-label="text button group" ref={markedRef}>
-                                            <Button color='secondary'  onClick={toggleMarkMenu}>Mark As</Button>
+                                            <Button color='secondary' onClick={toggleMarkMenu}>Mark As</Button>
                                             <Button
                                                 color='secondary'
                                                 size="small"
@@ -803,18 +809,19 @@ export default function Book() {
                     <Divider />
 
                     <Container>
-                        {!reviewData && !reviewForm && <div style={{ margin: '30px auto 85px auto', textAlign: 'center' }}>
+                        {!reviewData && !reviewForm && !noteData && !noteForm && <div style={{ margin: '30px auto 85px auto', textAlign: 'center' }}>
                             <Typography variant='subtitle2'>
-                                It looks like you haven't reviewed this book yet.
+                                It looks like you haven't added any reviews or notes for this book yet.
                             </Typography>
 
-                            <Link variant='subtitle2' onClick={toggleReviewForm}>Add Your Thoughts</Link>
+                            <Link variant='subtitle2' onClick={toggleNoteForm}>Add Your Thoughts!</Link><br />
+                            <Link variant='subtitle2' onClick={toggleReviewForm}>Already Finished Reading? Add A Review.</Link>
                         </div>}
 
 
                         {reviewData && <Container sx={{ mb: '70px', mt: 2, mx: 0, px: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                             <Typography variant='subtitle1'>
-                                Notes & Reviews:
+                                Reviews:
                             </Typography>
                             <br />
                             {reviewData.map((review) => <Review
@@ -824,7 +831,20 @@ export default function Book() {
                                 bookId={bookData.id}
                             />)}
 
+
                         </Container>}
+
+                        {noteData && <Container sx={{ mb: '70px', mt: 2, mx: 0, px: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                            <Typography variant='subtitle1'>
+                                Notes:
+                            </Typography>
+                            <br />
+
+                            {noteData.map((note) => 
+                                <Note note={note} noteInfo={noteInfo} openSnackbar={openSnackbar} bookId={bookData.id} pages={bookData.pages} />
+                            )}
+                        </Container>
+                        }
 
                     </Container>
                 </Container >}

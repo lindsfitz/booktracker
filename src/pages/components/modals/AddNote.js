@@ -1,14 +1,20 @@
 import React, { useState, useContext } from 'react';
-import { useParams } from "react-router-dom";
 import AppContext from '../../../AppContext';
 import API from '../../../utils/API'
-import { Typography, FormControl, Rating, Stack, Switch, Box, TextField, Button } from '@mui/material/';
+import { Typography, FormControl, Stack, Box, TextField, Button, Select, MenuItem, ButtonGroup } from '@mui/material/';
 
 
 
-export default function AddNote({ reviewInfo, toggleNoteForm, bookId, addBook }) {
+export default function AddNote({ noteInfo, toggleNoteForm, bookId, pages, addBook }) {
 
     const context = useContext(AppContext);
+
+    const [status, setStatus] = useState('')
+    const [progressVal, setProgressVal] = useState(true)
+
+    const handleChange = (event) => {
+        setStatus(event.target.value);
+    };
 
 
     const noteSubmit = async (e) => {
@@ -26,19 +32,21 @@ export default function AddNote({ reviewInfo, toggleNoteForm, bookId, addBook })
         }
         const data = new FormData(e.target)
 
-
-        const newReview = {
-            public: false,
-            review: data.get('review'),
+        const newNote = {
+            content: data.get('content'),
+            status: data.get('status'),
+            progress: data.get('progress'),
             UserId: context.userData.id,
             BookId: id
         }
+    
+
         try {
-            const reviewData = await API.newNote(newReview)
+            const reviewData = await API.newNote(newNote)
             console.log(reviewData)
         } catch (err) { console.log(err) }
 
-        reviewInfo()
+        noteInfo()
         toggleNoteForm()
     }
 
@@ -47,7 +55,7 @@ export default function AddNote({ reviewInfo, toggleNoteForm, bookId, addBook })
     return (
         <Box
             component="form"
-            sx={{ m: 1, width: {xs:1/1, md:1/2} }}
+            sx={{ m: 1, width: { xs: 1 / 1, md: 1 / 2 } }}
             noValidate
             autoComplete="off"
             onSubmit={noteSubmit}
@@ -58,17 +66,39 @@ export default function AddNote({ reviewInfo, toggleNoteForm, bookId, addBook })
 
                 <Stack spacing={3} alignItems="center" justifyContent="center">
 
-                    {/* For the review form I need:
-                    - Toggle for True/False if they are marking the book as read or unread */}
+
 
                     <Stack direction="row" spacing={1} alignItems="center">
-                        <Typography>Unread</Typography>
-                        <Switch name='read'
-                            id='read'
-                            checked={false}
-                            inputProps={{ 'aria-label': 'controlled' }} />
-                        <Typography>Read</Typography>
+                        <Typography variant='caption'>Status:</Typography>
+                        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                            <Select
+                                value={status}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value={''}>
+                                    <em>None</em>
+                                </MenuItem>
+                                <MenuItem value={'Currently Reading'}>Currently Reading</MenuItem>
+                                <MenuItem value={'To Be Read'}>To Be Read</MenuItem>
+                                <MenuItem value={'Did Not Finish'}>Did Not Finish</MenuItem>
+                            </Select>
+                        </FormControl>
                     </Stack>
+                    {status === 'Currently Reading' &&
+                        <Box>
+                            <TextField
+                                sx={{ width: 1 / 8, mr: 1 }}
+                                size='small'
+                                id="progress"
+                                name='progress'
+                                variant="outlined" />
+                            {progressVal ? <Typography variant='caption'>of {pages} pages</Typography> : <Typography variant='caption'>% done</Typography>}
+                            <ButtonGroup variant='outlined' size="small" sx={{ ml: 1 }}>
+                                <Button onClick={() => setProgressVal(false)}>%</Button>
+                                <Button onClick={() => setProgressVal(true)}>pages</Button>
+                            </ButtonGroup>
+                        </Box>
+                    }
                 </Stack>
 
 
@@ -81,8 +111,8 @@ export default function AddNote({ reviewInfo, toggleNoteForm, bookId, addBook })
             <FormControl fullWidth sx={{ m: 1 }}>
 
                 <TextField
-                    id="review"
-                    name='review'
+                    id="content"
+                    name='content'
                     label={'Notes'}
                     multiline
                     rows={10}
@@ -93,7 +123,7 @@ export default function AddNote({ reviewInfo, toggleNoteForm, bookId, addBook })
             <Button type='submit'>Add Note</Button>
             <Button onClick={toggleNoteForm}>Cancel</Button>
 
-        </Box>
+        </Box >
 
     )
 

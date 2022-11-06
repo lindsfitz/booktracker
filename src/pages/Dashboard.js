@@ -70,9 +70,9 @@ export default function Dashboard(props) {
             API.verify(myToken).then(async res => {
                 context.setToken(myToken)
                 context.setUserData({
-                    name: res.data.first_name,
                     id: res.data.id,
-                    created: res.data.createdAt
+                    name: res.data.user_name,
+                    created: res.data.created
                 })
                 renderCurrentReads()
                 renderShelves()

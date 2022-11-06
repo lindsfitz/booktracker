@@ -1,231 +1,237 @@
 import axios from 'axios'
 
-// const URL_PREFIX = "http://localhost:3005/api"
-const URL_PREFIX = "https://booked-server.herokuapp.com/api"
+const URL_PREFIX = "http://localhost:3005/api"
+// const URL_PREFIX = "https://booked-server.herokuapp.com/api"
 
 
 
 const API = {
 
     // /* ----- USER ROUTES  ----- */
-    verify: (tkn)=>{
-        return axios.get(`${URL_PREFIX}/user/verify`,{headers:{
-        "Authorization": `Bearer ${tkn}`
-      }})
-    },    
-    login:(userData)=> {
-        return axios.post(`${URL_PREFIX}/user/login`,userData)
+    verify: (tkn) => {
+        return axios.get(`${URL_PREFIX}/user/verify`, {
+            headers: {
+                "Authorization": `Bearer ${tkn}`
+            }
+        })
     },
-    signup:(userData)=> {
-        return axios.post(`${URL_PREFIX}/user/signup`,userData)
+    login: (userData) => {
+        return axios.post(`${URL_PREFIX}/user/login`, userData)
     },
-    getProfile:(id)=>{
+    signup: (userData) => {
+        return axios.post(`${URL_PREFIX}/user/signup`, userData)
+    },
+    getProfile: (id) => {
         return axios.get(`${URL_PREFIX}/user/profile/${id}`)
     },
-    updateAccount:(userData)=> {
-        return axios.put(`${URL_PREFIX}/user/update/account`,userData)
+    updateAccount: (userData) => {
+        return axios.put(`${URL_PREFIX}/user/update/account`, userData)
     },
-    updateProfile:(id, profile)=> {
-        return axios.put(`${URL_PREFIX}/user/update/profile/${id}`,profile)
+    updateProfile: (id, profile) => {
+        return axios.put(`${URL_PREFIX}/user/update/profile/${id}`, profile)
     },
-    deleteUser:(id)=>{
+    deleteUser: (id) => {
         return axios.delete(`${URL_PREFIX}/user/delete/${id}`)
     },
 
 
     // /* ----- SHELF ROUTES ----- */
 
-    getShelves:(id)=> {
+    getShelves: (id) => {
         return axios.get(`${URL_PREFIX}/shelf/all/${id}`)
     },
-    oneUserShelf:(shelfId,userId)=> {
+    oneUserShelf: (shelfId, userId) => {
         return axios.get(`${URL_PREFIX}/shelf/userone/${shelfId}/${userId}`)
     },
-    newShelf:(shelfData)=> {
-        return axios.post(`${URL_PREFIX}/shelf/new`,shelfData)
+    newShelf: (shelfData) => {
+        return axios.post(`${URL_PREFIX}/shelf/new`, shelfData)
     },
-    editShelf:(shelfData,id)=>{
-        return axios.put(`${URL_PREFIX}/shelf/update/${id}`,shelfData)
+    editShelf: (shelfData, id) => {
+        return axios.put(`${URL_PREFIX}/shelf/update/${id}`, shelfData)
     },
-    deleteShelf:(id) => {
+    deleteShelf: (id) => {
         return axios.delete(`${URL_PREFIX}/shelf/delete/${id}`)
     },
 
 
-     /*------ BOOK ROUTES -----*/
-    
+    /*------ BOOK ROUTES -----*/
+
     /* used as initial check on Book (is redirect coming from search or a shelf basically) */
-    oneBookById:(id)=> {
+    oneBookById: (id) => {
         return axios.get(`${URL_PREFIX}/book/one/${id}`)
     },
     /* second book check based on title & author of book */
-    oneBookByInfo:(id, book)=> {
+    oneBookByInfo: (id, book) => {
         return axios.put(`${URL_PREFIX}/book/bookcheck/${id}`, book)
     },
     // this route gets book info & includes the shelf data 
-    getBookandShelves:(bookid,userid)=>{
+    getBookandShelves: (bookid, userid) => {
         return axios.get(`${URL_PREFIX}/book/one/${bookid}/${userid}`)
     },
-    newBook:(bookData) => {
-        return axios.post(`${URL_PREFIX}/book/new`,bookData)
+    newBook: (bookData) => {
+        return axios.post(`${URL_PREFIX}/book/new`, bookData)
     },
-    addtoShelf:(shelfId,bookId) => {
-        return axios.post(`${URL_PREFIX}/book/addto/${shelfId}`,bookId)
+    addtoShelf: (shelfId, bookId) => {
+        return axios.post(`${URL_PREFIX}/book/addto/${shelfId}`, bookId)
     },
-    removefromShelf:(shelfId,bookId) => {
+    removefromShelf: (shelfId, bookId) => {
         return axios.delete(`${URL_PREFIX}/book/remove/${shelfId}/${bookId}`)
     },
-    allUserBooks:(id)=>{
-        return axios.get(`${URL_PREFIX}/book/allbooks/${id}`)
-    },
-
 
 
     /* ---- USER BOOK MIX IN ROUTES ---- */
-    // getReadList:(id)=>{
-    //     return axios.get(`${URL_PREFIX}/book/read/${id}`)
-    // },
-    newReadList:(id)=>{
-        return axios.get(`${URL_PREFIX}/userbooks/read/${id}`)
-    },
-    getReadingList:(id)=> {
+    getReadingList: (id) => {
         return axios.get(`${URL_PREFIX}/userbooks/currentreads/${id}`)
     },
-    getDNFList:(id)=> {
+    getReadList: (id) => {
+        return axios.get(`${URL_PREFIX}/userbooks/read/${id}`)
+    },
+    getDNFList: (id) => {
         return axios.get(`${URL_PREFIX}/userbooks/dnf/${id}`)
     },
-    getOwnedList:(id)=>{
+    getOwnedList: (id) => {
         return axios.get(`${URL_PREFIX}/userbooks/owned/${id}`)
     },
-    addCurrentRead:(book)=> {
+    addCurrentRead: (book) => {
         return axios.post(`${URL_PREFIX}/userbooks/add/currentread`, book)
     },
-    addRead:(book)=> {
+    addRead: (book) => {
         return axios.post(`${URL_PREFIX}/userbooks/add/read`, book)
     },
-    addDNF:(book)=> {
-        return axios.post(`${URL_PREFIX}/userbooks/add/dnf`,book)
+    addDNF: (book) => {
+        return axios.post(`${URL_PREFIX}/userbooks/add/dnf`, book)
     },
-    addOwned:(book)=>{
-        return axios.post(`${URL_PREFIX}/userbooks/add/owned`,book)
+    addOwned: (book) => {
+        return axios.post(`${URL_PREFIX}/userbooks/add/owned`, book)
     },
-    // finishedReading:(review)=> {
-    //     return axios.post(`${URL_PREFIX}/userbooks/finishedreading`, review)
-    // },
-    // didNotFinish:(book)=> {
-    //     return axios.post(`${URL_PREFIX}/userbooks/moveto/dnf`, book)
-    // },
-    removeCurrentlyReading:(userId,bookId)=>{
+    removeCurrentlyReading: (userId, bookId) => {
         return axios.delete(`${URL_PREFIX}/userbooks/delcurrentread/${userId}/${bookId}`)
     },
-    removeRead:(userId,bookId)=> {
+    removeRead: (userId, bookId) => {
         return axios.delete(`${URL_PREFIX}/userbooks/delread/${userId}/${bookId}`)
     },
-    removeFromDNF:(userId,bookId) => {
+    removeFromDNF: (userId, bookId) => {
         return axios.delete(`${URL_PREFIX}/userbooks/deldnf/${userId}/${bookId}`)
     },
-    removeFromOwned:(userId,bookId)=> {
+    removeFromOwned: (userId, bookId) => {
         return axios.delete(`${URL_PREFIX}/userbooks/delowned/${userId}/${bookId}`)
     },
+    allUserBooks: (userId) => {
+        return axios.get(`${URL_PREFIX}/userbooks/shelved/${userId}`)
+    },
 
-     /* ---- REVIEW ROUTES ---- */
+    /* ---- REVIEW ROUTES ---- */
 
-    getOneReview:(userid,bookid)=> {
+    getOneReview: (userid, bookid) => {
         return axios.get(`${URL_PREFIX}/review/${userid}/${bookid}`)
     },
-    newNote:(reviewData)=> {
-        return axios.post(`${URL_PREFIX}/review/new/note`,reviewData)
+
+    newReview: (reviewData) => {
+        return axios.post(`${URL_PREFIX}/review/new/review`, reviewData)
     },
-    newReview:(reviewData) => {
-        return axios.post(`${URL_PREFIX}/review/new/review`,reviewData)
+    editReview: (reviewData, id) => {
+        return axios.put(`${URL_PREFIX}/review/update/${id}`, reviewData)
     },
-    editReview:(reviewData,id)=>{
-        return axios.put(`${URL_PREFIX}/review/update/${id}`,reviewData)
-    },
-    deleteReview:(id)=> {
+    deleteReview: (id) => {
         return axios.delete(`${URL_PREFIX}/review/delete/${id}`)
     },
 
+    /* ---- NOTE ROUTES ---- */
+    getUserNotes: (userid, bookid) => {
+        return axios.get(`${URL_PREFIX}/note/${userid}/${bookid}`)
+    },
+    newNote: (noteData) => {
+        return axios.post(`${URL_PREFIX}/note/new`, noteData)
+    },
+    editNote: (noteData, id) => {
+        return axios.put(`${URL_PREFIX}/note/update/${id}`, noteData)
+    },
+    deleteNote: (id) => {
+        return axios.delete(`${URL_PREFIX}/note/delete/${id}`)
+    },
 
-     /* ---- STATS ROUTES ---- */ 
+    /* ---- TAG ROUTES ---- */
 
-    yearlyBooks:(year,id)=> {
+
+    /* ---- STATS ROUTES ---- */
+
+    yearlyBooks: (year, id) => {
         return axios.get(`${URL_PREFIX}/stats/yearly/${year}/${id}`)
     },
-    monthlyBooks:(month,id)=> {
+    monthlyBooks: (month, id) => {
         return axios.get(`${URL_PREFIX}/stats/monthly/${month}/${id}`)
     },
-    allStats:(id,year,month) => {
+    allStats: (id, year, month) => {
         return axios.get(`${URL_PREFIX}/stats/all/${id}/${year}/${month}`)
     },
 
-     /* ---- ACTIVITY GOAL ROUTES  ---- */
-    currentGoals:(id)=> {
+    /* ---- ACTIVITY GOAL ROUTES  ---- */
+    currentGoals: (id) => {
         return axios.get(`${URL_PREFIX}/activity/current/${id}`)
     },
-    monthlyGoal:(month,id)=>{
+    monthlyGoal: (month, id) => {
         return axios.get(`${URL_PREFIX}/activity/month/${month}/${id}`)
     },
-    yearlyGoal:(year,id)=>{
+    yearlyGoal: (year, id) => {
         return axios.get(`${URL_PREFIX}/activity/year/${year}/${id}`)
     },
-    newGoal:(goal)=>{
+    newGoal: (goal) => {
         return axios.post(`${URL_PREFIX}/activity/new`, goal)
     },
-    updateGoal:(id,goal)=>{
+    updateGoal: (id, goal) => {
         return axios.put(`${URL_PREFIX}/activity/update/${id}`, goal)
     },
 
     /* ------- OPEN LIBRARY API  ------ */
 
-    olSearchTitle:(title)=>{
+    olSearchTitle: (title) => {
         return axios.get(`https://openlibrary.org/search.json?title=${title}&limit=10&language=eng`)
     },
-    olSearchAuthor:(author)=>{
+    olSearchAuthor: (author) => {
         return axios.get(`https://openlibrary.org/search.json?author=${author}&limit=10`)
     },
-    olSearchBySubject:(subject)=>{
+    olSearchBySubject: (subject) => {
         return axios.get(`https://openlibrary.org/subjects/${subject}.json?details=true&ebooks=true`)
     },
-    olAuthor:(key) => {
+    olAuthor: (key) => {
         return axios.get(`https://openlibrary.org/authors/${key}/works.json`)
     },
-    olBookWorks:(key) => {
+    olBookWorks: (key) => {
         return axios.get(`https://openlibrary.org${key}.json`)
     },
-    olBookBooks:(key) => {
+    olBookBooks: (key) => {
         return axios.get(`https://openlibrary.org/books/${key}.json`)
     },
-    olBookISBN:(isbn)=>{
+    olBookISBN: (isbn) => {
         return axios.get(`https://openlibrary.org/isbn/${isbn}.json`)
     },
-    olBookBibKeys:(key)=>{
+    olBookBibKeys: (key) => {
         return axios.get(`https://openlibrary.org/api/books?bibkeys=OLID:${key}&format=json&jscmd=data`)
     },
 
 
     // GOOGLE BOOKS API 
 
-    gbByTitle:(title)=>{
+    gbByTitle: (title) => {
         return axios.get(`https://www.googleapis.com/books/v1/volumes?q="${title}"+intitle&orderBy=relevance&printType=books&projection=lite&maxResults=20`)
     },
 
-    gbByAuthor:(author)=> {
+    gbByAuthor: (author) => {
         return axios.get(`https://www.googleapis.com/books/v1/volumes?q="${author}"+inauthor&orderBy=relevance&printType=books&projection=lite`)
     },
-    gbBySubject:(subject)=>{
+    gbBySubject: (subject) => {
         return axios.get(`https://www.googleapis.com/books/v1/volumes?q="${subject}"+subject&orderBy=relevance&printType=books&projection=lite`)
     },
-    gbOneBook:(id)=>{
+    gbOneBook: (id) => {
         return axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`)
     },
-    gbByISBN:(isbn) => {
+    gbByISBN: (isbn) => {
         return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${isbn}+isbn`)
     },
 
-     /* ----- NYT ----- */
+    /* ----- NYT ----- */
 
-    nytList:(list)=>{
+    nytList: (list) => {
         return axios.get(`${URL_PREFIX}/nyt/list/${list}`)
     }
 

@@ -61,7 +61,7 @@ export default function Booklist() {
     }
 
     const renderReadShelf = async (id) => {
-        const books = await API.newReadList(id)
+        const books = await API.getReadList(id)
         setBookData(books.data)
     }
 
