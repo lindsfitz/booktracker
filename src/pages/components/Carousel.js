@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import { Box, Typography, Button, Card, CardMedia, CardContent, IconButton, Tooltip } from '@mui/material';
+import { Box, Typography, Button, Card, CardMedia, CardContent, Tooltip, Stack } from '@mui/material';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import "@splidejs/splide/dist/css/themes/splide-default.min.css";
 import ReadingProgress from './modals/ReadingProgress';
+import ProgressBar from './mini-components/ProgressBar';
 
 const cardStyle = {
     width: { xs: 130, sm: 158 },
@@ -42,6 +41,8 @@ const btnStyle = {
     border: '#939876 1px solid'
 }
 
+
+
 export default function Carousel({ shelf }) {
 
     let navigate = useNavigate()
@@ -64,6 +65,26 @@ export default function Carousel({ shelf }) {
     const handleCloseProgress = () => {
         setOpenProgress(false)
     }
+
+    const calcProgress = (book) => {
+        if (book.Notes.length) {
+            const noteProg = book.Notes[0].progress;
+
+            if (noteProg.includes('/')) {
+                const values = noteProg.split('/')
+                const prog = (values[0]) / (values[1]) * 100
+
+                return (<ProgressBar progress={prog} />)
+            }
+
+            if (noteProg.includes('%')) {
+                const prog = parseInt(noteProg.replace('%', ''))
+
+                return (<ProgressBar progress={prog} />)
+            }
+        }
+    }
+
 
 
     return (
@@ -115,7 +136,12 @@ export default function Carousel({ shelf }) {
                                     <Typography variant='caption' display='block'>{book.title}</Typography>
                                     <Typography variant='caption' color='text.secondary' display='block'>{book.author}</Typography>
                                     <br />
-                                    {shelf.id === 'CR' && <Button onClick={() => handleOpenProgress(book)} variant='outlined' color='success' size='small'>Update Progress</Button>}
+                                    {shelf.id === 'CR' &&
+                                        <Stack spacing={1}>
+                                            {calcProgress(book)}
+                                            <Button onClick={() => handleOpenProgress(book)} variant='outlined' color='success' size='small'>Update Progress</Button>
+                                        </Stack>
+                                    }
                                 </Box>
                             </CardContent>
                         </Card>

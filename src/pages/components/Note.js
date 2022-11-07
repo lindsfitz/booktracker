@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import API from '../../utils/API'
 import {
-    Typography, Box, Container, Paper, Stack, IconButton, Button
+    Typography, Box, Container, Paper, Stack, IconButton, Button,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import EditReview from './modals/EditReview';
+import ProgressBar from './mini-components/ProgressBar';
 
 const clampedStyle = {
     height: 230,
@@ -25,6 +26,7 @@ export default function Note({ note, noteInfo, openSnackbar, bookId, pages }) {
     const [noteId, setNoteId] = useState(null);
     const [clamp, setClamp] = useState(true);
     const [overflowActive, setOverflowActive] = useState(null)
+    const [progress, setProgress] = useState(0)
     const noteRef = useRef(null)
 
     const isOverflowActive = (e) => {
@@ -52,7 +54,22 @@ export default function Note({ note, noteInfo, openSnackbar, bookId, pages }) {
             setOverflowActive(false)
             setClamp(null)
         }
-    }, [overflowActive])
+
+        if (note.progress) {
+            if (note.progress.includes('/')) {
+                const values = note.progress.split('/')
+                const prog = (values[0]) / (values[1])
+                setProgress(prog * 100)
+            }
+
+            if (note.progress.includes('%')) {
+                const prog = parseInt(note.progress.replace('%', ''))
+                setProgress(prog)
+            }
+
+        }
+
+    }, [overflowActive, note])
 
     return (
         <Paper key={note.id} elevation={6} sx={{ width: { xs: 1 / 1, sm: 3 / 4, md: 3 / 5 }, p: 2, m: '4 0' }}>
@@ -74,10 +91,13 @@ export default function Note({ note, noteInfo, openSnackbar, bookId, pages }) {
                     </Stack>
                 </Stack>
 
-                <Box sx={{ p: 2, mt: 1 }}>
-                    <Box sx={{ textAlign: 'center' }}>
-                        <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 3 }} alignItems='center' justifyContent="center">
-                            <Typography variant='caption'>{note.progress}</Typography>
+                <Box sx={{ my: 1 }}>
+                    <Box sx={{ textAlign: 'center', mb: 1 }}>
+                        <Stack direction='row' spacing={0.5} alignItems='center' >
+                            <Typography variant='caption'>Progress:</Typography>
+                            <Box sx={{ width: 2 / 5 }}>
+                                <ProgressBar progress={progress} />
+                            </Box>
                         </Stack>
 
                     </Box>

@@ -1,31 +1,11 @@
 import React from 'react';
-import { Typography, Box, Rating, Stack, CircularProgress, Link } from '@mui/material';
+import { Typography, Box, Rating, Stack, Link } from '@mui/material';
+import ProgressCircle from './mini-components/ProgressCircle';
+
 
 // IF month stats exist, render this component
 
-function CircularProgressWithLabel(props) {
-    return (
-        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-            <CircularProgress variant="determinate" {...props} />
-            <Box
-                sx={{
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    position: 'absolute',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Typography variant="caption" component="div" color="text.secondary">
-                    {`${Math.round(props.value)}%`}
-                </Typography>
-            </Box>
-        </Box>
-    );
-}
+
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
@@ -39,7 +19,7 @@ export default function MonthlyStats({ stats, monthProgress, monthlyGoal, month,
             <React.Fragment>
                 {month === thismonth ? (
                     <Box>
-                        <CircularProgressWithLabel value={0} />
+                        <ProgressCircle value={0} />
                         <br />
                         <Typography variant='subtitle1'>You haven't marked any books as read so far this month.</Typography>
                         {monthlyGoal ? (
@@ -72,7 +52,7 @@ export default function MonthlyStats({ stats, monthProgress, monthlyGoal, month,
                 {month === thismonth ? (
                     <React.Fragment>
                         {monthProgress ? (<React.Fragment>
-                            <CircularProgressWithLabel value={monthProgress} />
+                            <ProgressCircle value={monthProgress} />
                             <br />
                             <Link onClick={() => updateGoal('month')}
                                 color='secondary'
@@ -82,7 +62,7 @@ export default function MonthlyStats({ stats, monthProgress, monthlyGoal, month,
                             <Typography variant='subtitle2'>You have read {stats.bookCount} of {monthlyGoal} books this month.</Typography>
                         </React.Fragment>) : (
                             <React.Fragment>
-                                <CircularProgressWithLabel value={0} />
+                                <ProgressCircle value={0} />
                                 <br />
                                 <Typography variant='caption'>No Activity Goal</Typography>
                                 <Link onClick={() => newGoal('month')}
@@ -105,7 +85,7 @@ export default function MonthlyStats({ stats, monthProgress, monthlyGoal, month,
                     <React.Fragment>
                         {monthProgress ?
                             (<React.Fragment>
-                                <CircularProgressWithLabel value={monthProgress} />
+                                <ProgressCircle value={monthProgress} />
                                 <Typography variant='subtitle2'>You read {stats.bookCount} of {monthlyGoal} books this month.</Typography>
 
                             </React.Fragment>) : (

@@ -1,31 +1,9 @@
 import React from 'react';
-import { Typography, Box, Rating, Stack, CircularProgress, Link } from '@mui/material';
+import { Typography, Rating, Stack, Link } from '@mui/material';
+import ProgressCircle from './mini-components/ProgressCircle';
+
 
 // IF month stats exist, render this component
-
-function CircularProgressWithLabel(props) {
-    return (
-        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-            <CircularProgress variant="determinate" {...props} />
-            <Box
-                sx={{
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    position: 'absolute',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Typography variant="caption" component="div" color="text.secondary">
-                    {`${Math.round(props.value)}%`}
-                </Typography>
-            </Box>
-        </Box>
-    );
-}
 
 
 export default function YearlyStats({ stats, yearProgress, yearlyGoal, year, updateGoal, newGoal }) {
@@ -38,7 +16,7 @@ export default function YearlyStats({ stats, yearProgress, yearlyGoal, year, upd
             <React.Fragment>
                 {year === thisyear ? (
                     <Stack>
-                        <CircularProgressWithLabel value={0} />
+                        <ProgressCircle value={0} />
                         <Typography variant='subtitle1'>You haven't marked any books as read so far this year.</Typography>
                         {yearlyGoal ? (
                             <Stack>
@@ -71,7 +49,7 @@ export default function YearlyStats({ stats, yearProgress, yearlyGoal, year, upd
                 <React.Fragment>
                     {yearProgress ? (
                         <React.Fragment>
-                            <CircularProgressWithLabel value={yearProgress} />
+                            <ProgressCircle value={yearProgress} />
                             <br />
                             <Link onClick={() => updateGoal('year')}
                                 color='secondary'
@@ -83,7 +61,7 @@ export default function YearlyStats({ stats, yearProgress, yearlyGoal, year, upd
 
                     ) : (
                         <React.Fragment>
-                            <CircularProgressWithLabel value={0} />
+                            <ProgressCircle value={0} />
                             <br />
                             <Typography variant='caption'>No Activity Goal</Typography>
                             <Link onClick={() => newGoal('year')}
@@ -108,7 +86,7 @@ export default function YearlyStats({ stats, yearProgress, yearlyGoal, year, upd
                 <React.Fragment>
                     {yearProgress ? (
                         <React.Fragment>
-                            <CircularProgressWithLabel value={yearProgress} />
+                            <ProgressCircle value={yearProgress} />
                             <br />
                             <Typography variant='subtitle2'>You finished {stats.bookCount} of {yearlyGoal} books this year.</Typography>
 

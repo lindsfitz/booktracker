@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import PropTypes from 'prop-types';
 import { Typography, Box, Rating, Tabs, Tab, Divider, Button, CircularProgress, Stack, Link } from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
+import ProgressCircle from './mini-components/ProgressCircle';
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
@@ -41,29 +42,6 @@ function a11yProps(index) {
     };
 }
 
-function CircularProgressWithLabel(props) {
-    return (
-        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-            <CircularProgress variant="determinate" {...props} />
-            <Box
-                sx={{
-                    top: 0,
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    position: 'absolute',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Typography variant="caption" component="div" color="text.secondary">
-                    {`${Math.round(props.value)}%`}
-                </Typography>
-            </Box>
-        </Box>
-    );
-}
 
 export default function DashStats({ userStats, goals }) {
     const context = useContext(AppContext);
@@ -126,7 +104,7 @@ export default function DashStats({ userStats, goals }) {
                             <div>
                                 {goals.month ? (
                                     <React.Fragment>
-                                        <CircularProgressWithLabel value={monthProgress} />
+                                        <ProgressCircle value={monthProgress} />
                                         <Typography variant='subtitle2'>You have read {userStats.month.bookCount} of {goals.month.value} books this month.</Typography>
                                     </React.Fragment>
                                 ) : (
@@ -160,7 +138,7 @@ export default function DashStats({ userStats, goals }) {
                             <div>
                                 {goals.year ? (
                                     <React.Fragment>
-                                        <CircularProgressWithLabel value={yearProgress} />
+                                        <ProgressCircle value={yearProgress} />
                                         <Typography variant='subtitle2'>You have finished {userStats.year.bookCount} of {goals.year.value} books this year.</Typography>
                                     </React.Fragment>
                                 ) : (

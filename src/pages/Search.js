@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
+import Styles from '../utils/Styles'
 // import AppContext from '../AppContext';
 import { useTheme, styled, alpha } from '@mui/material/styles';
 import { Box, OutlinedInput, Divider, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography, Badge, Card, CardMedia, CardContent, useMediaQuery, InputBase, IconButton, Grid } from '@mui/material';
@@ -46,13 +47,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
+
+// Styles.smallBookCover
 const imageStyle = {
     boxShadow: '3px 2px 6px #888888',
     width: 148,
     height: 218
 }
 
-
+// Styles.title
 const titleStyle = {
     '&:hover': {
         textDecoration: 'underline',
@@ -254,7 +257,7 @@ export default function Search() {
                                             <img
                                                 src={`https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-M.jpg`}
                                                 alt={`${book.title}-cover`}
-                                                style={imageStyle}
+                                                style={Styles.medBookCover}
                                                 loading="lazy"
                                                 onClick={() => {
                                                     navigate(`/book/${book.edition_key[0]}`, {
@@ -272,7 +275,7 @@ export default function Search() {
                                         <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'center', justifyContent: 'center', width: 1 / 2 }}>
                                             <Stack sx={{ alignSelf: 'center', ml: 1 }}>
                                                 <Typography variant='subtitle1'
-                                                    sx={titleStyle}
+                                                    sx={Styles.title}
                                                     onClick={() => {
                                                         navigate(`/book/${book.edition_key[0]}`, {
                                                             state: {

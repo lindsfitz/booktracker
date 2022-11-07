@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import AppContext from '../../../AppContext';
 import API from '../../../utils/API'
-import { Typography, FormControl, Rating, Stack, Switch, Box, TextField, Button, Select, MenuItem, ButtonGroup } from '@mui/material/';
+import { Typography, FormControl, Rating, Stack, Switch, Box, TextField, Button, Select, MenuItem } from '@mui/material/';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -17,6 +17,7 @@ export default function EditReview({ type, reviewData, setEditReview, reviewInfo
     const [endValue, setEndValue] = useState(null);
     const [onPublic, setOnPublic] = useState(false)
     const [status, setStatus] = useState('')
+    const [progress, setProgress] = useState(0)
     const [progressVal, setProgressVal] = useState(true)
 
 
@@ -35,6 +36,19 @@ export default function EditReview({ type, reviewData, setEditReview, reviewInfo
         setEndValue(reviewData.date_finished)
         setOnPublic(reviewData.public)
         setStatus(reviewData.status)
+        if (reviewData.progress) {
+            if (reviewData.progress.includes('/')) {
+                const values = reviewData.progress.split('/')
+                setProgress(values[0])
+            }
+
+            if (reviewData.progress.includes('%')) {
+                const prog = parseInt(reviewData.progress.replace('%', ''))
+                setProgressVal(false)
+                setProgress(prog)
+            }
+
+        }
     }, [reviewData])
 
     const handleSwitch = (event) => {
@@ -202,13 +216,13 @@ export default function EditReview({ type, reviewData, setEditReview, reviewInfo
                         {status === 'Currently Reading' &&
                             <Box>
                                 <TextField
-                                    sx={{ width: 1 / 8, mr: 1 }}
+                                    sx={{ width: '70px', mr: 1 }}
                                     size='small'
                                     id="progress"
                                     name='progress'
                                     variant="outlined"
-                                    defaultValue={reviewData.progress} />
-                                 {progressVal ? <React.Fragment>
+                                    defaultValue={progress} />
+                                {progressVal ? <React.Fragment>
                                     <Typography variant='caption'>of {pages} pages</Typography>
                                     <Button variant='outlined' size="small" sx={{ ml: 1 }} onClick={() => setProgressVal(false)}>%</Button>
                                 </React.Fragment>

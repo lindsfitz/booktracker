@@ -15,6 +15,7 @@ import { Container, List, ListItem, Divider, Stack, Typography, Button, Dialog, 
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
+import Styles from '../utils/Styles';
 
 const imageStyle = {
     boxShadow: '3px 2px 6px #888888',
@@ -151,14 +152,14 @@ export default function Shelf() {
                                             src={`${book.cover_img}`}
                                             srcSet={`${book.cover_img}`}
                                             alt={`${book.title}`}
-                                            style={imageStyle}
+                                            style={Styles.medBookCover}
                                             loading="lazy"
                                             onClick={() => { navigate(`/book/${book.id}`) }}
                                         />
                                     </Box>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', ml: 2 }}>
                                         <Stack sx={{ alignSelf: 'center', ml: 1, p: 1 }}>
-                                            <Typography sx={titleStyle} 
+                                            <Typography sx={Styles.title} 
                                             onClick={() => { navigate(`/book/${book.id}`) }}
                                              variant='subtitle1'>{book.title}</Typography>
                                             <Typography

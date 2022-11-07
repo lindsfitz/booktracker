@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import { List, ListItem, Divider, Typography, Button, Box, Stack, Rating, Link, Chip, Tooltip } from '@mui/material';
 import AddReadDates from './components/modals/AddReadDates';
 import ReadingProgress from './components/modals/ReadingProgress';
+import Styles from '../utils/Styles';
 
 const bookBoxStyle = {
     display: 'flex',
@@ -180,7 +181,7 @@ export default function Booklist() {
                                         srcSet={`${book.cover_img}`}
                                         alt={`${book.title}`}
                                         loading="lazy"
-                                        style={{ height: 218, width: 148 }}
+                                        style={Styles.smallBookCover}
                                         onClick={() => { navigate(`/book/${book.id}`) }}
                                     />
                                 </Box>

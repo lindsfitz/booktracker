@@ -4,7 +4,7 @@ import AppContext from '../../../AppContext';
 import API from '../../../utils/API'
 import {
     Typography, Stack, Box,
-    TextField, Button, useMediaQuery, Dialog, DialogTitle, DialogContent, DialogActions, Card, CardContent, CardMedia, Link, ButtonGroup
+    TextField, Button, useMediaQuery, Dialog, DialogTitle, DialogContent, DialogActions, Card, CardContent, CardMedia, Link
 } from '@mui/material/';
 import { useTheme } from '@mui/material/styles';
 
@@ -54,7 +54,7 @@ export default function ReadingProgress({ book, open, handleClose }) {
         }
 
         try {
-            const noteData = await API.newNote(note)
+            await API.newNote(note)
             handleClose()
         }
         catch (err) { console.log(err) }
@@ -126,7 +126,6 @@ export default function ReadingProgress({ book, open, handleClose }) {
 
                             </Box>
                             <TextField
-                                // autoFocus
                                 multiline
                                 rows={6}
                                 margin="dense"
@@ -134,9 +133,9 @@ export default function ReadingProgress({ book, open, handleClose }) {
                                 name='note'
                                 label="Notes"
                                 fullWidth
-                            // variant="standard"
                             />
-                            <Link onClick={markRead} sx={{
+                            <Link underline='hover' onClick={markRead} sx={{
+                                alignSelf:'center',
                                 '&:hover': {
                                     textDecoration: 'underline',
                                     cursor: 'pointer'
