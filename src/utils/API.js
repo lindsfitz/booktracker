@@ -247,7 +247,7 @@ const API = {
         return axios.get(`https://www.googleapis.com/books/v1/volumes?q="${author}"+inauthor&orderBy=relevance&printType=books&projection=lite`)
     },
     gbBySubject: (subject) => {
-        return axios.get(`https://www.googleapis.com/books/v1/volumes?q="${subject}"+subject&orderBy=relevance&printType=books&projection=lite`)
+        return axios.get(`https://www.googleapis.com/books/v1/volumes?q="${subject}"&printType=books&maxResults=40`)
     },
     gbOneBook: (id) => {
         return axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`)

@@ -1,39 +1,14 @@
-import React, { useState } from 'react';
-import SwipeableViews from 'react-swipeable-views';
+import React from 'react';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import { Box, Typography, Badge, Card, CardMedia, CardContent, IconButton, MobileStepper } from '@mui/material';
+import { Box, Typography, Badge, Card, CardMedia, CardContent } from '@mui/material';
 import { Splide, SplideSlide, SplideTrack } from '@splidejs/react-splide';
 
 
 export default function NYTMobile({ bestSellers, nytSearch }) {
 
-    const [activeStep, setActiveStep] = useState(0);
-
-    const handleNext = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
-
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    const handleStepChange = (step) => {
-        setActiveStep(step);
-    };
-
-
-
     return (
         <React.Fragment>
             <Box sx={{ display: { xs: 'block', md: 'none' }, width: 1 / 1, mb: '65px' }}>
-
-                {/* 
-                <SwipeableViews
-                    index={activeStep}
-                    onChangeIndex={handleStepChange}
-                    enableMouseEvents> */}
-
                 <Splide hasTrack={false}
                     options={{
                         rewind: false,
@@ -51,8 +26,6 @@ export default function NYTMobile({ bestSellers, nytSearch }) {
                 >
                     <div className="custom-wrapper">
                         <SplideTrack>
-
-
                             {bestSellers.map(book => (
                                 <SplideSlide key={book.title}>
 
@@ -81,21 +54,13 @@ export default function NYTMobile({ bestSellers, nytSearch }) {
                                     </Card>
                                 </SplideSlide>
                             ))}
-
                         </SplideTrack>
 
-                        {/* <div className="splide__arrows">
-                        <button className="splide__arrow splide__arrow--prev">Prev</button>
-                        <button className="splide__arrow splide__arrow--next">Next</button>
-                    </div> */}
-
                         <div className="splide__arrows">
-                            <button style={{top:'96%'}} className="splide__arrow splide__arrow--prev"><NavigateNextIcon /></button>
-                            <button style={{top:'96%'}}  className="splide__arrow splide__arrow--next"><NavigateNextIcon /></button>
+                            <button style={{ top: '96%' }} className="splide__arrow splide__arrow--prev"><NavigateNextIcon /></button>
+                            <button style={{ top: '96%' }} className="splide__arrow splide__arrow--next"><NavigateNextIcon /></button>
                         </div>
                     </div>
-
-
                 </Splide>
             </Box>
         </React.Fragment>

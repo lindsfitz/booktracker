@@ -12,8 +12,8 @@ const bookBoxStyle = {
     display: 'flex',
     justifyContent: 'space-between',
     width: { xs: 3 / 4, sm: 2 / 6 },
-    mr: { xs: 1, md: 'auto' },
-    ml: { xs: 1, md: 'auto' }
+    mr: 'auto',
+    ml: 'auto'
 }
 
 

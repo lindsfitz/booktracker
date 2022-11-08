@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import AddShelf from './components/modals/AddShelf'
@@ -10,26 +10,10 @@ import { List, Container, Typography, Box, Divider, Button, Stack, useMediaQuery
 import ReadingMobile from './components/mobile/ReadingMobile';
 import OneShelf from './components/OneShelf';
 import Carousel from './components/Carousel';
-import ReadingProgress from './components/modals/ReadingProgress';
-
-// const imageStyle = {
-//     boxShadow:'3px 2px 6px #888888',
-//     height:{ xs: 140, md: 218 },
-//     width: { xs: 95, md: 148 }
-// }
-
-// const cardStyle = {
-//     maxWidth: { xs: 120, md: 345 },
-//     backgroundColor: 'transparent',
-//     boxShadow:0,
-// }
-
 
 export default function Dashboard(props) {
-
     const context = useContext(AppContext);
     let navigate = useNavigate();
-    // let href = useHref()
 
     const theme = useTheme();
     const xs = useMediaQuery('(max-width:450px)')
@@ -40,8 +24,6 @@ export default function Dashboard(props) {
     const [userStats, setUserStats] = useState(null);
     const [activityGoals, setActivityGoals] = useState(null)
     const [currentReads, setCurrentReads] = useState(null);
- 
-
 
     // on page load, check for token (aka logged in user) and render shelves if logged in. If no token (not logged in) or token can't be verified (user doesn't exist) then redirect to the login page
     useEffect(() => {
@@ -110,22 +92,20 @@ export default function Dashboard(props) {
             )}
 
             {md ? (
-                <Container sx={{ display: { xs: 'flex' }, flexDirection: 'column', mb:'65px' }}>
+                <Container sx={{ display: { xs: 'flex' }, flexDirection: 'column', mb: '65px' }}>
                     {userStats &&
                         <DashStats userStats={userStats} goals={activityGoals} />
                     }
                     <Container sx={{ display: 'flex', flexDirection: 'column' }}>
                         <Box id='mobile-quicklinks' sx={{ display: 'flex', justifyContent: 'center', m: 3 }}>
-                            <Stack spacing={0} alignItems="center"
-                            >
+                            <Stack spacing={0} alignItems="center">
                                 {/* quick links sections  */}
                                 {/* Link to bookcase, currently reading, all read books, all user books, search for new books  */}
                                 <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
                                 <Button onClick={() => navigate('/books/dnf')}>Did Not Finish</Button>
                                 <Button onClick={() => navigate('/books/owned')}>Owned</Button>
                             </Stack>
-                            <Stack spacing={0} alignItems="center"
-                            >
+                            <Stack spacing={0} alignItems="center">
                                 <Button onClick={() => navigate('/books/read')}>Read</Button>
                                 {/* <Button onClick={() => navigate('/search')}>Find Books</Button> */}
                                 <Button onClick={() => navigate('/books')}>All Books</Button>
@@ -144,14 +124,12 @@ export default function Dashboard(props) {
                                         ) : (
                                             <OneShelf shelf={shelf} length={3} />
                                         )}
-
                                         <Divider key={`${shelf.id}dividersm`} />
-
                                     </React.Fragment>
                                 ))}
                             </List>
                         </Box>
-                        <Box sx={{ textAlign: 'center', mb:10 }}>
+                        <Box sx={{ textAlign: 'center', mb: 10 }}>
                             <Button variant='outlined' color='success'
                                 onClick={() => navigate('/bookcase')}>
                                 <Typography variant='caption'>
@@ -167,35 +145,23 @@ export default function Dashboard(props) {
                         {userStats && <div id='stats'>
                             <DashStats userStats={userStats} goals={activityGoals} />
                         </div>}
-
                         <div id='quicknav' style={{ display: 'flex', margin: '5px auto 5px auto', justifyContent: 'center' }}>
-
-
-                         
-                                <Stack direction='row' spacing={0} alignItems="flex-end"
-                                >
-                                    <Stack spacing={0} alignItems="center"
-                                    >
-
-                                        <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
-                                        <Button onClick={() => navigate('/books/dnf')}>Did Not Finish</Button>
-                                        <Button onClick={() => navigate('/books/owned')}>Owned</Button>
-                                    </Stack>
-                                    <Stack spacing={0} alignItems="center"
-                                    >
-                                        <Button onClick={() => navigate('/books/read')}>Read</Button>
-                                        <Button onClick={() => navigate('/books')}>All Books</Button>
-                                        <Button onClick={() => navigate('/bookcase')}>My Bookcase</Button>
-
-                                    </Stack>
+                            <Stack direction='row' spacing={0} alignItems="flex-end">
+                                <Stack spacing={0} alignItems="center">
+                                    <Button onClick={() => navigate('/books/currently')}>Currently Reading</Button>
+                                    <Button onClick={() => navigate('/books/dnf')}>Did Not Finish</Button>
+                                    <Button onClick={() => navigate('/books/owned')}>Owned</Button>
                                 </Stack>
+                                <Stack spacing={0} alignItems="center">
+                                    <Button onClick={() => navigate('/books/read')}>Read</Button>
+                                    <Button onClick={() => navigate('/books')}>All Books</Button>
+                                    <Button onClick={() => navigate('/bookcase')}>My Bookcase</Button>
 
-                            
-                                <Divider />
+                                </Stack>
+                            </Stack>
+                            <Divider />
                         </div>
-
                     </Box>
-
                     <Box id='left-column' sx={{ mr: 3 }}>
                         {/* TO DO ON THIS PAGE -- add styling to the shelves; pick a font, add some shadowing to the book cover images, etc.  */}
                         <div id='shelves'>
@@ -213,7 +179,7 @@ export default function Dashboard(props) {
                                     </React.Fragment>
                                 ))}
                             </List>
-                            <Box sx={{ textAlign: 'center', mt:3, mb:10 }}>
+                            <Box sx={{ textAlign: 'center', mt: 3, mb: 10 }}>
                                 <Button variant='outlined' color='success'
                                     onClick={() => navigate('/bookcase')}>
                                     <Typography variant='caption'>
@@ -227,10 +193,6 @@ export default function Dashboard(props) {
             )}
 
             {context.shelfDialog && <AddShelf />}
-
-            
-
-
         </React.Fragment>
     )
 }

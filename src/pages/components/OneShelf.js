@@ -1,27 +1,19 @@
 import React from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { ListItem, Divider, Typography, Card, CardMedia, CardContent, Container } from '@mui/material/';
+import Styles from '../../utils/Styles';
 
+const cardStyle = {
+    maxWidth: 345,
+    backgroundColor: 'transparent',
+    boxShadow: 0,
+    '&:hover': {
+        cursor: 'pointer'
+    }
+}
 
 export default function OneShelf({ shelf, length }) {
     let navigate = useNavigate()
-
-    const cardStyle = {
-        maxWidth: 345,
-        backgroundColor: 'transparent',
-        boxShadow: 0,
-        '&:hover': {
-            cursor: 'pointer'
-        }
-    }
-
-    const imageStyle = {
-        boxShadow: '3px 2px 6px #888888',
-        height: 140,
-        width: 92.5,
-    }
-
-
 
     return (
         <React.Fragment>
@@ -42,7 +34,7 @@ export default function OneShelf({ shelf, length }) {
                             <CardContent>
                                 <CardMedia
                                     component="img"
-                                    style={imageStyle}
+                                    style={Styles.smallBookCover}
                                     onClick={() => { navigate(`/book/${book.id}`) }}
                                     image={`${book.cover_img}`}
                                     alt={`${book.title}`}

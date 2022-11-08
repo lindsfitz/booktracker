@@ -10,21 +10,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import NYTMobile from './components/mobile/NYTMobile';
 
 
-// const NYTweekly = [
-//     'combined-print-and-e-book-fiction',
-//     'combined-print-and-e-book-nonfiction',
-//     'hardcover-fiction',
-//     'hardcover-nonfiction',
-//     'trade-fiction-paperback',
-//     'paperback-nonfiction',
-//     'young-adult-hardcover']
-
-// const NYTmonthly = ["audio-fiction",
-//     "audio-nonfiction",
-//     "graphic-books-and-manga",
-//     "mass-market-monthly",
-//     "middle-grade-paperback-monthly",
-//     "young-adult-paperback-monthly"]
 
 const SearchBar = styled('div')(({ theme }) => ({
     borderRadius: theme.shape.borderRadius,
@@ -48,20 +33,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 
-// Styles.smallBookCover
-const imageStyle = {
-    boxShadow: '3px 2px 6px #888888',
-    width: 148,
-    height: 218
-}
-
-// Styles.title
-const titleStyle = {
-    '&:hover': {
-        textDecoration: 'underline',
-        cursor: 'pointer'
-    },
-}
 
 export default function Search() {
     let navigate = useNavigate();
@@ -137,12 +108,29 @@ export default function Search() {
     const subjectSearch = async () => {
         let subject = 'fantasy romance'
 
-        const OLsearch = await API.olSearchSubject(subject)
-        const gbSearch = await API.gbBySubject(subject)
+        // const OLsearch = await API.olSearchBySubject(subject)
+        const gbSearch = await API.gbBySubject(searchTerm)
+        const results = gbSearch.data.items
 
-        console.log(OLsearch)
-        console.log('------')
+        //    if (results) { results.map(book => {
+        //        if ( book.volumeInfo.categories[0] === 'Fiction') {
+        //         console.log(book.volumeInfo)
+        //        }
+        //     })}
+
         console.log(gbSearch)
+        console.log('------')
+        console.log(results)
+
+        const test = []
+
+
+        results.map(book => {
+            if (book.volumeInfo.categories && book.volumeInfo.categories[0] === 'Fiction') { 
+                test.push(book.volumeInfo )
+            }
+        })
+        console.log(test)
 
     }
 
@@ -210,13 +198,12 @@ export default function Search() {
                         inputProps={{ 'aria-label': 'search' }}
                     />
                 </SearchBar>
-                {/* <SearchIconWrapper> */}
                 <IconButton onClick={search}>
                     <SearchIcon color='secondary.dark' />
                 </IconButton>
-                {/* </SearchIconWrapper> */}
-                {/* <Button onClick={search}>Search</Button> */}
             </Box>
+
+            <Button onClick={subjectSearch}>Subject Search</Button>
 
             {noResults && <Container sx={{ m: '20px auto 20px auto', textAlign: 'center' }}>
                 <Typography variant='subtitle2'>No Results Found</Typography>
@@ -319,7 +306,7 @@ export default function Search() {
                 </Stack>
             )}
 
-            {NYTdiv && bestSellers && <Container sx={{mb:10}}>
+            {NYTdiv && bestSellers && <Container sx={{ mb: 10 }}>
                 <Box>
                     <Stack alignItems='center' sx={{ mb: 4 }}>
                         <Typography variant='h6'>New York Times Best Sellers List</Typography>

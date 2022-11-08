@@ -1,9 +1,3 @@
-// basically just lists of books
-// can also add new book here but it adds it to the user specifically 
-// maybe drag and drop for positioning / organizing on this page ?? 
-// add/view reviews in pop up on this page maybe??? 
-// Or separate page for individual books w review idk 
-
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import API from '../utils/API';
@@ -17,32 +11,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 import Styles from '../utils/Styles';
 
-const imageStyle = {
-    boxShadow: '3px 2px 6px #888888',
-    width: 148,
-    height: 218,
-
-}
-
-const titleStyle = {
-    '&:hover': {
-        textDecoration: 'underline',
-        cursor: 'pointer'
-    },
-}
 
 const titleBoxStyle = {
     p: 3,
     textAlign: 'center',
     maxWidth: { xs: 3 / 4, sm: 1 / 2 },
-    mr: 'auto',
-    ml: 'auto'
-}
-
-const bookBoxStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: { xs: 1 / 1, sm: 3 / 4, md: 1 / 2 },
     mr: 'auto',
     ml: 'auto'
 }
@@ -142,7 +115,7 @@ export default function Shelf() {
                             onClick={mobile ? () => {
                                 navigate(`/book/${book.id}`)
                             } : null} alignItems="center">
-                                <Box sx={bookBoxStyle}>
+                                <Box sx={Styles.bookListBox}>
                                     <Box sx={{
                                         '&:hover': {
                                             cursor: 'pointer'

@@ -20,8 +20,6 @@ export default function EditReview({ type, reviewData, setEditReview, reviewInfo
     const [progress, setProgress] = useState(0)
     const [progressVal, setProgressVal] = useState(true)
 
-
-
     const toggleDates = () => {
         setStartValue(new Date())
         setEndValue(new Date())
@@ -49,12 +47,11 @@ export default function EditReview({ type, reviewData, setEditReview, reviewInfo
             }
 
         }
-    }, [reviewData])
+    }, [reviewData, progress])
 
     const handleSwitch = (event) => {
         setOnPublic(event.target.checked);
     };
-
 
     const handleStartDate = (newValue) => {
         setStartValue(newValue);
@@ -142,8 +139,6 @@ export default function EditReview({ type, reviewData, setEditReview, reviewInfo
                                 <Rating name="rating" id='rating' defaultValue={reviewData.rating} precision={0.5} />
                             </Stack>
                         </Stack>
-
-
 
                         {startValue || endValue ? (<Stack alignItems="center" justifyContent="center" direction='row' spacing={5}>
                             {/* - Date picker for the start date */}
