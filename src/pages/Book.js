@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import AppContext from '../AppContext';
 import API from '../utils/API'
 import AddShelf from './components/modals/AddShelf'
-// import dayjs from 'dayjs'
 import {
-    // Card,Box,CardContent, IconButton,
     Button, ButtonGroup, Grow, Popper, MenuItem, MenuList, Typography, Container, Paper, Divider, Stack, Chip, Link, ClickAwayListener, Snackbar, useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -21,7 +19,6 @@ export default function Book() {
     const context = useContext(AppContext);
     const params = useParams();
     const location = useLocation()
-    let navigate = useNavigate();
     const theme = useTheme();
     const mobile = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -466,7 +463,7 @@ export default function Book() {
             const bibkeys = await API.olBookBibKeys(id)
             const OLID = Object.keys(bibkeys.data)
             const bibkeyData = bibkeys.data[OLID[0]]
-            console.log(bibkeyData)
+            // console.log(bibkeyData)
             if (bibkeyData.cover) {
                 cover = bibkeyData.cover.medium
             }
@@ -478,7 +475,7 @@ export default function Book() {
             // literally just to pull the description 
             // can also include covers[0]
             const works = await API.olBookWorks(book.data.works[0].key)
-            console.log(works.data)
+            // console.log(works.data)
             if (!bibkeyData.cover && works.data.covers) {
                 cover = `https://covers.openlibrary.org/b/id/${works.data.covers[0]}-M.jpg`
             }
@@ -495,7 +492,7 @@ export default function Book() {
                 title: works.data.title,
                 cover_img: cover,
                 author: bibkeyData.authors[0].name,
-                author_key: bibkeyData.authors[0].key,
+                author_key: book.data.authors[0].key,
                 published: bibkeyData.publish_date || location.state.published,
                 pages: bibkeyData.number_of_pages || location.state.pages,
                 description: description,
