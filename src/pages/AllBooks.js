@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 import AppContext from '../AppContext';
 import API from '../utils/API'
-import { Book } from '@mui/icons-material';
-import { List, Container, Divider, Typography, Autocomplete, TextField, Box, Stack } from '@mui/material';
-import { render } from '@testing-library/react';
+import { List, Container, Divider, Typography, Autocomplete, TextField, Box, Stack, Tooltip, IconButton } from '@mui/material';
 import ReadingMobile from './components/mobile/ReadingMobile';
+import EditIcon from '@mui/icons-material/Edit';
+import SearchIcon from '@mui/icons-material/Search';
 import OneShelf from './components/OneShelf';
 import Carousel from './components/Carousel';
 import ShelfStack from './components/ShelfStack';
@@ -20,57 +20,14 @@ export default function AllBooks() {
     const [favoriteShelf, setFavoriteShelf] = useState(null)
     const [markedRead, setMarkedRead] = useState(null);
     const [ownedBooks, setOwnedBooks] = useState(null);
+    const [dnfBooks, setDnfBooks] = useState(null)
     const [previewShelves, setPreviewShelves] = useState(null)
     const [allBooks, setAllBooks] = useState(null);
     const [searchValue, setSearchValue] = useState(null)
 
 
 
-    // const renderCurrentReads = async () => {
-    //     try {
-    //         const reads = await API.getReadingList(context.userData.id)
-    //         setCurrentReads(reads.data)
-    //     } catch (err) { console.log(err) }
-    // }
-
-    const renderShelves = async () => {
-        try {
-            const profile = await API.getProfile(context.userData.id)
-            if (profile.data.favorite_shelf) {
-                const favShelf = context.userShelves.filter(shelf => shelf.id === profile.data.favorite_shelf)
-                setFavoriteShelf(favShelf)
-                const otherShelves = context.userShelves.filter(shelf => shelf.id !== profile.data.favorite_shelf)
-                setPreviewShelves(otherShelves)
-            } else {
-                setFavoriteShelf(context.userShelves[0])
-                setPreviewShelves(context.userShelves.slice(1, 4))
-            }
-        } catch (err) { console.log(err) }
-    }
-
-    // const renderReadShelf = async () => {
-    //     try {
-    //         const books = await API.newReadList(context.userData.id)
-    //         setMarkedRead({
-    //             name: 'Read',
-    //             id: 'markedread',
-    //             Books: books.data
-    //         })
-    //     } catch (err) { console.log(err) }
-    // }
-
-    // const renderOwned = async () => {
-    //     try {
-    //         const books = await API.getOwnedList(context.userData.id)
-    //     } catch (err) { console.log(err) }
-    // }
-
-
-
-
-
     useEffect(() => {
-
         const userBookData = async () => {
             try {
                 const books = await API.allUserBooks(context.userData.id)
@@ -78,15 +35,17 @@ export default function AllBooks() {
                 setCurrentReads(books.data.currently)
                 setMarkedRead({
                     name: 'Read',
-                    id: 'markedread',
+                    id: 'read',
                     Books: books.data.read
                 })
                 setOwnedBooks(books.data.owned)
-
+                setDnfBooks(books.data.dnf)
                 const profile = await API.getProfile(context.userData.id)
                 if (profile.data.favorite_shelf) {
                     const favShelf = books.data.shelves.filter(shelf => shelf.id === profile.data.favorite_shelf)
-                    setFavoriteShelf(favShelf)
+                    // console.log(favShelf[0])
+                    // console.log(books.data.shelves)
+                    setFavoriteShelf(favShelf[0])
                     const otherShelves = books.data.shelves.filter(shelf => shelf.id !== profile.data.favorite_shelf)
                     setPreviewShelves(otherShelves)
                 } else {
@@ -95,87 +54,83 @@ export default function AllBooks() {
                 }
 
             } catch (err) {
-
+                console.log(err)
             }
         }
-
-        /* On Page Load: Going to want to pull info for all the diff categories (or maybe pull from context? TBD ) */
-        // currently reading 
-
-        // renderCurrentReads()
-
-        // favorite shelf -- get profile for user, then id of shelf marked as fav, then pull shelf. If no shelf marked as fav,  most recently updated gets listed as favorite shelf (or pinned shelf?)
-        // 3 shelf preview (3 most recently updated after pinned) -- also just has first book on shelf cover as a preview -- clicking brings you to shelf page
-        // renderShelves()
-        // Read -- Just the cover image of the most recently marked read book; links to 'read' list
-        // renderReadShelf()
-        // Owned -- same as above, just most recent cover
-        // renderOwned()
-        // DNF @ bottom, most recent cover 
-
         userBookData();
-
     }, [])
-
-
-    // changing this entire page -- going to be more of an overview rather than a straight up list of all books
-    // eventually this will be profile page? maybe?
-
-    // Currently Reading section @ top again 
-    // 'Favorite' Shelf -- can mark one shelf as fav shelf & this is featured on this page 
-    // Read
-    // Owned
 
 
     return (
         <React.Fragment>
-            {allBooks && <Autocomplete
-                // freeSolo
+            {allBooks && <Container sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+                <Autocomplete
+                    freeSolo
+                    sx={{ width: { xs: 3 / 4, md: 1 / 2 } }}
+                    size='small'
+                    value={searchValue}
+                    onChange={(event, newValue) => {
+                        //   setSearchValue(newValue);
+                        navigate(`/book/${newValue.id}`)
+                    }}
+                    disableClearable
+                    options={allBooks}
+                    getOptionLabel={(option) => option.title}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
 
-                value={searchValue}
-                onChange={(event, newValue) => {
-                    //   setSearchValue(newValue);
-                    navigate(`/book/${newValue.id}`)
-                }}
-                disableClearable
-                options={allBooks}
-                getOptionLabel={(option) => option.title}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        label="Search All Shelved Books..."
-                        InputProps={{
-                            ...params.InputProps,
-                            type: 'search',
-                        }}
-                    />
-                )}
-                renderOption={(props, option) =>
-                    <li {...props}>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Box sx={{width:'50px'}}>
-                                <img src={option.cover} style={{width:'40px'}} />
+                            label={
+                                <React.Fragment>
+                                    <Stack direction='row' spacing={0.5} alignItems='center'>
+                                        <SearchIcon fontSize="small" />
+                                        <Typography variant='caption'>Search your shelved books</Typography>
+                                    </Stack>
+                                </React.Fragment>}
+                            InputProps={{
+                                ...params.InputProps,
+                                type: 'search',
+                            }}
+                        />
+                    )}
+                    renderOption={(props, option) =>
+                        <li {...props}>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Box sx={{ width: '50px' }}>
+                                    <img src={option.cover} style={{ width: '40px' }} />
+                                </Box>
+                                <Stack>
+                                    <Typography variant='caption'>
+                                        {option.title}
+                                    </Typography>
+                                    <Typography variant='caption'>
+                                        {option.author}
+                                    </Typography>
+                                </Stack>
                             </Box>
-                            <Stack>
-                                <Typography variant='caption'>
-                                    {option.title}
-                                </Typography>
-                                <Typography variant='caption'>
-                                    {option.author}
-                                </Typography>
-                            </Stack>
-                        </Box>
-                    </li>}
-            />}
-
+                        </li>}
+                />
+            </Container>
+            }
             <Container id='mobile-currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { xs: 'flex' }, flexDirection: 'column' }}>
                 <Typography variant='subtitle2' color='text.secondary'>Currently Reading:</Typography>
                 {currentReads && <ReadingMobile currentReads={currentReads} />}
             </Container>
-
             <Container>
-                <Typography variant='subtitle2' color='text.secondary'>Pinned Shelf</Typography>
+                {/* <Typography variant='subtitle2' color='text.secondary'>Pinned Shelf</Typography> */}
                 <Divider />
+                <Box sx={{ p: 2, pb: 0, display: 'flex', justifyContent: 'space-between' }}>
+                    {favoriteShelf && <Typography variant='body2' color='secondary.main'>{favoriteShelf.name}</Typography>}
+                    <Tooltip title={
+                        <React.Fragment>
+                            <Typography variant='caption'>change pinned shelf</Typography>
+                        </React.Fragment>
+                    }>
+                        <IconButton size='small' onClick={() => navigate(`/settings/${context.userData.id}`)}>
+                            <EditIcon color='secondary' fontSize="inherit" />
+                        </IconButton>
+                    </Tooltip>
+                </Box>
                 <List id='pinned-shelf' sx={{ width: '100%', bgcolor: 'transparent' }}>
                     {/* {favoriteShelf && <OneShelf shelf={favoriteShelf} length={4} />} */}
                     {favoriteShelf && <Carousel shelf={favoriteShelf} />}
@@ -183,18 +138,15 @@ export default function AllBooks() {
                 </List>
                 <Divider />
             </Container>
-
-            <Container>
-            </Container>
-
             <List id='marked-read' sx={{ width: '100%', bgcolor: 'transparent' }}>
                 {markedRead && <ShelfStack shelf={markedRead} />}
-                {ownedBooks && <ShelfStack shelf={{name:'Owned', id:'markedowned',Books:ownedBooks}} />}
+                {ownedBooks && <ShelfStack shelf={{ name: 'Owned', id: 'owned', Books: ownedBooks }} />}
+                {dnfBooks && <ShelfStack shelf={{ name: 'DNF', id: 'dnf', Books: dnfBooks }} />}
             </List>
-
             <Container sx={{ mb: '50px' }}>
-                <Typography variant='subtitle2' color='text.secondary'>Bookshelves</Typography>
-                <Divider />
+                <Box sx={{ p: 2, pb: 0 }}>
+                    <Typography variant='body2' color='secondary.main'>Bookshelves</Typography>
+                </Box>
                 <List id='preview-shelves' sx={{ display: 'flex', bgcolor: 'transparent' }}>
                     {previewShelves &&
                         <React.Fragment>

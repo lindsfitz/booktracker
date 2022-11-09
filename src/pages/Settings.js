@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useParams, useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import { Typography, Container, Stack, Switch, Box, Chip, TextField, FormControl, Select, MenuItem, Autocomplete, Divider, Avatar, Button, Link, Snackbar, Alert } from '@mui/material';
@@ -7,8 +6,6 @@ import { Typography, Container, Stack, Switch, Box, Chip, TextField, FormControl
 
 export default function Settings() {
     const context = useContext(AppContext);
-    const params = useParams()
-    let navigate = useNavigate()
 
     const [profileData, setProfileData] = useState(null);
     const [privateCheck, setPrivateCheck] = useState(false);
@@ -28,15 +25,15 @@ export default function Settings() {
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
-          return;
+            return;
         }
-    
+
         setOpenUpdated(false);
-      };
+    };
 
     const addProfileTag = async (tag) => {
         try {
-            const addtag = await API.tagProfile({
+            await API.tagProfile({
                 profileId: profileData.id,
                 tagId: tag.id
             })
@@ -48,7 +45,7 @@ export default function Settings() {
 
     const handleTagDelete = async (tag) => {
         try {
-            const remove = await API.untagProfile(profileData.id, tag.id)
+            await API.untagProfile(profileData.id, tag.id)
             const proftags = profileTags.filter(item => item.id !== tag.id)
             setProfileTags(proftags)
         } catch (error) {
@@ -91,9 +88,6 @@ export default function Settings() {
             setProfileData(update)
             setOpenUpdated(true)
         }
-
-        console.log(update)
-        console.log(updated.data)
     }
 
 
@@ -110,7 +104,7 @@ export default function Settings() {
                 const tagOptions = [];
 
                 tags.data.map(tag => {
-                    profile.data.Tags.some(prof => prof.id === tag.id ? console.log('already tagged') : tagOptions.push(tag))
+                    profile.data.Tags.some(prof => { prof.id === tag.id ? console.log('already tagged') : tagOptions.push(tag) })
                 })
 
                 setAllTags(tagOptions)
