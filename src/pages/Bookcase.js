@@ -35,8 +35,10 @@ export default function Bookcase() {
         setEditShelf(true)
         setShelf({
             id: shelf.id,
+            public: shelf.public,
             name: shelf.name,
-            description: shelf.description
+            description: shelf.description,
+            Tags: shelf.Tags
         })
     }
 

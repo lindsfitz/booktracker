@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import API from '../../../utils/API';
 import AppContext from '../../../AppContext';
 import PropTypes from 'prop-types';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Stack, Typography, Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -49,6 +49,11 @@ ShelfDialogTitle.propTypes = {
 
 export default function AddShelf() {
     const context = useContext(AppContext);
+    const [checked, setChecked] = useState(false);
+
+    const handleChange = (event) => {
+        setChecked(event.target.checked);
+    };
 
     const shelfSubmit = (e) => {
         e.preventDefault();
@@ -58,6 +63,7 @@ export default function AddShelf() {
 
         const newShelf = {
             name: data.get('name'),
+            public: !checked,
             description: data.get('description'),
             last_update: now,
             UserId: context.userData.id
@@ -77,7 +83,7 @@ export default function AddShelf() {
     return (
         <div>
             <ShelfDialog
-            fullScreen
+                fullScreen
                 onClose={context.toggleShelfDialog}
                 aria-labelledby="customized-dialog-title"
                 open={context.shelfDialog}
@@ -87,25 +93,36 @@ export default function AddShelf() {
                 </ShelfDialogTitle>
                 <Box component='form' noValidate onSubmit={shelfSubmit} >
                     <DialogContent dividers>
-                        <TextField
-                        sx={{ width: { xs: 1 / 1, md: 1 / 2 } }}
-                            id="name"
-                            name='name'
-                            label="Bookshelf Name"
-                            placeholder="Name"
-                            multiline
-                        /><br /><br />
-                        <TextField
-                        sx={{ width: { xs: 1 / 1, md: 1 / 2 } }}
-                            id="description"
-                            name='description'
-                            label="Description"
-                            multiline
-                            rows={6}
+                        <Stack spacing={2}>
+                            <Stack direction='row' alignItems='center' spacing={1}>
+                                <Typography variant='subtitle2'>Private:</Typography>
+                                <Switch
+                                    color='secondary'
+                                    checked={checked}
+                                    onChange={handleChange}
+                                    inputProps={{ 'aria-label': 'privateSwitch' }}
+                                />
+                            </Stack>
+                            <TextField
+                                sx={{ width: { xs: 1 / 1, md: 1 / 2 } }}
+                                id="name"
+                                name='name'
+                                label="Bookshelf Name"
+                                placeholder="Name"
+                                multiline
+                            />
+                            <TextField
+                                sx={{ width: { xs: 1 / 1, md: 1 / 2 } }}
+                                id="description"
+                                name='description'
+                                label="Description"
+                                multiline
+                                rows={6}
 
-                        />
+                            />
+                        </Stack>
                     </DialogContent>
-                    <DialogActions sx={{justifyContent:'center'}}>
+                    <DialogActions sx={{ justifyContent: 'center' }}>
                         <Button color='secondary' autoFocus type='submit'>
                             Create Shelf
                         </Button>

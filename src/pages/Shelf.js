@@ -55,6 +55,11 @@ export default function Shelf() {
         shelfData();
     }
 
+    const handleTagDelete = (tag) => {
+        console.log(tag)
+    }
+
+
     const shelfData = async () => {
         const shelf = await API.oneUserShelf(params.id, context.userData.id)
         console.log(shelf)
@@ -91,6 +96,9 @@ export default function Shelf() {
                     <Typography variant='h5'>{shelf.name}</Typography>
                     <Typography variant='subtitle2'>{shelf.description}</Typography>
                     <Typography variant='caption' color='text.secondary'>Last Updated: {dayjs(shelf.last_update).format('MMM D, YYYY')}</Typography>
+                    <Box>
+                        {shelf.Tags && shelf.Tags.map(tag => <Chip key={tag.name} label={tag.name} onDelete={() => handleTagDelete(tag)} />)}
+                    </Box>
                     <Stack direction='row' justifyContent='center' spacing={2}>
                         {/* <Button>Add Books</Button> */}
                         <IconButton aria-label="edit" size="small" onClick={() => setEditDialog(true)}>
@@ -112,9 +120,9 @@ export default function Shelf() {
 
                         <React.Fragment>
                             <ListItem key={book.id} id={`${book.title}${shelf.name}shelf`}
-                            onClick={mobile ? () => {
-                                navigate(`/book/${book.id}`)
-                            } : null} alignItems="center">
+                                onClick={mobile ? () => {
+                                    navigate(`/book/${book.id}`)
+                                } : null} alignItems="center">
                                 <Box sx={Styles.bookListBox}>
                                     <Box sx={{
                                         '&:hover': {
@@ -132,9 +140,9 @@ export default function Shelf() {
                                     </Box>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', ml: 2 }}>
                                         <Stack sx={{ alignSelf: 'center', ml: 1, p: 1 }}>
-                                            <Typography sx={Styles.title} 
-                                            onClick={() => { navigate(`/book/${book.id}`) }}
-                                             variant='subtitle1'>{book.title}</Typography>
+                                            <Typography sx={Styles.title}
+                                                onClick={() => { navigate(`/book/${book.id}`) }}
+                                                variant='subtitle1'>{book.title}</Typography>
                                             <Typography
                                                 component="span"
                                                 variant="body2"

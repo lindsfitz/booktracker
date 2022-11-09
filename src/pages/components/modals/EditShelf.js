@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import API from '../../../utils/API';
 import AppContext from '../../../AppContext';
 import PropTypes from 'prop-types';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Chip, Stack, Typography, Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -49,6 +49,16 @@ EditShelfDialogTitle.propTypes = {
 
 export default function EditShelf({ shelf, setEditShelf, editShelf }) {
     const context = useContext(AppContext);
+    const [checked, setChecked] = useState(false);
+
+    const handleChange = (event) => {
+        setChecked(event.target.checked);
+    };
+
+
+    const handleTagDelete = (tag) => {
+        console.log(tag)
+    }
 
     const shelfSubmit = async (e) => {
         e.preventDefault();
@@ -58,6 +68,7 @@ export default function EditShelf({ shelf, setEditShelf, editShelf }) {
 
         const updatedShelf = {
             name: data.get('name'),
+            public: !checked,
             description: data.get('description'),
             last_update: now,
         }
@@ -71,6 +82,10 @@ export default function EditShelf({ shelf, setEditShelf, editShelf }) {
         setEditShelf(false)
 
     }
+
+    useEffect(() => {
+        setChecked(!shelf.public)
+    }, [shelf])
 
 
     return (
@@ -86,26 +101,41 @@ export default function EditShelf({ shelf, setEditShelf, editShelf }) {
                 </EditShelfDialogTitle>
                 <Box component='form' noValidate onSubmit={shelfSubmit} >
                     <DialogContent dividers>
-                        <TextField
-                            sx={{ width: { xs: 1 / 1, md: 1 / 2 } }}
-                            id="name"
-                            name='name'
-                            label="Bookshelf Name"
-                            defaultValue={shelf.name}
-                            multiline
-                        /><br /><br />
-                        <TextField
-                            sx={{ width: { xs: 1 / 1, md: 1 / 2 } }}
-                            id="description"
-                            name='description'
-                            label="Description"
-                            defaultValue={shelf.description}
-                            multiline
-                            rows={6}
+                        <Stack spacing={2}>
+                            <Stack direction='row' alignItems='center' spacing={1}>
+                                <Typography variant='subtitle2'>Private:</Typography>
+                                <Switch
+                                    color='secondary'
+                                    checked={checked}
+                                    onChange={handleChange}
+                                    inputProps={{ 'aria-label': 'privateSwitch' }}
+                                />
+                            </Stack>
+                            <TextField
+                                sx={{ width: { xs: 1 / 1, md: 1 / 2 } }}
+                                id="name"
+                                name='name'
+                                label="Bookshelf Name"
+                                defaultValue={shelf.name}
+                                multiline
+                            />
+                            <TextField
+                                sx={{ width: { xs: 1 / 1, md: 1 / 2 } }}
+                                id="description"
+                                name='description'
+                                label="Description"
+                                defaultValue={shelf.description}
+                                multiline
+                                rows={6}
 
-                        />
+                            />
+                            <Box>
+                                {shelf.Tags && shelf.Tags.map(tag => <Chip key={tag.name} label={tag.name} onDelete={() => handleTagDelete(tag)} />)}
+                            </Box>
+                        </Stack>
+
                     </DialogContent>
-                    <DialogActions sx={{justifyContent:'center'}}>
+                    <DialogActions sx={{ justifyContent: 'center' }}>
                         <Button color='secondary' autoFocus type='submit'>
                             Update Shelf
                         </Button>

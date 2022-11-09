@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import AppContext from '../AppContext';
 import API from '../utils/API'
-import { List, Container, Divider, Typography, Autocomplete, TextField, Box, Stack, Tooltip, IconButton } from '@mui/material';
+import { List, Container, Divider, Typography, Autocomplete, TextField, Box, Stack, Tooltip, IconButton, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import ReadingMobile from './components/mobile/ReadingMobile';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
@@ -14,6 +15,9 @@ import ShelfStack from './components/ShelfStack';
 export default function AllBooks() {
     const context = useContext(AppContext);
     let navigate = useNavigate();
+    const theme = useTheme();
+    const smxs = useMediaQuery(theme.breakpoints.down('sm'))
+
 
 
     const [currentReads, setCurrentReads] = useState(null);
@@ -47,9 +51,11 @@ export default function AllBooks() {
                     // console.log(books.data.shelves)
                     setFavoriteShelf(favShelf[0])
                     const otherShelves = books.data.shelves.filter(shelf => shelf.id !== profile.data.favorite_shelf)
-                    setPreviewShelves(otherShelves)
+                    smxs ? setPreviewShelves(otherShelves.slice(0,2)) :
+                    setPreviewShelves(otherShelves.slice(0,4))
                 } else {
                     setFavoriteShelf(books.data.shelves[0])
+                    smxs ? setPreviewShelves(books.data.shelves.slice(1, 3)) :
                     setPreviewShelves(books.data.shelves.slice(1, 4))
                 }
 
@@ -97,7 +103,7 @@ export default function AllBooks() {
                         <li {...props}>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <Box sx={{ width: '50px' }}>
-                                    <img src={option.cover} style={{ width: '40px' }} />
+                                    <img src={option.cover} alt={option.title} style={{ width: '40px' }} />
                                 </Box>
                                 <Stack>
                                     <Typography variant='caption'>
@@ -147,7 +153,7 @@ export default function AllBooks() {
                 <Box sx={{ p: 2, pb: 0 }}>
                     <Typography variant='body2' color='secondary.main'>Bookshelves</Typography>
                 </Box>
-                <List id='preview-shelves' sx={{ display: 'flex', bgcolor: 'transparent' }}>
+                <List id='preview-shelves' sx={{ display: 'flex', bgcolor: 'transparent', alignItems:'center' }}>
                     {previewShelves &&
                         <React.Fragment>
                             {previewShelves.map(shelf => (
