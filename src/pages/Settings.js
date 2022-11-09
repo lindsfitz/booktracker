@@ -120,10 +120,10 @@ export default function Settings() {
 
 
     return (
-        <Container sx={{ m: 2, mb: '50px' }}>
+        <Container sx={{ m: 1, mb: '50px' }}>
             <Typography sx={{ ml: 3 }} variant='h6'>Account Settings</Typography>
             <Divider variant='middle' />
-            {profileData && <Stack spacing={3} sx={{ p: 3, width: { xs: 1 / 1, sm: 3 / 4, md: 1 / 2 } }}>
+            {profileData && <Stack spacing={3} sx={{ p: {xs:1, md:3}, width: { xs: 1 / 1, sm: 3 / 4, md: 1 / 2 } }}>
 
                 {/* cloudinary upload for profile picture -- avatar to display this pic */}
                 <Stack spacing={1} sx={{ p: 3 }}>
@@ -173,7 +173,7 @@ export default function Settings() {
                     autoComplete="off"
                 >
                     <Stack spacing={3} >
-                        <Stack>
+                        <Stack sx={{mr:1}}>
                             <Typography variant='subtitle1'>Profile</Typography>
                             <Divider />
                         </Stack>

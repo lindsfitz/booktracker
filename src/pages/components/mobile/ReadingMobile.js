@@ -69,8 +69,9 @@ export default function ReadingMobile({ currentReads }) {
     return (
         <React.Fragment >
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', borderRadius: 10 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', borderRadius: 10, width:'350px' }}>
                 <SwipeableViews
+                style={{width:'350px'}}
                     index={activeStep}
                     onChangeIndex={handleChangeIndex}
                     enableMouseEvents>

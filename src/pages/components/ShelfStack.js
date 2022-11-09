@@ -14,7 +14,7 @@ export default function ShelfStack({ shelf }) {
         position: 'absolute',
         left: '10%',
         top: '0px',
-        zIndex: 2
+        zIndex: 0
     }
 
     const image2 = {
@@ -23,7 +23,7 @@ export default function ShelfStack({ shelf }) {
         position: 'absolute',
         top: '10px',
         left: '18%',
-        zIndex: 1
+        zIndex: -1
 
     }
 
@@ -33,7 +33,7 @@ export default function ShelfStack({ shelf }) {
         position: 'absolute',
         top: '20px',
         left: '26%',
-        zIndex: 0
+        zIndex: -2
     }
 
     const image4 = {
@@ -42,7 +42,7 @@ export default function ShelfStack({ shelf }) {
         position: 'absolute',
         top: '30px',
         left: '34%',
-        zIndex: -1
+        zIndex: -3
     }
 
     const books = shelf.Books.slice(0, 4)
@@ -57,7 +57,7 @@ export default function ShelfStack({ shelf }) {
                 },
             }}>
                 <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px' }}>
-                    <Box sx={{ position: 'relative', height: '170px', width: '410px' }}>
+                    <Box sx={{ position: 'relative', height: '170px', width: '300px' }}>
                         {books[0] &&
                             <img src={books[0].cover_img} alt={books[0].title} style={image1} />
                         }
@@ -84,21 +84,7 @@ export default function ShelfStack({ shelf }) {
                         <ChevronRightIcon />
                     </Stack>
                 </Container>
-                {/* <div style={{ display: 'flex', width: '100%' }}>
-                    {shelf.Books.slice(0, 4).map((book) => (
-                        <Card sx={cardStyle} key={`${shelf.name}${book.id}`} className='book-card'>
-                            <CardContent>
-                                <CardMedia
-                                    component="img"
-                                    style={imageStyle}
-                                    onClick={() => { navigate(`/book/${book.id}`) }}
-                                    image={`${book.cover_img}`}
-                                    alt={`${book.title}`}
-                                />
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div> */}
+               
             </ListItem>
             <Divider key={`${shelf.id}dividerlg`} />
         </React.Fragment>
