@@ -167,7 +167,7 @@ const Navigation = () => {
                             </MenuItem>
                             <Divider />
                             <MenuItem onClick={handleCloseUserMenu}>
-                                <Button variant="text" color="custom">
+                                <Button onClick={()=> navigate(`/settings/${context.userData.id}`)} variant="text" color="custom">
                                     <ListItemIcon>
                                         <Settings fontSize="small" />
                                     </ListItemIcon>

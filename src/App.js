@@ -11,7 +11,7 @@ import Navigation from "./pages/components/Navigation";
 import Dashboard from "./pages/Dashboard";
 import Bookcase from "./pages/Bookcase";
 import Shelf from "./pages/Shelf";
-import Search from './pages/Search';
+import Browse from './pages/Browse';
 import AllBooks from "./pages/AllBooks";
 import ReadingActivity from './pages/ReadingActivity';
 import './app.css'
@@ -19,6 +19,7 @@ import { themeOptions } from './utils/Theme';
 import Booklist from './pages/Booklist';
 import Book from './pages/Book';
 import BottomNav from './pages/components/BottomNav';
+import Settings from './pages/Settings';
 
 function App() {
 
@@ -55,13 +56,14 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/browse" element={<Search />} />
+              <Route path="/browse" element={<Browse />} />
               <Route path="/books" element={<AllBooks />} />
               <Route path="/books/:list" element={<Booklist />} />
               <Route path="/book/:id" element={<Book />} />
               <Route path="/bookcase" element={<Bookcase />} />
               <Route path="/shelf/:id" element={<Shelf />} />
               <Route path="/activity" element={<ReadingActivity />} />
+              <Route path="/settings/:id" element={<Settings />} />
             </Routes>
             {token && <BottomNav />}
           </BrowserRouter>

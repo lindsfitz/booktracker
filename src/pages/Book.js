@@ -675,7 +675,6 @@ export default function Book() {
 
                                         {markedAs === 'Read' &&
                                             <Button color='secondary' onClick={toggleReviewForm}>Add Read Dates</Button>
-
                                         }
 
                                         {!markedOwned && <Button color='secondary' onClick={addOwned}>Mark As Owned</Button>}
@@ -792,7 +791,6 @@ export default function Book() {
 
                                     {markedAs === 'Read' &&
                                         <Button color='secondary' onClick={toggleReviewForm}>Add Read Dates</Button>
-
                                     }
 
                                     {!markedOwned && <Button color='secondary' onClick={addOwned}>Mark As Owned</Button>}
