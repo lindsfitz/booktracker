@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import API from '../../../utils/API';
 import AppContext from '../../../AppContext';
 import PropTypes from 'prop-types';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Stack, Typography, Switch } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Stack, Typography, Switch, Autocomplete, Chip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -50,10 +50,16 @@ ShelfDialogTitle.propTypes = {
 export default function AddShelf() {
     const context = useContext(AppContext);
     const [checked, setChecked] = useState(false);
+    const [tagIds, setTagIds] = useState([])
 
     const handleChange = (event) => {
         setChecked(event.target.checked);
     };
+
+    const addShelfTag = (tag) => {
+        console.log(tag)
+        setTagIds(tag)
+    }
 
     const shelfSubmit = (e) => {
         e.preventDefault();
@@ -70,6 +76,15 @@ export default function AddShelf() {
         }
 
         API.newShelf(newShelf).then(async res => {
+            tagIds.forEach(async tag => {
+                console.log(tag)
+                console.log(res.data.id)
+                console.log(tag.id)
+                await API.tagShelf({
+                    shelfId: res.data.id,
+                    tagId: tag.id
+                })
+            })
             console.log(res)
             const shelves = await API.getShelves(context.userData.id)
             context.setUserShelves(shelves.data)
@@ -120,6 +135,34 @@ export default function AddShelf() {
                                 rows={6}
 
                             />
+                        </Stack>
+                        <Stack spacing={1}>
+                            <Stack spacing={0.5}>
+                                <Typography variant='subtitle2'>Shelf Tags:</Typography>
+                            </Stack>
+                            <Autocomplete
+                                multiple
+                                id="tags-filled"
+                                options={context.tags}
+                                getOptionLabel={(option) => option.name}
+                                onChange={(event, newValue) => {
+                                    addShelfTag(newValue)
+                                }}
+                                freeSolo
+                                filterSelectedOptions
+                                renderTags={(value, getTagProps) =>
+                                    value.map((option, index) => (
+                                        <Chip variant="outlined" label={option.name} {...getTagProps({ index })} />
+                                    ))}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        variant="filled"
+                                        label="Tags"
+                                    />
+                                )}
+                            />
+
                         </Stack>
                     </DialogContent>
                     <DialogActions sx={{ justifyContent: 'center' }}>

@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import API from '../../../utils/API';
 import AppContext from '../../../AppContext';
 import PropTypes from 'prop-types';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Chip, Stack, Typography, Switch } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Chip, Stack, Typography, Switch, Autocomplete } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -50,14 +50,33 @@ EditShelfDialogTitle.propTypes = {
 export default function EditShelf({ shelf, setEditShelf, editShelf }) {
     const context = useContext(AppContext);
     const [checked, setChecked] = useState(false);
+    const [tags, setTags] = useState(null)
 
     const handleChange = (event) => {
         setChecked(event.target.checked);
     };
 
+    const handleTagDelete = async (tag) => {
+        try {
+            await API.untagShelf({
+                shelfId: shelf.id,
+                tagId: tag.id
+            })
+            const shelftags = tags.filter(item => item.id !== tag.id)
+            setTags(shelftags)
+        } catch (error) {
+            
+        }
+    }
 
-    const handleTagDelete = (tag) => {
-        console.log(tag)
+    const handleAddTag = async (tag) => {
+        try {
+            await API.tagShelf({
+                shelfId: shelf.id,
+                tagId: tag.id
+            })
+            setTags([...tags, tag])
+        } catch (err) { console.log(err) }
     }
 
     const shelfSubmit = async (e) => {
@@ -85,6 +104,7 @@ export default function EditShelf({ shelf, setEditShelf, editShelf }) {
 
     useEffect(() => {
         setChecked(!shelf.public)
+        setTags(shelf.Tags)
     }, [shelf])
 
 
@@ -130,8 +150,31 @@ export default function EditShelf({ shelf, setEditShelf, editShelf }) {
 
                             />
                             <Box>
-                                {shelf.Tags && shelf.Tags.map(tag => <Chip key={tag.name} label={tag.name} onDelete={() => handleTagDelete(tag)} />)}
+                                {tags && tags.map(tag => <Chip key={tag.name} label={tag.name} onDelete={() => handleTagDelete(tag)} />)}
                             </Box>
+                            <Autocomplete
+                                sx={{ width: 3 / 5 }}
+                                freeSolo
+                                size='small'
+                                onChange={(event, newValue) => {
+                                    handleAddTag(newValue)
+                                }}
+                                disableClearable
+                                options={context.tags}
+                                getOptionLabel={(option) => option.name}
+                                renderInput={(params) => (
+                                    <TextField
+
+                                        {...params}
+                                        label="Tags"
+                                        InputProps={{
+                                            ...params.InputProps,
+                                            type: 'search',
+                                        }}
+                                    />
+                                )}
+                                renderOption={(props, option) => <li {...props}>{option.name}</li>}
+                            />
                         </Stack>
 
                     </DialogContent>

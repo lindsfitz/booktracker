@@ -1,7 +1,7 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import API from '../utils/API';
 import AppContext from '../AppContext';
-import { Typography, Container, Stack, Switch, Box, Chip, TextField, FormControl, Select, MenuItem, Autocomplete, Divider, Avatar, Button, Link, Snackbar, Alert } from '@mui/material';
+import { Typography, Container, Stack, Switch, Box, Chip, TextField, FormControl, Select, MenuItem, Autocomplete, Divider, Avatar, Button, Snackbar, Alert } from '@mui/material';
 import CloudWidget from './components/mini-components/CloudWidget';
 
 
@@ -138,7 +138,7 @@ export default function Settings() {
                 {/* cloudinary upload for profile picture -- avatar to display this pic */}
                 <Stack spacing={1} sx={{ p: 3 }} >
                     {avatar()}
-                    {/* <Link onClick={uploadImage} id="upload_widget" className="cloudinary-button" underline='hover' color='secondary' variant='caption'>update photo</Link> */}
+                    
                    {options &&  <CloudWidget options={options} />}
 
 
@@ -154,11 +154,10 @@ export default function Settings() {
                     </Stack>
                     {allTags && <Autocomplete
                         sx={{ width: 3 / 5 }}
-                        // freeSolo
+                        freeSolo
                         size='small'
-                        value={tagSearch}
+                        // value={tagSearch}
                         onChange={(event, newValue) => {
-                            //   setSearchValue(newValue);
                             addProfileTag(newValue)
                         }}
                         disableClearable
@@ -166,7 +165,6 @@ export default function Settings() {
                         getOptionLabel={(option) => option.name}
                         renderInput={(params) => (
                             <TextField
-
                                 {...params}
                                 label="Add More Favorites..."
                                 InputProps={{

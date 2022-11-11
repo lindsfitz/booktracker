@@ -97,7 +97,9 @@ export default function Shelf() {
                     <Typography variant='subtitle2'>{shelf.description}</Typography>
                     <Typography variant='caption' color='text.secondary'>Last Updated: {dayjs(shelf.last_update).format('MMM D, YYYY')}</Typography>
                     <Box>
-                        {shelf.Tags && shelf.Tags.map(tag => <Chip key={tag.name} label={tag.name} onDelete={() => handleTagDelete(tag)} />)}
+                        {shelf.Tags && shelf.Tags.map(tag => <Chip key={tag.name} label={tag.name} 
+                        // onDelete={() => handleTagDelete(tag)} 
+                        />)}
                     </Box>
                     <Stack direction='row' justifyContent='center' spacing={2}>
                         {/* <Button>Add Books</Button> */}
