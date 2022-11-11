@@ -26,6 +26,8 @@ function App() {
   const [userData, setUserData] = useState(null)
   const [token, setToken] = useState(null)
   const [userShelves, setUserShelves] = useState([])
+  const [tags, setTags] = useState(null);
+  const [profileData, setProfileData] = useState(null)
 
   // usestate for adding shelf dialog
   const [shelfDialog, setshelfDialog] = useState(false);
@@ -42,7 +44,11 @@ function App() {
     userShelves: userShelves,
     setUserShelves: setUserShelves,
     shelfDialog: shelfDialog,
-    toggleShelfDialog: toggleShelfDialog
+    toggleShelfDialog: toggleShelfDialog,
+    tags: tags,
+    setTags: setTags,
+    profileData: profileData,
+    setProfileData: setProfileData
   }
 
 

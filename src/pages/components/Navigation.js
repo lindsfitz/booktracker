@@ -21,7 +21,7 @@ const Navigation = () => {
     const smxs = useMediaQuery(theme.breakpoints.down('sm'))
 
     const [anchorElUser, setAnchorElUser] = useState(null);
-    
+
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
     };
@@ -40,7 +40,7 @@ const Navigation = () => {
     const backBtn = () => {
         if (location.pathname === '/books/read' || location.pathname === '/books/currently' || location.pathname === '/books/dnf' || location.pathname === '/books/owned' || location.pathname === '/activity' || location.pathname.includes('/book/') || location.pathname.includes('/shelf/')) {
             return (
-                <IconButton onClick={()=>navigate(-1)}><ArrowBackIosIcon /></IconButton>
+                <IconButton onClick={() => navigate(-1)}><ArrowBackIosIcon /></IconButton>
             )
         }
     }
@@ -53,8 +53,8 @@ const Navigation = () => {
                     {smxs ? (
                         <React.Fragment>
                             {backBtn()}
-                            <img style={{height:'40px'}} alt='bookends-logo' src='/assets/booked.png' />
-                            
+                            <img style={{ height: '40px' }} alt='bookends-logo' src='/assets/booked.png' />
+
                             <Typography
                                 variant="h5"
                                 noWrap
@@ -62,8 +62,8 @@ const Navigation = () => {
                                 href=""
                                 sx={{
                                     mr: 2,
-                                    ml:1,
-                                    display:'flex',
+                                    ml: 1,
+                                    display: 'flex',
                                     flexGrow: 1,
                                     fontFamily: 'monospace',
                                     fontWeight: 700,
@@ -78,9 +78,9 @@ const Navigation = () => {
                         </React.Fragment>
                     ) : (
                         <React.Fragment>
-                        
-                            <img style={{height:'40px'}} alt='bookends-logo' src='/assets/booked.png' />
-                
+
+                            <img style={{ height: '40px' }} alt='bookends-logo' src='/assets/booked.png' />
+
                             <Typography
                                 variant="h6"
                                 noWrap
@@ -88,8 +88,8 @@ const Navigation = () => {
                                 href="/"
                                 sx={{
                                     mr: 2,
-                                    ml:1,
-                                    display:'flex',
+                                    ml: 1,
+                                    display: 'flex',
                                     fontFamily: 'monospace',
                                     fontWeight: 700,
                                     letterSpacing: '.3rem',
@@ -97,7 +97,7 @@ const Navigation = () => {
                                     textDecoration: 'none',
                                 }}
                             >
-                                 booked
+                                booked
                             </Typography>
 
                             <Box sx={{ color: 'white', flexGrow: 1, display: 'flex' }}>
@@ -122,7 +122,8 @@ const Navigation = () => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar>{context.userData.name[0]}</Avatar>
+                                {context.userData.image ? <Avatar alt={context.userData.name}
+                                    src={context.userData.image} /> : <Avatar>{context.userData.name[0]}</Avatar>}
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -167,7 +168,7 @@ const Navigation = () => {
                             </MenuItem>
                             <Divider />
                             <MenuItem onClick={handleCloseUserMenu}>
-                                <Button onClick={()=> navigate(`/settings/${context.userData.id}`)} variant="text" color="custom">
+                                <Button onClick={() => navigate(`/settings/${context.userData.id}`)} variant="text" color="custom">
                                     <ListItemIcon>
                                         <Settings fontSize="small" />
                                     </ListItemIcon>

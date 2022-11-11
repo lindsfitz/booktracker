@@ -1,19 +1,23 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import { Typography, Container, Stack, Switch, Box, Chip, TextField, FormControl, Select, MenuItem, Autocomplete, Divider, Avatar, Button, Link, Snackbar, Alert } from '@mui/material';
+import CloudWidget from './components/mini-components/CloudWidget';
 
 
 export default function Settings() {
     const context = useContext(AppContext);
 
-    const [profileData, setProfileData] = useState(null);
+    // const [profileData, setProfileData] = useState(null);
     const [privateCheck, setPrivateCheck] = useState(false);
     const [pinned, setPinned] = useState("");
     const [profileTags, setProfileTags] = useState(null)
     const [allTags, setAllTags] = useState(null);
     const [tagSearch, setTagSearch] = useState(null)
     const [openUpdated, setOpenUpdated] = useState(null)
+    const [options, setOptions] = useState(null);
+
+
 
     const handlePrivate = (event) => {
         setPrivateCheck(event.target.checked);
@@ -34,7 +38,7 @@ export default function Settings() {
     const addProfileTag = async (tag) => {
         try {
             await API.tagProfile({
-                profileId: profileData.id,
+                profileId: context.profileData.id,
                 tagId: tag.id
             })
             setProfileTags([...profileTags, tag])
@@ -45,7 +49,7 @@ export default function Settings() {
 
     const handleTagDelete = async (tag) => {
         try {
-            await API.untagProfile(profileData.id, tag.id)
+            await API.untagProfile(context.profileData.id, tag.id)
             const proftags = profileTags.filter(item => item.id !== tag.id)
             setProfileTags(proftags)
         } catch (error) {
@@ -55,16 +59,16 @@ export default function Settings() {
 
 
     const avatar = () => {
-        if (profileData.profile_picture) {
+        if (context.profileData.profile_picture) {
             return <Avatar
-                alt={profileData.display_name}
-                src={profileData.profile_picture}
-                sx={{ width: 70, height: 70 }}
+                alt={context.profileData.display_name}
+                src={context.profileData.profile_picture}
+                sx={{ width: 100, height: 100 }}
             />
         }
 
         return <Avatar
-            alt={profileData.display_name}
+            alt={context.profileData.display_name}
             // src={profileData.profile_picture}
             sx={{ width: 70, height: 70 }}
         />
@@ -73,8 +77,8 @@ export default function Settings() {
     const updateProfile = async (event) => {
         event.preventDefault()
         const data = new FormData(event.currentTarget);
-        const update = {
-            public: privateCheck,
+        const profile = {
+            public: !privateCheck,
             favorite_shelf: pinned,
             first_name: data.get('firstName'),
             display_name: data.get('displayName'),
@@ -82,32 +86,38 @@ export default function Settings() {
             about_me: data.get('bio'),
         }
 
-        const updated = await API.updateProfile(context.userData.id, update)
+        const update = await API.updateProfile(context.userData.id, profile)
+        const updated = await API.getProfile(context.userData.id)
 
-        if (updated.data[0]) {
-            setProfileData(update)
+        if (update.data[0]) {
             setOpenUpdated(true)
+            context.setProfileData(updated)
         }
     }
+
+
+
 
 
     useEffect(() => {
         const pageLoad = async () => {
             try {
-                const profile = await API.getProfile(context.userData.id)
-                setProfileData(profile.data)
-                setPrivateCheck(profile.data.public)
-                if (profile.data.favorite_shelf) { setPinned(profile.data.favorite_shelf) }
-                setProfileTags(profile.data.Tags)
+                // const profile = await API.getProfile(context.userData.id)
+                // setProfileData(profile.data)
+                setPrivateCheck(!context.profileData.public)
+                if (context.profileData.favorite_shelf) { setPinned(context.profileData.favorite_shelf) }
+                setProfileTags(context.profileData.Tags)
 
-                const tags = await API.allTags()
                 const tagOptions = [];
 
-                tags.data.map(tag => {
-                    profile.data.Tags.some(prof => { prof.id === tag.id ? console.log('already tagged') : tagOptions.push(tag) })
+                context.tags.map(tag => {
+                    context.profileData.Tags.some(prof => { prof.id === tag.id ? console.log('already tagged') : tagOptions.push(tag) })
                 })
 
                 setAllTags(tagOptions)
+
+                const cloud = await API.cloudUpload();
+                setOptions(cloud.data)
 
             } catch (error) {
                 console.log(error)
@@ -123,12 +133,15 @@ export default function Settings() {
         <Container sx={{ m: 1, mb: '50px' }}>
             <Typography sx={{ ml: 3 }} variant='h6'>Account Settings</Typography>
             <Divider variant='middle' />
-            {profileData && <Stack spacing={3} sx={{ p: {xs:1, md:3}, width: { xs: 1 / 1, sm: 3 / 4, md: 1 / 2 } }}>
+            <Stack spacing={3} sx={{ p: { xs: 1, md: 3 }, width: { xs: 1 / 1, sm: 3 / 4, md: 1 / 2 } }}>
 
                 {/* cloudinary upload for profile picture -- avatar to display this pic */}
-                <Stack spacing={1} sx={{ p: 3 }}>
+                <Stack spacing={1} sx={{ p: 3 }} >
                     {avatar()}
-                    <Link underline='hover' color='secondary' variant='caption'>update photo</Link>
+                    {/* <Link onClick={uploadImage} id="upload_widget" className="cloudinary-button" underline='hover' color='secondary' variant='caption'>update photo</Link> */}
+                   {options &&  <CloudWidget options={options} />}
+
+
                 </Stack>
 
                 {/* autocomplete box that adds chips -- can also click chips to remove chips/tags; these are a users fav genres/topics and show up as suggested search by subject on Browse page */}
@@ -173,7 +186,7 @@ export default function Settings() {
                     autoComplete="off"
                 >
                     <Stack spacing={3} >
-                        <Stack sx={{mr:1}}>
+                        <Stack sx={{ mr: 1 }}>
                             <Typography variant='subtitle1'>Profile</Typography>
                             <Divider />
                         </Stack>
@@ -211,7 +224,7 @@ export default function Settings() {
                             <TextField sx={{ m: 1, width: 3 / 5 }}
                                 id="firstName"
                                 name="firstName"
-                                defaultValue={profileData.first_name || ''}
+                                defaultValue={context.profileData.first_name || ''}
                                 size="small"
 
                             />
@@ -223,7 +236,7 @@ export default function Settings() {
                             <TextField sx={{ m: 1, width: 3 / 5 }}
                                 id="displayName"
                                 name="displayName"
-                                defaultValue={profileData.display_name}
+                                defaultValue={context.profileData.display_name}
                                 size="small"
 
                             />
@@ -235,7 +248,7 @@ export default function Settings() {
                             <TextField sx={{ m: 1, width: 3 / 5 }}
                                 id="username"
                                 name="username"
-                                defaultValue={profileData.username}
+                                defaultValue={context.profileData.username}
                                 size="small"
 
                             />
@@ -249,7 +262,7 @@ export default function Settings() {
                                 name="bio"
                                 multiline
                                 rows={5}
-                                defaultValue={profileData.about_me}
+                                defaultValue={context.profileData.about_me}
                                 size="small"
 
                             />
@@ -278,7 +291,7 @@ export default function Settings() {
                 </Stack>
 
 
-            </Stack>}
+            </Stack>
 
             <Snackbar open={openUpdated} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="success" sx={{ width: '90%' }}>

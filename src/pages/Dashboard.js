@@ -47,6 +47,11 @@ export default function Dashboard(props) {
             setUserStats(allStats.data)
         }
 
+        const setTags = async () => {
+            const tags = await API.allTags();
+            context.setTags(tags.data)
+        }
+
         const myToken = localStorage.getItem("token");
         if (myToken) {
             API.verify(myToken).then(async res => {
@@ -54,11 +59,13 @@ export default function Dashboard(props) {
                 context.setUserData({
                     id: res.data.id,
                     name: res.data.user_name,
+                    image: res.data.image,
                     created: res.data.created
                 })
                 renderCurrentReads()
                 renderShelves()
                 renderStats()
+                setTags()
             }).catch(err => {
                 console.log(err)
                 localStorage.removeItem("token");

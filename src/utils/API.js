@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-// const URL_PREFIX = "http://localhost:3005/api"
-const URL_PREFIX = "https://booked-server.herokuapp.com/api"
+const URL_PREFIX = "http://localhost:3005/api"
+// const URL_PREFIX = "https://booked-server.herokuapp.com/api"
 
 
 
@@ -161,17 +161,17 @@ const API = {
     taggedBooks: (tagId) => {
         return axios.get(`${URL_PREFIX}/tags/books/${tagId}`)
     },
-    taggedShelves: (tagId) => {
-        return axios.get(`${URL_PREFIX}/tags/shelves/${tagId}`)
-    }, 
-    taggedProfiles: (tagId) => {
-        return axios.get(`${URL_PREFIX}/tags/profiles/${tagId}`)
-    },  
+    taggedShelves: (tagId, userId) => {
+        return axios.get(`${URL_PREFIX}/tags/shelves/${tagId}/${userId}`)
+    },
+    taggedProfiles: (tagId, userId) => {
+        return axios.get(`${URL_PREFIX}/tags/profiles/${tagId}/${userId}`)
+    },
     tagShelf: (tagData) => {
-        return axios.post(`${URL_PREFIX}/tags/shelf`,tagData)
+        return axios.post(`${URL_PREFIX}/tags/shelf`, tagData)
     },
     tagProfile: (tagData) => {
-        return axios.post(`${URL_PREFIX}/tags/profile`,tagData)
+        return axios.post(`${URL_PREFIX}/tags/profile`, tagData)
     },
     untagShelf: (shelfId, tagId) => {
         return axios.delete(`${URL_PREFIX}/tags/shelf/${shelfId}/${tagId}`)
@@ -260,6 +260,10 @@ const API = {
 
     nytList: (list) => {
         return axios.get(`${URL_PREFIX}/nyt/list/${list}`)
+    },
+
+    cloudUpload: () => {
+        return axios.post(`${URL_PREFIX}/cloud/upload`)
     }
 
 }

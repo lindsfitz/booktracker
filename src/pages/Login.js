@@ -56,8 +56,10 @@ export default function Login() {
                 context.setUserData({
                     id: res.data.user.id,
                     name: res.data.profile.display_name,
+                    image: res.data.profile.profile_picture,
                     created: res.data.createdAt
                 })
+                context.setProfileData(res.data.profile)
                 context.setToken(res.data.token)
                 navigate('/');
             }
@@ -81,7 +83,8 @@ export default function Login() {
                 localStorage.setItem("token", res.data.token)
                 context.setUserData({
                     id: res.data.user.id,
-                    name: res.data.user.first_name,
+                    name: res.data.profile.display_name,
+                    image: res.data.profile.profile_picture,
                     created: res.data.createdAt
                 })
                 context.setToken(res.data.token)
