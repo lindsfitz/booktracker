@@ -11,8 +11,8 @@ import { useTheme } from '@mui/material/styles';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import { List, Container, ListItem, Typography, Box, Rating, Card, CardMedia, Divider, Button, Stack, Tabs, Tab, IconButton } from '@mui/material';
-import MonthlyStats from './components/MonthlyStats';
-import YearlyStats from './components/YearlyStats';
+import MonthlyStats from './components/Activity/MonthlyStats';
+import YearlyStats from './components/Activity/YearlyStats';
 
 
 function TabPanel(props) {

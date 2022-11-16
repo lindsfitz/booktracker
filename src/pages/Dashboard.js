@@ -88,7 +88,7 @@ export default function Dashboard(props) {
                     <Divider />
                 </Container>
             ) : (
-                <Container id='currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { md: 'flex' }, flexDirection: 'column', width: 5 / 8 }}>
+                <Container id='currently-reading' sx={{ ml: 'auto', mr: 'auto', mt: 5, mb: 5, display: { md: 'flex' }, flexDirection: 'column', width: {sm: 5 / 8, xl: 1/2} }}>
                     {/* spans whole width of the screen  */}
                     <Typography variant='subtitle1'>Currently Reading:</Typography>
                     <Divider />

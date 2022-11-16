@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, Rating, Stack, Link } from '@mui/material';
-import ProgressCircle from './mini-components/ProgressCircle';
+import ProgressCircle from '../mini-components/ProgressCircle';
 
 
 // IF month stats exist, render this component

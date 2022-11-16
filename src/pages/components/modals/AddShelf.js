@@ -3,6 +3,7 @@ import API from '../../../utils/API';
 import AppContext from '../../../AppContext';
 import PropTypes from 'prop-types';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Stack, Typography, Switch, Autocomplete, Chip } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -143,6 +144,7 @@ export default function AddShelf() {
                             <Autocomplete
                                 multiple
                                 id="tags-filled"
+                                size='small'
                                 options={context.tags}
                                 getOptionLabel={(option) => option.name}
                                 onChange={(event, newValue) => {
@@ -157,8 +159,13 @@ export default function AddShelf() {
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        variant="filled"
-                                        label="Tags"
+                                        label={
+                                            <React.Fragment>
+                                                <Stack direction='row' spacing={0.5} alignItems='center'>
+                                                    <SearchIcon fontSize="small" />
+                                                    <Typography variant='caption'>Find a tag</Typography>
+                                                </Stack>
+                                            </React.Fragment>}
                                     />
                                 )}
                             />

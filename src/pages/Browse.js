@@ -1,6 +1,7 @@
 // Search page for new books to add to your bookshelf
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
+import AppContext from '../AppContext';
 import API from '../utils/API';
 import Styles from '../utils/Styles'
 // import AppContext from '../AppContext';
@@ -8,6 +9,8 @@ import { useTheme, styled, alpha } from '@mui/material/styles';
 import { Box, OutlinedInput, Divider, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography, Badge, Card, CardMedia, CardContent, useMediaQuery, InputBase, IconButton, Grid } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import NYTMobile from './components/mobile/NYTMobile';
+import BookResults from './components/BookResults';
+import SubjectResults from './components/SubjectResults';
 
 
 
@@ -36,6 +39,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function Search() {
     let navigate = useNavigate();
+    const context = useContext(AppContext);
+
     const theme = useTheme();
     const smxs = useMediaQuery(theme.breakpoints.down('sm'))
     const mobile = useMediaQuery(theme.breakpoints.down('md'))
@@ -105,12 +110,19 @@ export default function Search() {
         })
     }
 
-    const subjectSearch = async () => {
+    const subjectSearch = async (topic) => {
         let subject = 'fantasy romance'
 
+        let results;
+
         // const OLsearch = await API.olSearchBySubject(subject)
-        const gbSearch = await API.gbBySubject(searchTerm)
-        const results = gbSearch.data.items
+        if (topic) {
+            const gbSearch = await API.gbBySubject(topic)
+            results = gbSearch.data.items
+        } else {
+            const gbSearch = await API.gbBySubject(searchTerm)
+            results = gbSearch.data.items
+        }
 
         //    if (results) { results.map(book => {
         //        if ( book.volumeInfo.categories[0] === 'Fiction') {
@@ -118,20 +130,35 @@ export default function Search() {
         //        }
         //     })}
 
-        console.log(gbSearch)
+        // console.log(gbSearch)
         console.log('------')
         console.log(results)
 
         const test = []
 
 
-        results.map(book => {
-            if (book.volumeInfo.categories && book.volumeInfo.categories[0] === 'Fiction') { 
-                test.push(book.volumeInfo )
+        results.forEach(book => {
+            if (book.volumeInfo.categories && book.volumeInfo.categories[0] === 'Fiction') {
+                test.push(book.volumeInfo)
             }
         })
         console.log(test)
 
+        setSearchResults(results)
+
+    }
+
+    const resultsRender = () => {
+        switch (searchBy) {
+            case 'title':
+                return <BookResults searchResults={searchResults} />
+
+            case 'author':
+                return <BookResults searchResults={searchResults} />
+
+            default:
+                return <SubjectResults searchResults={searchResults} nytSearch={nytSearch} />
+        }
     }
 
     const nytSearch = async (isbn, title, author) => {
@@ -205,96 +232,32 @@ export default function Search() {
 
             <Button onClick={subjectSearch}>Subject Search</Button>
 
+            {context.profileData.Tags.length > 0 && <Container>
+                <Typography variant='subtitle2'>Browse Your Favorite Genres & Topics</Typography>
+                <Box>
+                    {context.profileData.Tags.map(tag =>
+                        <Button variant='outlined' color='success'
+                            onClick={() => subjectSearch(tag.name)}
+                        >{tag.name}</Button>
+                    )}
+
+                </Box>
+            </Container>}
+
             {noResults && <Container sx={{ m: '20px auto 20px auto', textAlign: 'center' }}>
                 <Typography variant='subtitle2'>No Results Found</Typography>
             </Container>}
 
             {searchResults ? (
-                <Container sx={{ mb: '60px', mt: 4 }}>
-                    <List sx={{ width: '100%', bgcolor: 'transparent' }}>
-                        {searchResults.map((book) => (
-                            <React.Fragment>
-                                <ListItem key={`${book.cover_edition_key}`}
-                                    alignItems="center"
+                <Box>
 
-                                    onClick={mobile ? () => {
-                                        navigate(`/book/${book.edition_key[0]}`, {
-                                            state: {
-                                                published: book.first_publish_year,
-                                                pages: book.number_of_pages_median,
-                                                cover: book.cover_i,
-                                                author: book.author_name[0],
-                                                title: book.title
-                                            }
-                                        })
-                                    } : null}
-                                >
-                                    <Box sx={{
-                                        display: 'flex', width: { xs: 1 / 1, sm: 1 / 2, lg: 1 / 3 },
-                                        justifyContent: 'space-between',
-                                        mr: 'auto',
-                                        ml: 'auto',
 
-                                    }}>
-                                        <Box sx={{
-                                            '&:hover': {
-                                                cursor: 'pointer'
-                                            },
-                                        }}>
-                                            <img
-                                                src={`https://covers.openlibrary.org/b/olid/${book.cover_edition_key}-M.jpg`}
-                                                alt={`${book.title}-cover`}
-                                                style={Styles.medBookCover}
-                                                loading="lazy"
-                                                onClick={() => {
-                                                    navigate(`/book/${book.edition_key[0]}`, {
-                                                        state: {
-                                                            published: book.first_publish_year,
-                                                            pages: book.number_of_pages_median,
-                                                            cover: book.cover_i,
-                                                            author: book.author_name[0],
-                                                            title: book.title
-                                                        }
-                                                    })
-                                                }}
-                                            />
-                                        </Box>
-                                        <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'center', justifyContent: 'center', width: 1 / 2 }}>
-                                            <Stack sx={{ alignSelf: 'center', ml: 1 }}>
-                                                <Typography variant='subtitle1'
-                                                    sx={Styles.title}
-                                                    onClick={() => {
-                                                        navigate(`/book/${book.edition_key[0]}`, {
-                                                            state: {
-                                                                published: book.first_publish_year,
-                                                                pages: book.number_of_pages_median,
-                                                                cover: book.cover_i,
-                                                                author: book.author_name[0],
-                                                                title: book.title
-                                                            }
-                                                        })
-                                                    }}
-                                                >{book.title}</Typography>
-                                                <Typography
-                                                    component="span"
-                                                    variant="body2"
-                                                    color="text.primary"
-                                                >
-                                                    {book.author_name[0]}
-                                                </Typography>
-                                            </Stack>
-                                            <Stack sx={{ padding: 2 }}>
-                                                <Typography variant='caption' color='text.secondary'>Published: {book.first_publish_year}</Typography>
-                                                <Typography variant='caption' color='text.secondary'>{book.edition_count} editions</Typography>
-                                            </Stack>
-                                        </Box>
-                                    </Box>
-                                </ListItem>
-                                <Divider key={`${book.title}-divider`} variant="inset" component="li" />
-                            </React.Fragment>
-                        ))}
-                    </List>
-                </Container>
+                    {/* // <BookResults searchResults={searchResults} /> */}
+                    {resultsRender()}
+
+                </Box>
+
+
             ) : (
                 <Stack spacing={1} sx={{ mr: 5, ml: 5, mt: 10, width: 1 / 1 }}>
                     <Skeleton variant="rectangular" width={4 / 5} height={100} />

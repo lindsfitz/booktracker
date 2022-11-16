@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import { Typography, Container, Stack, Switch, Box, Chip, TextField, FormControl, Select, MenuItem, Autocomplete, Divider, Avatar, Button, Snackbar, Alert } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import CloudWidget from './components/mini-components/CloudWidget';
 
 
@@ -13,7 +14,6 @@ export default function Settings() {
     const [pinned, setPinned] = useState("");
     const [profileTags, setProfileTags] = useState(null)
     const [allTags, setAllTags] = useState(null);
-    const [tagSearch, setTagSearch] = useState(null)
     const [openUpdated, setOpenUpdated] = useState(null)
     const [options, setOptions] = useState(null);
 
@@ -42,6 +42,10 @@ export default function Settings() {
                 tagId: tag.id
             })
             setProfileTags([...profileTags, tag])
+            context.setProfileData({
+                ...context.profileData,
+                Tags: [...profileTags, tag]
+            })
         } catch (error) {
             console.log(error)
         }
@@ -52,6 +56,10 @@ export default function Settings() {
             await API.untagProfile(context.profileData.id, tag.id)
             const proftags = profileTags.filter(item => item.id !== tag.id)
             setProfileTags(proftags)
+            context.setProfileData({
+                ...context.profileData,
+                Tags: proftags
+            })
         } catch (error) {
             console.log(error)
         }
@@ -108,13 +116,25 @@ export default function Settings() {
                 if (context.profileData.favorite_shelf) { setPinned(context.profileData.favorite_shelf) }
                 setProfileTags(context.profileData.Tags)
 
-                const tagOptions = [];
+                // const tagOptions = [];
 
-                context.tags.map(tag => {
-                    context.profileData.Tags.some(prof => { prof.id === tag.id ? console.log('already tagged') : tagOptions.push(tag) })
-                })
+                // if (context.profileData.Tags.length) {
+                //     context.tags.forEach(tag => {
+                //         context.profileData.Tags.forEach(prof => {
+                //             if (prof.id !== tag.id) {
+                //                 // ? console.log('already tagged') : 
+                //                 tagOptions.push(tag)
+                //             }
+                //         })
+                //     })
+                //     setAllTags(tagOptions)
 
-                setAllTags(tagOptions)
+                // } else {
+                //     setAllTags(context.tags)
+                // }
+
+                setAllTags(context.tags)
+
 
                 const cloud = await API.cloudUpload();
                 setOptions(cloud.data)
@@ -138,8 +158,8 @@ export default function Settings() {
                 {/* cloudinary upload for profile picture -- avatar to display this pic */}
                 <Stack spacing={1} sx={{ p: 3 }} >
                     {avatar()}
-                    
-                   {options &&  <CloudWidget options={options} />}
+
+                    {options && <CloudWidget options={options} />}
 
 
                 </Stack>
@@ -166,7 +186,13 @@ export default function Settings() {
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label="Add More Favorites..."
+                                label={
+                                    <React.Fragment>
+                                        <Stack direction='row' spacing={0.5} alignItems='center'>
+                                            <SearchIcon fontSize="small" />
+                                            <Typography variant='caption'>Search tags</Typography>
+                                        </Stack>
+                                    </React.Fragment>}
                                 InputProps={{
                                     ...params.InputProps,
                                     type: 'search',

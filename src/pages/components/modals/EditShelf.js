@@ -3,6 +3,7 @@ import API from '../../../utils/API';
 import AppContext from '../../../AppContext';
 import PropTypes from 'prop-types';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Box, TextField, Chip, Stack, Typography, Switch, Autocomplete } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -164,9 +165,14 @@ export default function EditShelf({ shelf, setEditShelf, editShelf }) {
                                 getOptionLabel={(option) => option.name}
                                 renderInput={(params) => (
                                     <TextField
-
                                         {...params}
-                                        label="Tags"
+                                        label={
+                                            <React.Fragment>
+                                                <Stack direction='row' spacing={0.5} alignItems='center'>
+                                                    <SearchIcon fontSize="small" />
+                                                    <Typography variant='caption'>Find a tag</Typography>
+                                                </Stack>
+                                            </React.Fragment>}
                                         InputProps={{
                                             ...params.InputProps,
                                             type: 'search',
