@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import API from '../../utils/API'
+import API from '../../../utils/API'
 import dayjs from 'dayjs'
 import {
     Rating, Typography, Box, Container, Paper, Switch, Stack, Chip, IconButton, Button
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import EditReview from './modals/EditReview';
+import EditReview from '../modals/EditReview';
 
 const clampedStyle = {
     height: 230,

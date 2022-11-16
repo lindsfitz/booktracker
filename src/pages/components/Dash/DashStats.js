@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
-import AppContext from '../../AppContext';
+import AppContext from '../../../AppContext';
 import dayjs from 'dayjs'
 import PropTypes from 'prop-types';
 import { Typography, Box, Rating, Tabs, Tab, Divider, Button, CircularProgress, Stack, Link } from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
-import ProgressCircle from './mini-components/ProgressCircle';
+import ProgressCircle from '../mini-components/ProgressCircle';
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 

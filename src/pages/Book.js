@@ -9,10 +9,10 @@ import {
 import { useTheme } from '@mui/material/styles';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AddReview from './components/modals/AddReview';
-import Review from './components/Review';
-import BookInfo from './components/BookInfo';
+import Review from './components/Book/Review';
+import BookInfo from './components/Book/BookInfo';
 import AddNote from './components/modals/AddNote'
-import Note from './components/Note';
+import Note from './components/Book/Note';
 
 
 export default function Book() {

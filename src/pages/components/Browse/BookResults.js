@@ -2,10 +2,10 @@ import React from 'react';
 import { Box,Divider, List, ListItem, Container, Stack, Typography, useMediaQuery } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
-import Styles from '../../utils/Styles'
+import Styles from '../../../utils/Styles'
 
 
-const ShelfResults = ({ searchResults }) => {
+const BookResults = ({ searchResults }) => {
 
     let navigate = useNavigate();
     const theme = useTheme();
@@ -100,4 +100,4 @@ const ShelfResults = ({ searchResults }) => {
     )
 }
 
-export default ShelfResults;
+export default BookResults;

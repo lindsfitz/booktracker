@@ -6,9 +6,7 @@ import AppContext from '../AppContext';
 import EditShelf from './components/modals/EditShelf';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-// import { useTheme } from '@mui/material/styles';
 import { Divider, Typography, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Container, ButtonGroup, IconButton, Tooltip } from '@mui/material/';
-// import BCMobile from './components/BCMobile';
 import Carousel from './components/Carousel';
 
 

@@ -5,7 +5,7 @@ import AppContext from '../AppContext';
 import API from '../utils/API'
 import { List, Container, Divider, Typography, Autocomplete, TextField, Box, Stack, Tooltip, IconButton, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import ReadingMobile from './components/mobile/ReadingMobile';
+import ReadingMobile from './components/Dash/ReadingMobile';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import OneShelf from './components/OneShelf';

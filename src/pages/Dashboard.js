@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 import API from '../utils/API';
 import AppContext from '../AppContext';
 import AddShelf from './components/modals/AddShelf'
-import DashStats from './components/DashStats';
+import DashStats from './components/Dash/DashStats';
 import { useTheme } from '@mui/material/styles';
 import { List, Container, Typography, Box, Divider, Button, Stack, useMediaQuery } from '@mui/material';
-import ReadingMobile from './components/mobile/ReadingMobile';
+import ReadingMobile from './components/Dash/ReadingMobile';
 import OneShelf from './components/OneShelf';
 import Carousel from './components/Carousel';
 

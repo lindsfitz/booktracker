@@ -8,9 +8,9 @@ import Styles from '../utils/Styles'
 import { useTheme, styled, alpha } from '@mui/material/styles';
 import { Box, OutlinedInput, Divider, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography, Badge, Card, CardMedia, CardContent, useMediaQuery, InputBase, IconButton, Grid } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import NYTMobile from './components/mobile/NYTMobile';
-import BookResults from './components/BookResults';
-import SubjectResults from './components/SubjectResults';
+import NYTMobile from './components/Browse/NYTMobile';
+import BookResults from './components/Browse/BookResults';
+import SubjectResults from './components/Browse/SubjectResults';
 
 
 
