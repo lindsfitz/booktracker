@@ -135,6 +135,9 @@ const API = {
     deleteReview: (id) => {
         return axios.delete(`${URL_PREFIX}/review/delete/${id}`)
     },
+    publicReviews: (bookId) => {
+        return axios.get(`${URL_PREFIX}/review/public/${bookId}`)
+    },
 
     /* ---- NOTE ROUTES ---- */
     getUserNotes: (userid, bookid) => {

@@ -13,6 +13,7 @@ import Review from './components/Book/Review';
 import BookInfo from './components/Book/BookInfo';
 import AddNote from './components/modals/AddNote'
 import Note from './components/Book/Note';
+import Feedback from './components/Book/Feedback';
 
 
 export default function Book() {
@@ -34,6 +35,7 @@ export default function Book() {
     /* only if book exists in db & user associated */
     const [reviewData, setReviewData] = useState(false)
     const [noteData, setNoteData] = useState(false)
+    const [publicReviews, setPublicReviews] = useState(false)
     const [markedAs, setMarkedAs] = useState(null)
     const [markedOwned, setMarkOwned] = useState(false)
 
@@ -53,6 +55,8 @@ export default function Book() {
 
     const dbBookInfo = useCallback(async (id) => {
         const book = await API.getBookandShelves(id, context.userData.id);
+        const pubReviews = await API.publicReviews(id)
+        setPublicReviews(pubReviews.data)
         setBookData(book.data)
         setShelfChoices([])
         if (book.data.CurrentBooks.length) {
@@ -804,7 +808,16 @@ export default function Book() {
                     <Divider />
 
                     <Container>
-                        {!reviewData && !reviewForm && !noteData && !noteForm && <div style={{ margin: '30px auto 85px auto', textAlign: 'center' }}>
+
+                        {!noteForm && !reviewForm && <Feedback
+                            publicReviews={publicReviews}
+                            reviewData={reviewData} reviewInfo={reviewInfo}
+                            openSnackbar={openSnackbar}
+                            bookId={bookData.id} noteData={noteData} noteInfo={noteInfo}
+                            pages={bookData.pages} toggleNoteForm={toggleNoteForm}
+                            toggleReviewForm={toggleReviewForm} markedAs={markedAs} />}
+
+                        {/* {!reviewData && !reviewForm && !noteData && !noteForm && <div style={{ margin: '30px auto 85px auto', textAlign: 'center' }}>
                             <Typography variant='subtitle2'>
                                 It looks like you haven't added any reviews or notes for this book yet.
                             </Typography>
@@ -835,11 +848,11 @@ export default function Book() {
                             </Typography>
                             <br />
 
-                            {noteData.map((note) => 
+                            {noteData.map((note) =>
                                 <Note note={note} noteInfo={noteInfo} openSnackbar={openSnackbar} bookId={bookData.id} pages={bookData.pages} />
                             )}
                         </Container>
-                        }
+                        } */}
 
                     </Container>
                 </Container >}

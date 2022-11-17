@@ -56,18 +56,19 @@ export default function Review({ review, reviewInfo, openSnackbar, bookId }) {
     }, [overflowActive])
 
     return (
-        <Paper key={review.id} elevation={6} sx={{ width: { xs: 1 / 1, sm: 3 / 4, md: 3 / 5 }, p: 2, m: '4 0' }}>
-            {editId !== review.id && <Container>
+      
+        <React.Fragment>
+            {editId !== review.id && <Container sx={{ width: { xs: 1 / 1, sm: 3 / 4, md: 3 / 5 }, p: 2, m: '4 0' }}>
                 <Stack direction='row' justifyContent="space-between">
                     <Stack direction="row" spacing={1} alignItems="center">
-                        <Typography variant='caption'>Unread</Typography>
+                        <Typography variant='caption'>Private</Typography>
                         <Switch name='read'
                             color='secondary'
                             id='read'
-                            checked={review.read}
+                            checked={review.public}
                             size='small'
                             disabled />
-                        <Typography variant='caption'>Read</Typography>
+                        <Typography variant='caption'>Public</Typography>
                     </Stack>
 
                     <Stack spacing={0.5} direction="row" alignItems="center">
@@ -119,6 +120,6 @@ export default function Review({ review, reviewInfo, openSnackbar, bookId }) {
             {editId === review.id &&
                 <EditReview type={'review'} reviewData={review} setEditReview={setEditReview} reviewInfo={reviewInfo} setEditId={setEditId} bookId={bookId} />
             }
-        </Paper>
+        </React.Fragment>
     )
 }

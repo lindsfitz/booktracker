@@ -72,8 +72,8 @@ export default function Note({ note, noteInfo, openSnackbar, bookId, pages }) {
     }, [overflowActive, note])
 
     return (
-        <Paper key={note.id} elevation={6} sx={{ width: { xs: 1 / 1, sm: 3 / 4, md: 3 / 5 }, p: 2, m: '4 0' }}>
-            {noteId !== note.id && <Container>
+        <React.Fragment>
+            {noteId !== note.id && <Container sx={{ width: { xs: 1 / 1, sm: 3 / 4, md: 3 / 5 }, p: 2, m: '4 0' }}>
                 <Stack direction='row' justifyContent="space-between">
                     <Stack direction="row" spacing={0.5} alignItems="center">
                         <Typography variant='caption'>Status:</Typography>
@@ -123,6 +123,6 @@ export default function Note({ note, noteInfo, openSnackbar, bookId, pages }) {
             {noteId === note.id &&
                 <EditReview type={'note'} reviewData={note} setEditReview={setEditNote} reviewInfo={noteInfo} setEditId={setNoteId} bookId={bookId} pages={pages} />
             }
-        </Paper>
+        </React.Fragment>
     )
 }

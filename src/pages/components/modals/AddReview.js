@@ -78,10 +78,6 @@ export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBoo
             console.log(reviewData)
         } catch (err) { console.log(err) }
 
-
-
-
-
         reviewInfo()
         toggleReviewForm();
     }
