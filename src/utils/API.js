@@ -218,7 +218,7 @@ const API = {
         return axios.get(`https://openlibrary.org/search.json?title=${title}&limit=10&language=eng`)
     },
     olSearchAuthor: (author) => {
-        return axios.get(`https://openlibrary.org/search.json?author=${author}&limit=10`)
+        return axios.get(`https://openlibrary.org/search.json?author=${author}&limit=10&language=eng`)
     },
     olSearchBySubject: (subject) => {
         return axios.get(`https://openlibrary.org/subjects/${subject}.json?details=true&ebooks=true`)
@@ -256,7 +256,7 @@ const API = {
         return axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`)
     },
     gbByISBN: (isbn) => {
-        return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${isbn}+isbn`)
+        return axios.get(`https://www.googleapis.com/books/v1/volumes?q="${isbn}"+isbn`)
     },
 
     /* ----- NYT ----- */

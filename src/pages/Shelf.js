@@ -44,8 +44,9 @@ export default function Shelf() {
     const handleDelete = async () => {
         const remove = await API.deleteShelf(params.id)
         console.log(remove)
-        setOpen(false)
-        navigate('/shelves')
+        const shelves = await API.getShelves(context.userData.id)
+        context.setUserShelves(shelves.data)
+        navigate('/bookcase')
 
     }
 
@@ -97,7 +98,7 @@ export default function Shelf() {
                     <Typography variant='subtitle2'>{shelf.description}</Typography>
                     <Typography variant='caption' color='text.secondary'>Last Updated: {dayjs(shelf.last_update).format('MMM D, YYYY')}</Typography>
                     <Box>
-                        {shelf.Tags && shelf.Tags.map(tag => <Chip key={tag.name} label={tag.name} 
+                        {shelf.Tags && shelf.Tags.map(tag => <Chip key={tag.name} label={tag.name}
                         // onDelete={() => handleTagDelete(tag)} 
                         />)}
                     </Box>

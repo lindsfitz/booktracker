@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import AppContext from '../AppContext';
 import API from '../utils/API';
-import Styles from '../utils/Styles'
+// import Styles from '../utils/Styles'
 // import AppContext from '../AppContext';
 import { useTheme, styled, alpha } from '@mui/material/styles';
 import { Box, OutlinedInput, Divider, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography, Badge, Card, CardMedia, CardContent, useMediaQuery, InputBase, IconButton, Grid } from '@mui/material';
@@ -46,6 +46,7 @@ export default function Search() {
     const mobile = useMediaQuery(theme.breakpoints.down('md'))
 
     const [searchBy, setSearchBy] = useState('placeholder');
+    const [searchWith, setSearchWith] = useState('ol')
     const [searchTerm, setSearchTerm] = useState('')
     const [searchResults, setSearchResults] = useState([])
     const [NYTdiv, setNYTdiv] = useState(true)
@@ -64,8 +65,15 @@ export default function Search() {
     const searchByTitle = async () => {
         API.olSearchTitle(searchTerm).then(books => {
             if (!books.data.docs.length) {
-                setNoResults(true)
+                // setNoResults(true)
+                API.gbBySubject(searchTerm).then(books => {
+                    setSearchWith('gb')
+                    setSearchResults(books.data.items)
+                    console.log(books.data)
+                })
+                return;
             }
+            setSearchWith('ol')
             setSearchResults(books.data.docs)
             console.log(books.data.docs)
         }).catch(err => {
@@ -76,8 +84,14 @@ export default function Search() {
     const searchByAuthor = async () => {
         const authorResults = await API.olSearchAuthor(searchTerm)
         if (!authorResults.data.docs.length) {
-            setNoResults(true)
+            API.gbBySubject(searchTerm).then(books => {
+                setSearchWith('gb')
+                setSearchResults(books.data.items)
+                console.log(books.data)
+            })
+            return;
         }
+        setSearchWith('ol')
         setSearchResults(authorResults.data.docs)
         console.log(authorResults)
     }
@@ -111,8 +125,6 @@ export default function Search() {
     }
 
     const subjectSearch = async (topic) => {
-        let subject = 'fantasy romance'
-
         let results;
 
         // const OLsearch = await API.olSearchBySubject(subject)
@@ -124,13 +136,6 @@ export default function Search() {
             results = gbSearch.data.items
         }
 
-        //    if (results) { results.map(book => {
-        //        if ( book.volumeInfo.categories[0] === 'Fiction') {
-        //         console.log(book.volumeInfo)
-        //        }
-        //     })}
-
-        // console.log(gbSearch)
         console.log('------')
         console.log(results)
 
@@ -143,28 +148,22 @@ export default function Search() {
             }
         })
         console.log(test)
-
+        setSearchWith('gb')
         setSearchResults(results)
 
     }
 
     const resultsRender = () => {
-        switch (searchBy) {
-            case 'title':
-                return <BookResults searchResults={searchResults} />
-
-            case 'author':
-                return <BookResults searchResults={searchResults} />
-
-            default:
-                return <SubjectResults searchResults={searchResults} nytSearch={nytSearch} />
+        if (searchWith === 'gb') {
+            return <SubjectResults searchResults={searchResults} nytSearch={nytSearch} />
         }
+        return <BookResults searchResults={searchResults} />
     }
 
-    const nytSearch = async (isbn, title, author) => {
-        console.log(isbn, title, author)
-        const bookFind = await API.olBookISBN(isbn)
-        const formattedTitle = title.toLowerCase().split(' ')
+    const nytSearch = async (book) => {
+        console.log(book.primary_isbn13)
+        const bookFind = await API.olBookISBN(book.primary_isbn13)
+        const formattedTitle = book.title.toLowerCase().split(' ')
             .map((s) => s.charAt(0).toUpperCase() + s.substring(1)).join(' ');
         if (bookFind.data) {
             console.log(bookFind.data.key)
@@ -172,8 +171,13 @@ export default function Search() {
             console.log(key)
             navigate(`/book/${key[2]}`, {
                 state: {
-                    author: author,
-                    title: formattedTitle
+                    origin:'nyt',
+                    author: book.author,
+                    authorKey: bookFind.data.authors[0].key,
+                    title: formattedTitle,
+                    description: book.description,
+                    cover: book.book_image,
+                    isbn: book.primary_isbn13
                 }
             })
         }
@@ -250,8 +254,6 @@ export default function Search() {
 
             {searchResults ? (
                 <Box>
-
-
                     {/* // <BookResults searchResults={searchResults} /> */}
                     {resultsRender()}
 
@@ -291,7 +293,7 @@ export default function Search() {
                                             width: 120, height: '100%', '&:hover': {
                                                 cursor: 'pointer'
                                             }
-                                        }} onClick={() => nytSearch(book.primary_isbn13, book.title, book.author)}>
+                                        }} onClick={() => nytSearch(book)}>
                                             <CardContent sx={{ wordWrap: 'break-word' }}>
                                                 <Badge anchorOrigin={{
                                                     vertical: 'top',

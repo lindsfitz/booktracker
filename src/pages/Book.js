@@ -2,17 +2,18 @@ import React, { useState, useEffect, useContext, useRef, useCallback } from 'rea
 import { useParams, useLocation } from "react-router-dom";
 import AppContext from '../AppContext';
 import API from '../utils/API'
+import dayjs from 'dayjs'
 import AddShelf from './components/modals/AddShelf'
 import {
-    Button, ButtonGroup, Grow, Popper, MenuItem, MenuList, Typography, Container, Paper, Divider, Stack, Chip, Link, ClickAwayListener, Snackbar, useMediaQuery
+    Button, ButtonGroup, Grow, Popper, MenuItem, MenuList, Typography, Container, Paper, Divider, Stack, Chip, ClickAwayListener, Snackbar, useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AddReview from './components/modals/AddReview';
-import Review from './components/Book/Review';
+// import Review from './components/Book/Review';
 import BookInfo from './components/Book/BookInfo';
 import AddNote from './components/modals/AddNote'
-import Note from './components/Book/Note';
+// import Note from './components/Book/Note';
 import Feedback from './components/Book/Feedback';
 
 
@@ -456,50 +457,128 @@ export default function Book() {
         return bookcheck;
     }
 
+    const olWorks = async (worksKey, bibkeyData) => {
+        const works = await API.olBookWorks(worksKey)
+        console.log('works')
+        console.log(works.data)
+        let description = null;
+
+
+        if (works.data.description) {
+            if (works.data.description.value) {
+                description = works.data.description.value
+            } else {
+                description = works.data.description
+            }
+        }
+
+        setBookData({
+            title: bibkeyData.title || location.state.title,
+            cover_img: bibkeyData.cover ? bibkeyData.cover.medium : location.state.cover,
+            author: location.state.author || bibkeyData.authors[0].name,
+            author_key: location.state.authorKey,
+            published: bibkeyData.publish_date || location.state.published,
+            pages: bibkeyData.number_of_pages || location.state.pages || bibkeyData.pagination,
+            description: description,
+            ol_key: bibkeyData.key,
+            isbn: bibkeyData.identifiers.isbn_13 ? bibkeyData.identifiers.isbn_13[0] : null
+        })
+        setShelfChoices(context.userShelves)
+
+    }
+
     useEffect(() => {
 
         const olBookInfo = async (id) => {
+
+            if (location.state.origin === 'gb') {
+                console.log('gb')
+
+                const bibkeys = await API.olBookBibKeys(id)
+                const OLID = Object.keys(bibkeys.data)
+                const bibkeyData = bibkeys.data[OLID[0]]
+
+                setBookData({
+                    title: location.state.title || bibkeyData.title,
+                    cover_img: location.state.cover || bibkeyData.cover.medium,
+                    author: location.state.author || bibkeyData.authors[0].name,
+                    author_key: location.state.authorKey,
+                    published: location.state.published || bibkeyData.publish_date,
+                    pages: location.state.pages || bibkeyData.number_of_pages || bibkeyData.pagination,
+                    description: location.state.description,
+                    ol_key: `/books/${id}`,
+                    isbn: location.state.isbn
+                })
+
+                setShelfChoices(context.userShelves)
+
+                return;
+            }
+
+            if (location.state.origin === 'nyt') {
+                console.log('nyt')
+
+                const gb = await API.gbByISBN(location.state.isbn)
+                const bookInfo = gb.data.items[0].volumeInfo
+                console.log(bookInfo)
+
+
+                setBookData({
+                    title: location.state.title || bookInfo.title,
+                    cover_img: location.state.cover || bookInfo.imageLinks.smallThumbnail,
+                    author: location.state.author,
+                    author_key: location.state.authorKey,
+                    published: dayjs(bookInfo.publishedDate).format('MMM D, YYYY'),
+                    pages: bookInfo.pageCount,
+                    description: bookInfo.description || location.state.description,
+                    ol_key: `/books/${id}`,
+                    isbn: location.state.isbn
+                })
+
+                setShelfChoices(context.userShelves)
+
+                return;
+
+            }
+
+
             // params.id will be the OL 'books' key -- edition_key[0]
             let cover = null;
-            let description = null;
             // bibkeys -- title, authors name, isbn13, publish date, publisher name at least 
             // CAN also include number of pages, subjects, cover
             const bibkeys = await API.olBookBibKeys(id)
             const OLID = Object.keys(bibkeys.data)
             const bibkeyData = bibkeys.data[OLID[0]]
-            // console.log(bibkeyData)
+
+            if (!bibkeyData.identifiers.isbn_13) {
+                console.log('no isbn')
+                olWorks(location.state.worksKey, bibkeyData)
+                return;
+            }
+
+            const gbInfo = await API.gbByISBN(bibkeyData.identifiers.isbn_13[0])
+
+            if (!gbInfo.data.items || gbInfo.data.items[0].volumeInfo.industryIdentifiers[0].identifier !== bibkeyData.identifiers.isbn_13[0]) {
+                console.log('no gb data')
+                olWorks(location.state.worksKey, bibkeyData)
+                return;
+            }
+
+            const bookInfo = gbInfo.data.items[0].volumeInfo
+            console.log('bibkey + gb')
             if (bibkeyData.cover) {
                 cover = bibkeyData.cover.medium
             }
-            // books -- includes series, works key
-            // CAN also include -- covers [0] for cover id 
-            const book = await API.olBookBooks(id)
-            console.log(book.data)
 
-            // literally just to pull the description 
-            // can also include covers[0]
-            const works = await API.olBookWorks(book.data.works[0].key)
-            // console.log(works.data)
-            if (!bibkeyData.cover && works.data.covers) {
-                cover = `https://covers.openlibrary.org/b/id/${works.data.covers[0]}-M.jpg`
-            }
-
-            if (works.data.description) {
-                if (works.data.description.value) {
-                    description = works.data.description.value
-                } else {
-                    description = works.data.description
-                }
-            }
 
             setBookData({
-                title: works.data.title,
-                cover_img: cover,
-                author: bibkeyData.authors[0].name,
-                author_key: book.data.authors[0].key,
-                published: bibkeyData.publish_date || location.state.published,
-                pages: bibkeyData.number_of_pages || location.state.pages,
-                description: description,
+                title: bookInfo.title || bibkeyData.title,
+                cover_img: cover || bookInfo.imageLinks.smallThumbnail || location.state.cover,
+                author: location.state.author || bookInfo.authors[0] || bibkeyData.authors[0].name,
+                author_key: location.state.authorKey,
+                published: dayjs(bookInfo.publishedDate).format('MMM D, YYYY') || bibkeyData.publish_date || location.state.published,
+                pages: bibkeyData.number_of_pages || bookInfo.pageCount || location.state.pages || bibkeyData.pagination,
+                description: bookInfo.description,
                 ol_key: bibkeyData.key,
                 isbn: bibkeyData.identifiers.isbn_13[0]
             })
@@ -514,7 +593,7 @@ export default function Book() {
                 dbBookInfo(params.id)
             } else {
                 const book = await bookCheckByInfo(params.id, location.state.title, location.state.author)
-                // console.log(location.state)
+                console.log(location.state)
                 if (book.data.id) {
                     console.log(book.data.id)
                     // navigate(`/book/${book.data.id}`)

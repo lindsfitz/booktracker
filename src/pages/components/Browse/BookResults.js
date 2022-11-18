@@ -24,9 +24,11 @@ const BookResults = ({ searchResults }) => {
                                     state: {
                                         published: book.first_publish_year,
                                         pages: book.number_of_pages_median,
-                                        cover: book.cover_i,
+                                        cover: `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`,
                                         author: book.author_name[0],
-                                        title: book.title
+                                        title: book.title,
+                                        authorKey: book.author_key[0],
+                                        worksKey: book.key
                                     }
                                 })
                             } : null}
@@ -53,9 +55,11 @@ const BookResults = ({ searchResults }) => {
                                                 state: {
                                                     published: book.first_publish_year,
                                                     pages: book.number_of_pages_median,
-                                                    cover: book.cover_i,
+                                                    cover: `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`,
                                                     author: book.author_name[0],
-                                                    title: book.title
+                                                    title: book.title,
+                                                    authorKey: book.author_key[0],
+                                                    worksKey: book.key
                                                 }
                                             })
                                         }}
@@ -70,9 +74,11 @@ const BookResults = ({ searchResults }) => {
                                                     state: {
                                                         published: book.first_publish_year,
                                                         pages: book.number_of_pages_median,
-                                                        cover: book.cover_i,
+                                                        cover: `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`,
                                                         author: book.author_name[0],
-                                                        title: book.title
+                                                        title: book.title,
+                                                        authorKey: book.author_key[0],
+                                                        worksKey: book.key
                                                     }
                                                 })
                                             }}
@@ -82,7 +88,7 @@ const BookResults = ({ searchResults }) => {
                                             variant="body2"
                                             color="text.primary"
                                         >
-                                            {book.author_name[0]}
+                                            {book.author_name && book.author_name[0]}
                                         </Typography>
                                     </Stack>
                                     <Stack sx={{ padding: 2 }}>
