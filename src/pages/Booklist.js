@@ -178,7 +178,7 @@ export default function Booklist() {
                                 }}>
                                     <img
                                         src={`${book.cover_img}`}
-                                        srcSet={`${book.cover_img}`}
+                                        // srcSet={`${book.cover_img}`}
                                         alt={`${book.title}`}
                                         loading="lazy"
                                         style={Styles.smallBookCover}
