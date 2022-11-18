@@ -87,13 +87,15 @@ export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBoo
         let startDate = dayjs(startValue)
         let finishDate = dayjs(endValue)
 
+        console.log(rating)
+
         const newReview = {
             date_started: addDates ? startDate.format('YYYY/MM/DD') : null,
             date_finished: addDates ? finishDate.format('YYYY/MM/DD') : null,
             year_finished: finishDate.year(),
             month_finished: finishDate.month(),
             public: onPublic,
-            rating: data.get('rating'),
+            rating: rating,
             review: data.get('review'),
             format: data.get('format'),
             series: data.get('series'),
@@ -108,7 +110,7 @@ export default function AddReview({ reviewInfo, toggleReviewForm, bookId, addBoo
                 bookId: id
             })
             const reviewData = await API.newReview(newReview)
-            console.log(reviewData)
+            console.log(newReview)
         } catch (err) { console.log(err) }
 
         reviewInfo()

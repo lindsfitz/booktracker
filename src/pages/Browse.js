@@ -33,7 +33,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     width: '100%',
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 1),
-        // marginTop: 4,
         transition: theme.transitions.create('width'),
     },
 }));

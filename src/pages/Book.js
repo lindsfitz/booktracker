@@ -573,7 +573,7 @@ export default function Book() {
 
             setBookData({
                 title: bookInfo.title || bibkeyData.title,
-                cover_img: cover || bookInfo.imageLinks.smallThumbnail || location.state.cover,
+                cover_img: bookInfo.imageLinks.smallThumbnail || cover || location.state.cover,
                 author: location.state.author || bookInfo.authors[0] || bibkeyData.authors[0].name,
                 author_key: location.state.authorKey,
                 published: dayjs(bookInfo.publishedDate).format('MMM D, YYYY') || bibkeyData.publish_date || location.state.published,

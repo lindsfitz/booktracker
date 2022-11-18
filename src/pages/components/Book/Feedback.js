@@ -31,17 +31,17 @@ const Feedback = ({ reviewData, noteData, publicReviews, markedAs, toggleNoteFor
     // return publicReviews only
     // plus text & link to add your thoughts/review
 
-    if (!noteData && !reviewData) {
+    if (!noteData && !reviewData && publicReviews) {
         return (
             <Container sx={{ mb: '70px', mt: 2, mx: 0, px: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                 <Typography variant='subtitle1'>
                     Community Reviews:
                 </Typography>
                 <Divider />
-                <Box>
+                {publicReviews.avg && <Box>
                     <Typography variant='body2'>Average Rating: {publicReviews.avg.avgRating}</Typography>
                     <Typography variant='body2'>{publicReviews.avg.count} Reviews</Typography>
-                </Box>
+                </Box>}
                 <Divider />
                 <Box>
                     {publicReviews.reviews.map(review => (
@@ -74,15 +74,15 @@ const Feedback = ({ reviewData, noteData, publicReviews, markedAs, toggleNoteFor
                     <Link variant='subtitle2' onClick={toggleReviewForm}>Already finished reading this book? Add A Review.</Link>
                 </Box>
                 {noteData && <Link variant='subtitle2'>Your Notes</Link>}
-                <Container sx={{ mb: '70px', mt: 2, mx: 0, px: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+               {publicReviews && <Container sx={{ mb: '70px', mt: 2, mx: 0, px: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     <Typography variant='subtitle1'>
                         Community Reviews:
                     </Typography>
                     <Divider />
-                    <Box>
-                        <Typography variant='body2'>Average Rating: {publicReviews.avg.avgRating}</Typography>
-                        <Typography variant='body2'>{publicReviews.avg.count} Reviews</Typography>
-                    </Box>
+                    {publicReviews.avg && <Box>
+                    <Typography variant='body2'>Average Rating: {publicReviews.avg.avgRating}</Typography>
+                    <Typography variant='body2'>{publicReviews.avg.count} Reviews</Typography>
+                </Box>}
                     <Divider />
                     <Box>
                         {publicReviews.reviews.map(review => (
@@ -95,7 +95,7 @@ const Feedback = ({ reviewData, noteData, publicReviews, markedAs, toggleNoteFor
                             </React.Fragment>
                         ))}
                     </Box>
-                </Container>
+                </Container>}
             </Container>
         )
 
