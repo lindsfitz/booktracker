@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-// const URL_PREFIX = "http://localhost:3005/api"
-const URL_PREFIX = "https://booked-server.herokuapp.com/api"
+const URL_PREFIX = "http://localhost:3005/api"
+// const URL_PREFIX = "https://booked-server.herokuapp.com/api"
 
 
 
@@ -127,7 +127,7 @@ const API = {
     },
 
     newReview: (reviewData) => {
-        return axios.post(`${URL_PREFIX}/review/new/review`, reviewData)
+        return axios.post(`${URL_PREFIX}/review/new`, reviewData)
     },
     editReview: (reviewData, id) => {
         return axios.put(`${URL_PREFIX}/review/update/${id}`, reviewData)

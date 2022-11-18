@@ -55,7 +55,7 @@ export default function AddNote({ noteInfo, toggleNoteForm, bookId, pages, addBo
     return (
         <Box
             component="form"
-            sx={{ m: 1, width: { xs: 1 / 1, md: 1 / 2 } }}
+            sx={{ m: 1, width: { xs: 1 / 1, md: 1 / 2 }, mb:'80px' }}
             noValidate
             autoComplete="off"
             onSubmit={noteSubmit}

@@ -6,8 +6,9 @@ import API from '../utils/API';
 // import Styles from '../utils/Styles'
 // import AppContext from '../AppContext';
 import { useTheme, styled, alpha } from '@mui/material/styles';
-import { Box, OutlinedInput, Divider, MenuItem, FormControl, Select, Button, List, ListItem, ListItemText, Container, Skeleton, Stack, Typography, Badge, Card, CardMedia, CardContent, useMediaQuery, InputBase, IconButton, Grid } from '@mui/material';
+import { Box, OutlinedInput, Divider, MenuItem, FormControl, Select, Button, InputAdornment, Container, Skeleton, Stack, Typography, Badge, Card, CardMedia, CardContent, useMediaQuery, InputBase, IconButton, Grid } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 import NYTMobile from './components/Browse/NYTMobile';
 import BookResults from './components/Browse/BookResults';
 import SubjectResults from './components/Browse/SubjectResults';
@@ -22,6 +23,8 @@ const SearchBar = styled('div')(({ theme }) => ({
     },
     marginLeft: 5,
     width: '100%',
+    display:'flex',
+    alignItems:'center'
 }));
 
 
@@ -30,7 +33,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     width: '100%',
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 1),
-        marginTop: 4,
+        // marginTop: 4,
         transition: theme.transitions.create('width'),
     },
 }));
@@ -171,7 +174,7 @@ export default function Search() {
             console.log(key)
             navigate(`/book/${key[2]}`, {
                 state: {
-                    origin:'nyt',
+                    origin: 'nyt',
                     author: book.author,
                     authorKey: bookFind.data.authors[0].key,
                     title: formattedTitle,
@@ -225,8 +228,20 @@ export default function Search() {
                 <SearchBar>
                     <StyledInputBase
                         onChange={handleInputChange}
+                        value={searchTerm}
                         placeholder="Search…"
                         inputProps={{ 'aria-label': 'search' }}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                {searchTerm === '' ? null : <IconButton
+                                    aria-label="clear search input"
+                                    onClick={() => setSearchTerm('')}
+                                   
+                                >
+                                    <ClearIcon />
+                                </IconButton>}
+                            </InputAdornment>
+                        }
                     />
                 </SearchBar>
                 <IconButton onClick={search}>

@@ -63,7 +63,6 @@ export default function ReadingProgress({ book, open, handleClose }) {
     const markRead = async () => {
         try {
             await API.removeCurrentlyReading(context.userData.id, book.id)
-                .catch(console.error)
 
             await API.addRead({
                 userId: context.userData.id,
@@ -109,7 +108,7 @@ export default function ReadingProgress({ book, open, handleClose }) {
                         <Stack spacing={3}>
                             <Box>
                                 <TextField
-                                    sx={{ width: 1 / 8, mr: 1 }}
+                                    sx={{ width:{xs: 1/5, sm: 1 / 8}, mr: 1 }}
                                     size='small'
                                     id="progress"
                                     name='progress'
